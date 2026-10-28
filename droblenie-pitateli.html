@@ -395,6 +395,30 @@ section.blk{padding-block:72px 8px}
 @media (prefers-reduced-motion:reduce){.m3d .pic img,.m3d .play svg{animation:none}}
 .sc .b3d{position:absolute;left:10px;top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:#f2a33a;color:#1a1206;padding:3px 7px;border-radius:3px}
 .sc .ph{position:relative}
+
+/* 3D tile on the hero photo + in-page viewer */
+.shero .pic{position:relative}
+.t3d{all:unset;box-sizing:border-box;cursor:pointer;position:absolute;left:14px;bottom:14px;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:8px;background:rgba(12,15,18,.86);border:1px solid rgba(242,163,58,.7);color:#fff;box-shadow:0 8px 26px rgba(0,0,0,.4);backdrop-filter:blur(4px);transition:transform .2s,border-color .2s}
+.t3d:hover{transform:translateY(-2px);border-color:#f2a33a}
+.t3d:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
+.t3d .th{position:relative;width:118px;height:66px;border-radius:5px;overflow:hidden;flex:none;background:#0f1419}
+.t3d .th img{width:100%;height:100%;object-fit:cover;animation:m3dpan 9s ease-in-out infinite alternate}
+@keyframes m3dpan{0%{transform:scale(1.05)}100%{transform:scale(1.22) translateX(-6%)}}
+.t3d .th svg{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;color:#f2a33a;filter:drop-shadow(0 1px 4px rgba(0,0,0,.8));animation:spin3d 6s linear infinite}
+@keyframes spin3d{to{transform:rotate(360deg)}}
+.t3d b{display:block;font-weight:600;font-size:15px}
+.t3d small{display:block;font-family:var(--mono);font-size:11.5px;color:#f2a33a;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+@media (max-width:480px){.t3d .th{width:86px;height:50px}.t3d b{font-size:14px}}
+@media (prefers-reduced-motion:reduce){.t3d .th img,.t3d .th svg{animation:none}}
+.viewer{position:fixed;inset:0;z-index:30;background:rgba(8,11,14,.88);display:flex;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.viewer .box{width:min(1180px,100%);height:min(780px,100%);display:flex;flex-direction:column;gap:8px}
+.viewer .vbar{display:flex;align-items:center;gap:12px;color:#e6e9ec}
+.viewer .vbar b{font-family:var(--display);font-weight:500;font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viewer .vbar a{margin-left:auto;font-size:13.5px;color:#a8b3bd;white-space:nowrap}
+.viewer .x{all:unset;cursor:pointer;padding:8px 14px;border:1px solid #3d4a57;border-radius:4px;color:#e6e9ec;font-size:14px}
+.viewer .x:focus-visible{outline:2px solid #f2a33a}
+.viewer iframe{flex:1;width:100%;border:1px solid #28333e;border-radius:8px;background:#0f1419}
+@media (max-width:640px){.viewer{padding:0}.viewer .box{height:100%;padding:8px}.viewer .vbar a{display:none}}
 /* section page */
 .shero~.jump+.in .dsec{padding-top:0}
 .shero{background:#0f1419;color:#e6e9ec;margin-top:14px}
@@ -452,8 +476,7 @@ section.blk{padding-block:72px 8px}
   </section>
 <nav class="jump" aria-label="Разделы направления «Дробление и сортировка»"><div class="in"><a class="ov" href="droblenie.html">Обзор</a><a href="droblenie-pitateli.html" aria-current="page"><i>07.1</i>Питатели</a><a href="droblenie-drobilki.html"><i>07.2</i>Дробилки</a><a href="droblenie-mobilnye.html"><i>07.3</i>Мобильные комплексы</a><a href="droblenie-grohoty.html"><i>07.4</i>Грохоты</a><a href="droblenie-sita.html"><i>07.5</i>Сита и просеивающие поверхности</a><a href="droblenie-zapchasti.html"><i>07.6</i>Запасные и износостойкие части</a></div></nav>
   <div class="in" style="padding-top:12px">
-    
-    <div style="height:40px"></div>
+    <div style="height:28px"></div>
 <section class="dsec" id="c7a">
 <div class="grp"><div class="cards"><article class="card"><div class="ph"><img src="img/cat/76.jpg" alt="Пластинчатые питатели" loading="lazy"></div><div class="t"><b>Пластинчатые питатели</b><p>Для подачи кускового материала. Подбор ширины, скорости и привода по крупности питания и нагрузке на рабочий орган.</p><a class="ask" href="index.html?sec=c7&item=Пластинчатые питатели#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/77.jpg" alt="Колосниковые питатели" loading="lazy"></div><div class="t"><b>Колосниковые питатели</b><p>Подача с предварительным отделением мелкого класса на колосниковом участке.</p><a class="ask" href="index.html?sec=c7&item=Колосниковые питатели#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/78.jpg" alt="Вибрационные питатели" loading="lazy"></div><div class="t"><b>Вибрационные питатели</b><p>Исполнения для подачи сыпучих материалов. Варианты монтажа согласуют с компоновкой бункера.</p><a class="ask" href="index.html?sec=c7&item=Вибрационные питатели#request">Запросить →</a></div></article></div></div>
 <div class="pick"><div><b>Для подбора пришлите</b><p>Объём и геометрия бункера • насыпная плотность • максимальный кусок • расход • высота слоя • режим разгрузки</p></div><a class="btn" href="index.html?sec=c7#request">Отправить запрос</a></div></section>

@@ -395,6 +395,30 @@ section.blk{padding-block:72px 8px}
 @media (prefers-reduced-motion:reduce){.m3d .pic img,.m3d .play svg{animation:none}}
 .sc .b3d{position:absolute;left:10px;top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:#f2a33a;color:#1a1206;padding:3px 7px;border-radius:3px}
 .sc .ph{position:relative}
+
+/* 3D tile on the hero photo + in-page viewer */
+.shero .pic{position:relative}
+.t3d{all:unset;box-sizing:border-box;cursor:pointer;position:absolute;left:14px;bottom:14px;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:8px;background:rgba(12,15,18,.86);border:1px solid rgba(242,163,58,.7);color:#fff;box-shadow:0 8px 26px rgba(0,0,0,.4);backdrop-filter:blur(4px);transition:transform .2s,border-color .2s}
+.t3d:hover{transform:translateY(-2px);border-color:#f2a33a}
+.t3d:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
+.t3d .th{position:relative;width:118px;height:66px;border-radius:5px;overflow:hidden;flex:none;background:#0f1419}
+.t3d .th img{width:100%;height:100%;object-fit:cover;animation:m3dpan 9s ease-in-out infinite alternate}
+@keyframes m3dpan{0%{transform:scale(1.05)}100%{transform:scale(1.22) translateX(-6%)}}
+.t3d .th svg{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;color:#f2a33a;filter:drop-shadow(0 1px 4px rgba(0,0,0,.8));animation:spin3d 6s linear infinite}
+@keyframes spin3d{to{transform:rotate(360deg)}}
+.t3d b{display:block;font-weight:600;font-size:15px}
+.t3d small{display:block;font-family:var(--mono);font-size:11.5px;color:#f2a33a;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+@media (max-width:480px){.t3d .th{width:86px;height:50px}.t3d b{font-size:14px}}
+@media (prefers-reduced-motion:reduce){.t3d .th img,.t3d .th svg{animation:none}}
+.viewer{position:fixed;inset:0;z-index:30;background:rgba(8,11,14,.88);display:flex;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.viewer .box{width:min(1180px,100%);height:min(780px,100%);display:flex;flex-direction:column;gap:8px}
+.viewer .vbar{display:flex;align-items:center;gap:12px;color:#e6e9ec}
+.viewer .vbar b{font-family:var(--display);font-weight:500;font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viewer .vbar a{margin-left:auto;font-size:13.5px;color:#a8b3bd;white-space:nowrap}
+.viewer .x{all:unset;cursor:pointer;padding:8px 14px;border:1px solid #3d4a57;border-radius:4px;color:#e6e9ec;font-size:14px}
+.viewer .x:focus-visible{outline:2px solid #f2a33a}
+.viewer iframe{flex:1;width:100%;border:1px solid #28333e;border-radius:8px;background:#0f1419}
+@media (max-width:640px){.viewer{padding:0}.viewer .box{height:100%;padding:8px}.viewer .vbar a{display:none}}
 /* section page */
 .shero~.jump+.in .dsec{padding-top:0}
 .shero{background:#0f1419;color:#e6e9ec;margin-top:14px}
@@ -445,15 +469,14 @@ section.blk{padding-block:72px 8px}
         <p class="eyebrow"><b>Конвейерные решения</b> · раздел 04</p>
         <h1><i>04</i>Качественные комплектующие</h1>
         <p class="lede">Износ и разрушение роликов нарушают опору ленты и увеличивают риск её повреждения. Детали подбирают по нагрузке, размерам и условиям работы.</p>
-        <div class="cta"><a class="btn" href="index.html?sec=c4#request">Обсудить задачу</a><a class="btn ghost" href="roliki.html">Посмотреть в 3D</a></div>
+        <div class="cta"><a class="btn" href="index.html?sec=c4#request">Обсудить задачу</a></div>
       </div>
-      <div class="pic"><img src="img/cat/8.jpg" alt="Замена роликов или барабанов"></div>
+      <div class="pic"><img src="img/cat/8.jpg" alt="Замена роликов или барабанов"><button class="t3d" data-3d="roliki.html" data-name="Ролики и барабаны" aria-label="Открыть 3D-модель «Ролики и барабаны»"><span class="th"><img src="img/3d-roliki.jpg" alt=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span><small>3D-модель</small><b>Покрутить «Ролики и барабаны»</b></span></button></div>
     </div>
   </section>
 <nav class="jump" aria-label="Разделы направления «Конвейерные решения»"><div class="in"><a class="ov" href="konveyer.html">Обзор</a><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html" aria-current="page"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></nav>
   <div class="in" style="padding-top:12px">
-    <a class="m3d" href="roliki.html" aria-label="Открыть 3D-модель «Ролики и барабаны»"><div class="pic"><img src="img/3d-roliki.jpg" alt="" loading="lazy"><span class="badge">3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></div><div class="t"><span class="tag">Интерактивно · в браузере</span><h3>Ролики и барабаны в 3D</h3><p>Заклинивший ролик, разрушенная обечайка, проскальзывание на стёртой футеровке — и что меняется после замены.</p><ul><li>Стальные и полимерные ролики</li><li>Футеровка барабана: ромб, резинокерамика, быстросъёмная</li><li>Мотор-барабан и ролики в разрезе</li></ul><span class="go">Открыть 3D-модель →</span></div></a>
-    <div style="height:40px"></div>
+    <div style="height:28px"></div>
 <section class="dsec" id="c4">
 <div class="grp"><h3>Ролики и роликоопоры</h3><p>Опорные элементы для рабочей и обратной ветвей ленточных конвейеров.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/46.jpg" alt="Стальные ролики" loading="lazy"></div><div class="t"><b>Стальные ролики</b><p>Несущие и обратные ролики с подшипниковыми узлами и лабиринтными уплотнениями. Диаметр, длина, концы оси и защита подшипников — по чертежу и нагрузке.</p><p class="adv">Несут рабочую нагрузку; лабиринтные уплотнения ограничивают попадание загрязнений в подшипники.</p><a class="ask" href="index.html?sec=c4&item=Стальные ролики#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/47.jpg" alt="Полимерные ролики" loading="lazy"></div><div class="t"><b>Полимерные ролики</b><p>Обечайки из HDPE или UHMWPE; доступны также исполнения с полиуретаном. Большой срок службы.</p><p class="adv">Меньшая масса облегчает монтаж, а низкая склонность поверхности к налипанию упрощает очистку.</p><a class="ask" href="index.html?sec=c4&item=Полимерные ролики#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/48.jpg" alt="Роликоопоры" loading="lazy"></div><div class="t"><b>Роликоопоры</b><p>Желобчатые, прямые и специальные опорные узлы. Комплектование по ширине ленты, углу желоба и присоединительным размерам.</p><p class="adv">Задают профиль желоба и распределяют нагрузку между опорными роликами.</p><a class="ask" href="index.html?sec=c4&item=Роликоопоры#request">Запросить →</a></div></article></div></div>
 <div class="grp"><h3>Барабаны</h3><p>Передают тяговое усилие, обеспечивают натяжение и формируют траекторию конвейерной ленты.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/49.jpg" alt="Приводные барабаны" loading="lazy"></div><div class="t"><b>Приводные барабаны</b><p>Передают усилие от внешнего привода к ленте. Обечайку, вал, подшипниковые опоры и резиновую либо резинокерамическую футеровку выбирают по тяговой нагрузке.</p><p class="adv">Согласованная футеровка помогает передавать тяговое усилие и ограничивать проскальзывание ленты.</p><a class="ask" href="index.html?sec=c4&item=Приводные барабаны#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/50.jpg" alt="Натяжные и обводные барабаны" loading="lazy"></div><div class="t"><b>Натяжные и обводные барабаны</b><p>Натяжной барабан работает в составе натяжного устройства. Обводные барабаны меняют направление движения ленты и могут увеличивать угол охвата приводного барабана.</p><p class="adv">Позволяют сформировать нужную траекторию ленты и компоновку натяжного устройства.</p><a class="ask" href="index.html?sec=c4&item=Натяжные и обводные барабаны#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/51.jpg" alt="Мотор-барабаны" loading="lazy"></div><div class="t"><b>Мотор-барабаны</b><p>Компактный привод: электродвигатель и редуктор размещены внутри вращающейся обечайки. Для конвейеров с ограниченным местом под внешний привод. Тормоз, стопор обратного хода и датчик скорости — по согласованной комплектации.</p><p class="adv">Освобождает место под внешний двигатель и редуктор; приводные узлы размещены внутри оболочки.</p><a class="ask" href="index.html?sec=c4&item=Мотор-барабаны#request">Запросить →</a></div></article></div></div>
@@ -466,7 +489,10 @@ section.blk{padding-block:72px 8px}
       <div class="others"><a class="oc" href="droblenie.html"><img src="img/cat/87.jpg" alt="" loading="lazy"><div><b>Дробление и сортировка</b><span>Питатели, дробилки, мобильные комплексы, грохоты, сита, запчасти</span></div></a><a class="oc" href="nasosy.html"><img src="img/pumps.jpg" alt="" loading="lazy"><div><b>Насосы</b><span>Центробежные, химические, шламовые насосы и станции</span></div></a></div>
     </div>
   </section>
-
+  <div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="vT">
+    <div class="box"><div class="vbar"><b id="vT"></b><a id="vNew" href="#">Открыть на весь экран ↗</a><button class="x" id="vX">Закрыть ✕</button></div>
+    <iframe id="vF" title="3D-модель" allow="fullscreen"></iframe></div>
+  </div>
   <section class="contacts" id="contacts">
     <img src="img/crushing.jpg" alt="" loading="lazy">
     <div class="in">
@@ -508,6 +534,14 @@ section.blk{padding-block:72px 8px}
   document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
     var t=b.dataset.copy,o=b.textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='Готово';setTimeout(function(){b.textContent=o},1600)}).catch(function(){});})});
   var cur=document.querySelector('.jump a[aria-current]');if(cur)cur.parentNode.scrollLeft=cur.offsetLeft-16;
+
+  var V=document.getElementById('viewer');if(V){var F=document.getElementById('vF'),last=null;
+  function close(){V.hidden=true;F.removeAttribute('src');document.body.style.overflow='';if(last)last.focus();}
+  document.querySelectorAll('[data-3d]').forEach(function(b){b.addEventListener('click',function(){last=b;
+    document.getElementById('vT').textContent='3D-модель · '+b.dataset.name;document.getElementById('vNew').href=b.dataset['3d'];
+    F.src=b.dataset['3d'];V.hidden=false;document.body.style.overflow='hidden';document.getElementById('vX').focus();});});
+  document.getElementById('vX').addEventListener('click',close);V.addEventListener('click',function(e){if(e.target===V)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!V.hidden)close();});}
 
 })();
 </script>
