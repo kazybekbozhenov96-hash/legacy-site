@@ -867,7 +867,7 @@ function placeLabel(el,v,cam,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||M
 function updateLabels(){const w=view.clientWidth,h=view.clientHeight;for(const d of labelDefs){if(!d.show()){d.el.hidden=true;d.was=false;continue;}const now=performance.now();if(!d.was){d.was=true;d.until=now+4500;}if(!labelsOn&&now>d.until){d.el.hidden=true;continue;}const t=d.t();if(d.el.textContent!==t)d.el.textContent=t;tmpV.set(...d.p());placeLabel(d.el,tmpV,camera,w,h);}}
 
 /* ---------- camera ---------- */
-const CAMS={overview:{p:[2.5,5.4,9.6],t:[0.4,1.3,0]},feeder:{p:[-2.6,3.9,2.9],t:[-4.0,2.3,0]},jaw:{p:[-1.75,1.05,2.3],t:[-2.4,1.35,0]},screen:{p:[5.8,4.2,3.0],t:[4.4,2.0,0]},piles:{p:[8.6,2.0,4.2],t:[5.4,0.6,0]},card:{p:[3.4,3.3,6.2],t:[-0.4,1.5,0]}};
+const CAMS={overview:{p:[2.5,5.4,9.6],t:[0.4,1.3,0]},feeder:{p:[-2.6,3.9,2.9],t:[-4.0,2.3,0]},jaw:{p:[-1.35,1.2,3.0],t:[-2.4,1.4,0]},screen:{p:[5.8,4.2,3.0],t:[4.4,2.0,0]},piles:{p:[8.6,2.0,4.2],t:[5.4,0.6,0]},card:{p:[3.4,3.3,6.2],t:[-0.4,1.5,0]}};
 const STEPCAM={1:'overview',2:'feeder',3:'jaw',4:'screen'};
 camera.position.set(...CAMS.overview.p);controls.target.set(...CAMS.overview.t);
 let tween=null;
