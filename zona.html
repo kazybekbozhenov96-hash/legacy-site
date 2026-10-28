@@ -739,9 +739,10 @@ function updateLabels(){
 }
 
 /* ---------- camera tween ---------- */
-const CAMS={overview:{p:[1.4,3.5,7.4],t:[-2.2,1.1,0]},chute:{p:[0.9,2.55,0.75],t:[-3.4,1.15,0]},under:{p:[-1.4,0.32,2.3],t:[-2.8,0.86,0]}};
+const CAMS={cover:{p:[0.6,2.9,3.6],t:[-2.6,1.2,0]},overview:{p:[1.4,3.5,7.4],t:[-2.2,1.1,0]},chute:{p:[0.9,2.55,0.75],t:[-3.4,1.15,0]},under:{p:[-1.4,0.32,2.3],t:[-2.8,0.86,0]}};
 let tween=null;
-function goCam(name){const c=CAMS[name];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:new THREE.Vector3(...c.p),t1:new THREE.Vector3(...c.t)};
+function fitP(c){const t=new THREE.Vector3(...c.t),p=new THREE.Vector3(...c.p);if(camera.aspect<1)p.sub(t).multiplyScalar(1+(1-camera.aspect)*0.9).add(t);return p;}
+function goCam(name){const c=CAMS[name];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:fitP(c),t1:new THREE.Vector3(...c.t)};
   document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cam===name));}
 
 /* ---------- UI ---------- */
@@ -752,7 +753,8 @@ const INFO={
  4:{t:'+ Пылезащита',r:'Каталог · раздел 03',p:'Фильтрующее укрытие над лентой выпускает воздух через полотно и удерживает часть пыли внутри перегрузочного узла. На выходе стоит шторка. Укрытие ставят вместе с бортовыми уплотнениями и системой аспирации.',l:['Длину укрытия подбирают по пылеобразованию','Учитывают влажность и температуру груза','Нужны фото зоны пересыпа']}
 };
 function setMode(m){mode=m;target.bed=m>=2?1:0;target.lz=m>=2?0:1;target.seal=m>=3?1:0;target.cover=m>=4?1:0;
-  document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));
+  const STEPCAM={1:'overview',2:'under',3:'chute',4:'cover'};{const _sm=setMode;setMode=function(m){const prev=mode;_sm(m);if(m!==prev&&STEPCAM[m])goCam(STEPCAM[m]);};}
+document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));
   const I=INFO[m];$('iT').textContent=I.t;$('iR').textContent=I.r;$('iP').textContent=I.p;$('badge').textContent=I.t.replace('+ ','');
   $('iL').innerHTML='';I.l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});}
 document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));

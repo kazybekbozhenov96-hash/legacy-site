@@ -853,10 +853,11 @@ function placeLabel(el,v,cam,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||M
 function updateLabels(){const w=view.clientWidth,h=view.clientHeight;for(const d of labelDefs){if(!d.show()){d.el.hidden=true;d.was=false;continue;}const now=performance.now();if(!d.was){d.was=true;d.until=now+4500;}if(!labelsOn&&now>d.until){d.el.hidden=true;continue;}const t=d.t();if(d.el.textContent!==t)d.el.textContent=t;tmpV.set(...d.p());placeLabel(d.el,tmpV,camera,w,h);}}
 
 /* ---------- camera ---------- */
-const CAMS={overview:{p:[5.2,3.2,5.2],t:[0.0,0.7,0]},roller:{p:[SEIZED_X+0.9,1.45,1.25],t:[SEIZED_X,0.95,0]},under:{p:[BROKEN_X+1.3,0.15,1.6],t:[BROKEN_X,0.38,0]},drive:{p:[X1+1.05,1.05,-1.75],t:[X1-0.05,0.72,-0.62]},card:{p:[X1+1.6,1.6,2.6],t:[X1-1.4,0.75,-0.2]}};
+const CAMS={lagv:{p:[X1+0.95,1.45,1.6],t:[X1,0.72,0]},overview:{p:[5.2,3.2,5.2],t:[0.0,0.7,0]},roller:{p:[SEIZED_X+0.9,1.45,1.25],t:[SEIZED_X,0.95,0]},under:{p:[BROKEN_X+1.3,0.15,1.6],t:[BROKEN_X,0.38,0]},drive:{p:[X1+1.05,1.05,-1.75],t:[X1-0.05,0.72,-0.62]},card:{p:[X1+1.6,1.6,2.6],t:[X1-1.4,0.75,-0.2]}};
 camera.position.set(...CAMS.overview.p);controls.target.set(...CAMS.overview.t);
 let tween=null;
-function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:new THREE.Vector3(...c.p),t1:new THREE.Vector3(...c.t)};
+function fitP(c){const t=new THREE.Vector3(...c.t),p=new THREE.Vector3(...c.p);if(camera.aspect<1)p.sub(t).multiplyScalar(1+(1-camera.aspect)*0.9).add(t);return p;}
+function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:fitP(c),t1:new THREE.Vector3(...c.t)};
   document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cam===n));}
 
 /* ---------- UI ---------- */
@@ -868,7 +869,8 @@ function info(){
   else{t='Мотор-барабан';r='Каталог · раздел 04';p='Внешний двигатель, редуктор и муфта убраны: электродвигатель и редуктор размещены внутри вращающейся обечайки барабана. Остаётся только кабельный вывод на оси.';l=['Решение для конвейеров с ограниченным местом под внешний привод','Диаметр, мощность и скорость согласуют по расчёту конвейера','Тормоз, стопор обратного хода и датчик скорости — по комплектации'];}
   $('iT').textContent=t;$('iR').textContent=r;$('iP').textContent=p;$('iL').innerHTML='';l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});
 }
-function setMode(m){mode=m;target.rollers=m>=2?1:0;target.lag=m>=3?1:0;target.motor=m>=4?1:0;document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));info();}
+function setMode(m){mode=m;target.rollers=m>=2?1:0;target.lag=m>=3?1:0;target.motor=m>=4?1:0;const STEPCAM={1:'overview',2:'roller',3:'lagv',4:'drive'};{const _sm=setMode;setMode=function(m){const prev=mode;_sm(m);if(m!==prev&&STEPCAM[m])goCam(STEPCAM[m]);};}
+document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));info();}
 function chooseRet(id){retType=id;document.querySelectorAll('[data-ret]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ret===id));if(mode<2)setMode(2);}
 function chooseLag(id){lagType=id;document.querySelectorAll('[data-lag]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lag===id));if(mode<3)setMode(3);}
 document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));

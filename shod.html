@@ -834,7 +834,8 @@ function updateLabels(){const w=view.clientWidth,h=view.clientHeight;
 /* ---------- camera ---------- */
 const CAMS={overview:{p:[2.5,4.2,7.6],t:[0.2,0.9,0]},along:{p:[8.6,2.3,0],t:[-2,1.0,0]},aligner:{p:[0.5,1.75,1.75],t:[-0.6,0.95,0]},return:{p:[-1.0,0.22,2.2],t:[-2.4,0.5,0]}};
 let tween=null;
-function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:new THREE.Vector3(...c.p),t1:new THREE.Vector3(...c.t)};
+function fitP(c){const t=new THREE.Vector3(...c.t),p=new THREE.Vector3(...c.p);if(camera.aspect<1)p.sub(t).multiplyScalar(1+(1-camera.aspect)*0.9).add(t);return p;}
+function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:fitP(c),t1:new THREE.Vector3(...c.t)};
   document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cam===n));}
 
 /* ---------- UI ---------- */
@@ -852,7 +853,8 @@ function info(){
   $('iT').textContent=t;$('iR').textContent=r;$('iP').textContent=p;$('iL').innerHTML='';l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});
 }
 function setMode(m){mode=m;target.cause=m>=2?1:0;target.al=m>=3?1:0;target.v=m>=4?1:0;
-  document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));info();}
+  const STEPCAM={1:'overview',2:'along',3:'aligner',4:'return'};{const _sm=setMode;setMode=function(m){const prev=mode;_sm(m);if(m!==prev&&STEPCAM[m])goCam(STEPCAM[m]);};}
+document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));info();}
 function setCause(c){cause=c;document.querySelectorAll('[data-cause]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cause===c));
   $('sevName').textContent=CAUSE[c].n;$('causeNote').textContent=CAUSE[c].note;$('oSev').textContent=CAUSE[c].f(sev);if(mode===1)setMode(2);}
 function setCarry(id){carryType=id;document.querySelectorAll('[data-carry]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.carry===id));buildSolutions();if(mode<3)setMode(3);else info();}
