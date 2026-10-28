@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Дробильно-сортировочная линия в 3D — питатели, дробилки, грохоты, сита | Legacy Kazakhstan</title>
+<meta name="description" content="Интерактивная 3D-модель линии: питатель, щёковая дробилка, конвейер, грохот и фракции. Колосниковый питатель, сменные щёки, полиуретановые сита. Каталог: питатели, щёковые, конусные, роторные дробилки, грохоты, сита, запчасти.">
+<link rel="canonical" href="https://legacyrk.kz/drobilka.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Legacy Kazakhstan">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Дробильно-сортировочная линия в 3D — питатели, дробилки, грохоты, сита | Legacy Kazakhstan">
+<meta property="og:description" content="Интерактивная 3D-модель линии: питатель, щёковая дробилка, конвейер, грохот и фракции. Колосниковый питатель, сменные щёки, полиуретановые сита. Каталог: питатели, щёковые, конусные, роторные дробилки, грохоты, сита, запчасти.">
+<meta property="og:url" content="https://legacyrk.kz/drobilka.html">
+<meta property="og:image" content="https://legacyrk.kz/img/og-drobilka.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1419">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+[hidden]{display:none!important}
+body{margin:0}
+
+/* Layout: 3D bench, operator console, product catalogue with its own 3D viewer, reference sheet. Single dark lab look by design. */
+:root{
+  color-scheme:dark;
+  --bg:#0f1419;--panel:#151c23;--panel-2:#1b242d;--line:#28333e;
+  --fg:#e6e9ec;--muted:#8f9ba7;
+  --pu:#f2a33a;--pu-ink:#1a1206;
+  --bad:#e4573f;--warn:#e8b84a;--ok:#7fbf8e;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.eyebrow b{color:var(--pu);font-weight:500}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.6vw,52px);line-height:1.02;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 span{color:var(--pu)}
+.lede{max-width:52ch;color:var(--muted);margin:0}
+
+.view,.pcanvas{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#0f1419;touch-action:none}
+.view{height:clamp(360px,66vh,740px)}
+.view canvas,.pcanvas canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;top:12px;left:12px;display:grid;gap:8px;background:rgba(15,20,25,.8);border:1px solid var(--line);border-radius:5px;padding:10px 12px;min-width:210px;backdrop-filter:blur(4px);pointer-events:none}
+.hud .big{display:flex;align-items:baseline;gap:8px}
+.hud .big b{font-family:var(--mono);font-weight:500;font-size:22px;font-variant-numeric:tabular-nums}
+.hud small,.hud .cap{font-size:11px;color:var(--muted);letter-spacing:.03em}
+.meter{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.bar{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--bad);transition:width .25s linear}
+.lamp{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.lamp::before{content:"";width:9px;height:9px;border-radius:50%;background:#2c3640}
+.lamp.on{color:var(--fg)}.lamp.on::before{background:var(--bad);box-shadow:0 0 8px var(--bad)}
+.state{position:absolute;right:12px;top:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:3px;color:#0f1419;background:var(--ok)}
+.state[data-s="1"]{background:var(--warn)}.state[data-s="2"],.state[data-s="3"]{background:var(--bad);color:#fff}
+.hint{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:var(--muted);pointer-events:none;background:rgba(15,20,25,.6);padding:3px 8px;border-radius:4px}
+.loader{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-family:var(--mono);font-size:13px;background:var(--bg)}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;transform:translate(-50%,calc(-100% - 10px));white-space:nowrap;font-size:11.5px;padding:3px 8px;border-radius:3px;background:rgba(21,28,35,.92);border:1px solid var(--line)}
+.lbl::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:10px;background:var(--muted)}
+.lbl.pu{border-color:var(--pu)}.lbl.bad{border-color:var(--bad)}
+
+.console{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.15fr) minmax(0,.9fr);gap:12px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.box h3{margin:0;font-size:11.5px;font-family:var(--mono);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sub{font-size:12px;color:var(--muted);margin-bottom:-6px}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.mode{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:3px;padding:9px 10px;border:1px solid var(--line);border-radius:5px;background:var(--panel-2);min-width:0}
+.mode .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.mode .t{font-weight:600;font-size:13px;line-height:1.2}
+.mode:hover{border-color:#3d4a57}
+.mode[aria-pressed="true"]{border-color:var(--pu);background:#231d14}
+.mode[aria-pressed="true"] .n{color:var(--pu)}
+.ctl{display:grid;gap:4px}
+.ctl label{display:flex;justify-content:space-between;font-size:13px;gap:8px}
+.ctl output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--pu)}
+input[type=range]{width:100%;accent-color:var(--pu)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{all:unset;cursor:pointer;font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:4px;background:var(--panel-2)}
+.chip:hover{border-color:#3d4a57}
+.chip[aria-pressed="true"]{border-color:var(--pu);color:var(--pu)}
+kbd{font-family:var(--mono);font-size:11px;padding:1px 5px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.keys{font-size:12px;color:var(--muted);line-height:1.9}
+.note{font-size:12px;color:var(--muted);margin:0}
+
+.info{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px 28px}
+.info h2{font-family:var(--display);font-weight:500;font-size:20px;margin:0;text-wrap:balance}
+.info .ref{font-family:var(--mono);font-size:12px;color:var(--pu);margin-top:6px}
+.info p{margin:0;max-width:68ch}
+.info ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-top:22px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,30px);margin:0}
+.sec-head span{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+/* catalogue */
+.cat{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:12px}
+.plist{display:flex;flex-direction:column;gap:6px;min-width:0}
+.plist .grp{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:8px 0 2px}
+.plist .grp:first-child{margin-top:0}
+.pbtn{all:unset;cursor:pointer;display:grid;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:5px;background:var(--panel)}
+.pbtn b{font-weight:600;font-size:13.5px;line-height:1.25}
+.pbtn span{font-size:12px;color:var(--muted)}
+.pbtn:hover{border-color:#3d4a57}
+.pbtn[aria-pressed="true"]{border-color:var(--pu);background:#231d14}
+.pbtn:focus-visible{outline:2px solid var(--pu)}
+.pmain{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px;min-width:0}
+.pcanvas{aspect-ratio:4/3.3;max-width:100%;min-height:300px}
+.ptools{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
+.ptools .chip{background:rgba(27,36,45,.92);font-size:12px;padding:5px 9px}
+.pinfo{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pinfo h2{font-family:var(--display);font-weight:500;font-size:19px;line-height:1.25;margin:0;text-wrap:balance}
+.pinfo .ref{font-family:var(--mono);font-size:12px;color:var(--pu)}
+.pinfo h4{margin:6px 0 0;font-size:11.5px;font-family:var(--mono);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pinfo p{margin:0}
+.pinfo ol{margin:0;padding-left:20px;display:grid;gap:3px}
+.pinfo .act{all:unset;cursor:pointer;align-self:flex-start;margin-top:6px;font-weight:600;font-size:13.5px;padding:9px 14px;border-radius:4px;background:var(--pu);color:var(--pu-ink)}
+.pinfo .act:focus-visible{outline:2px solid var(--fg)}
+.disc{font-size:12px;color:var(--muted);margin:0}
+
+.sheet{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+.sheet article{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sheet h2{font-family:var(--display);font-weight:500;font-size:18px;margin:0;line-height:1.25;text-wrap:balance}
+.sheet p{margin:0;max-width:66ch}
+.sheet .wide{grid-column:1/-1}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.steps div{display:flex;flex-direction:column;gap:6px;min-width:0;border-top:3px solid var(--line);padding-top:10px}
+.steps div:nth-child(1){border-color:var(--ok)}.steps div:nth-child(2){border-color:var(--warn)}.steps div:nth-child(3),.steps div:nth-child(4){border-color:var(--bad)}
+.steps b{font-weight:600}
+.muted{color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12.5px;padding:4px 9px;border-radius:3px;background:var(--panel-2);border:1px solid var(--line)}
+
+.contact{background:var(--pu);color:var(--pu-ink);border-radius:6px;padding:22px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px 32px;margin-top:10px}
+.contact h2{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.6vw,28px);margin:0;text-wrap:balance}
+.contact p{margin:6px 0 0;max-width:60ch}
+.lines{display:grid;gap:8px;align-content:start}
+.line{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(26,18,6,.08);border:1px solid rgba(26,18,6,.25);border-radius:4px;padding:8px 10px}
+.line span{font-family:var(--mono);font-size:15px;user-select:all;overflow-wrap:anywhere;min-width:0}
+.line button{all:unset;cursor:pointer;font-size:12px;font-weight:600;padding:4px 8px;border-radius:3px;background:var(--pu-ink);color:var(--pu);flex:none}
+.addr{font-size:13px}
+.foot{font-size:12px;color:var(--muted);max-width:90ch}
+
+@media (max-width:1100px){.console{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.pmain{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:980px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .console,.info,.sheet,.contact,.cat{grid-template-columns:minmax(0,1fr)}
+  .view{height:clamp(340px,58vh,560px)}
+  .hud{min-width:0;padding:8px 10px;transform-origin:top left;transform:scale(.88)}
+  .hint{display:none}
+  .plist{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .plist .grp{display:none}
+  .pbtn{flex:0 0 200px}
+}
+@media (max-width:440px){.steps{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+
+.backlink{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:14px;font-weight:600;color:var(--fg);text-decoration:none;padding:8px 12px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}.backlink:hover{border-color:var(--pu);color:var(--pu)}
+.lamp b{font-family:var(--mono);font-weight:500;color:var(--fg)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.04em}
+html.embed .top,html.embed .backlink,html.embed .info~*{display:none!important}html.embed body{padding-block:12px}
+
+
+.bar.ok i{background:var(--ok)}
+.box h3+.chips{margin-top:-4px}
+</style>
+<script>try{if(location.hash==="#embed")document.documentElement.classList.add("embed")}catch(e){}</script>
+<style id="hud-min">
+.hud{padding-right:40px}
+.hud .hx{all:unset;box-sizing:border-box;pointer-events:auto;cursor:pointer;position:absolute;top:6px;right:6px;width:28px;height:28px;display:grid;place-items:center;border-radius:4px;border:1px solid var(--line);color:var(--muted);font:600 15px/1 var(--mono);background:rgba(27,36,45,.9)}
+.hud .hx:hover{color:var(--fg);border-color:var(--pu)}
+.hud .hx:focus-visible{outline:2px solid var(--pu)}
+.hud.min{min-width:0;gap:0;padding:6px 40px 6px 10px}
+.hud.min>*:not(.big):not(.hx){display:none!important}
+.hud.min .big small{display:none}
+.hud.min .big b{font-size:18px}
+.hud .big small.u{display:none}
+.hud.min .big small.u{display:inline;color:var(--muted)}
+@media (max-width:720px){.lbl{font-size:10.5px;padding:2px 6px}}
+</style>
+<script id="hud-min-js">
+document.addEventListener('DOMContentLoaded',function(){
+  var h=document.querySelector('.hud');if(!h)return;
+  var big=h.querySelector('.big');if(big){var u=document.createElement('small');u.className='u';u.textContent=big.dataset.unit||'';big.appendChild(u);}
+  var b=document.createElement('button');b.type='button';b.className='hx';h.appendChild(b);
+  function set(m){h.classList.toggle('min',m);b.textContent=m?'+':'–';b.setAttribute('aria-label',m?'Развернуть показатели':'Свернуть показатели');b.setAttribute('aria-expanded',String(!m));}
+  var saved=null;try{saved=localStorage.getItem('legacy-hud-min');}catch(e){}
+  set(saved===null?window.matchMedia('(max-width:720px)').matches:saved==='1');
+  b.addEventListener('click',function(){var m=!h.classList.contains('min');set(m);try{localStorage.setItem('legacy-hud-min',m?'1':'0');}catch(e){}});
+});
+</script>
+<script>try{if(window.top!==window)document.documentElement.classList.add("framed")}catch(e){}</script><style>.framed .backlink{display:none}</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="./" onclick="try{if(document.referrer&&new URL(document.referrer).origin===location.origin){history.back();return false}}catch(e){}">← На сайт Legacy</a>
+  <header class="top">
+    <div>
+      <p class="eyebrow"><b>Legacy Kazakhstan</b> · Дробление и сортировка · раздел 07</p>
+      <h1>Дробильно-сортировочная <span>линия</span></h1>
+    </div>
+    <p class="lede">Питатель подаёт рывками, стёртые щёки выпускают крупный кусок, забитое сито сбрасывает мелочь в крупную фракцию. Меняйте узлы по шагам и смотрите, как выравниваются поток и фракции.</p>
+  </header>
+
+  <section aria-label="3D-модель линии">
+    <div class="view" id="view" role="img" aria-label="Трёхмерная модель дробильно-сортировочной линии: питатель, щёковая дробилка, конвейер и грохот">
+      <div class="labels" id="labels"></div>
+      <div class="hud">
+        <div class="big" data-unit="%"><b id="hS">45</b><small>% продукта крупнее нормы после дробилки</small></div>
+        <div class="meter"><span>Равномерность питания</span><div class="bar ok"><i id="mV"></i></div></div>
+        <div class="meter"><span>Эффективность грохочения</span><div class="bar ok"><i id="mR"></i></div></div>
+        <span class="lamp" id="lB">Отсев в крупной фракции</span>
+        <div class="cap">значения считает модель по упрощённым правилам</div>
+      </div>
+      <div class="hint">Тяните — вращать · колесо — масштаб · правая кнопка — сдвиг</div>
+      <div class="loader" id="loader">Собираю линию…</div>
+    </div>
+  </section>
+
+  <section class="console" aria-label="Пульт">
+    <div class="box">
+      <h3>Линия по шагам</h3>
+      <div class="modes">
+        <button class="mode" data-mode="1" aria-pressed="true"><span class="n">1</span><span class="t">Изношенная линия</span></button>
+        <button class="mode" data-mode="2" aria-pressed="false"><span class="n">2</span><span class="t">Колосниковый питатель</span></button>
+        <button class="mode" data-mode="3" aria-pressed="false"><span class="n">3</span><span class="t">Новые щёки</span></button>
+        <button class="mode" data-mode="4" aria-pressed="false"><span class="n">4</span><span class="t">Полиуретановые сита</span></button>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Исходный материал</h3>
+      <div class="chips" role="group" aria-label="Материал">
+        <button class="chip" data-feed="dry" aria-pressed="true">Сухой</button>
+        <button class="chip" data-feed="wet" aria-pressed="false">Влажный, липкий</button>
+      </div>
+      <h3>Доля мелочи в питании</h3>
+      <div class="chips" role="group" aria-label="Доля мелочи">
+        <button class="chip" data-fines="low" aria-pressed="false">Мало</button>
+        <button class="chip" data-fines="mid" aria-pressed="true">Средне</button>
+        <button class="chip" data-fines="high" aria-pressed="false">Много</button>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Камера</h3>
+      <div class="chips" role="group" aria-label="Камера">
+        <button class="chip" data-cam="overview" aria-pressed="true">Обзор</button>
+        <button class="chip" data-cam="feeder" aria-pressed="false">Питатель</button>
+        <button class="chip" data-cam="jaw" aria-pressed="false">В дробилку</button>
+        <button class="chip" data-cam="screen" aria-pressed="false">Грохот</button>
+        <button class="chip" data-cam="piles" aria-pressed="false">Фракции</button>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Вид</h3>
+      <div class="chips">
+        <button class="chip" id="bLbl" aria-pressed="false">Подписи</button>
+        <button class="chip" id="bPause" aria-pressed="false">Пауза</button>
+      </div>
+      <div class="keys"><kbd>1</kbd>–<kbd>4</kbd> шаги · <kbd>L</kbd> подписи · <kbd>Пробел</kbd> пауза</div>
+    </div>
+  </section>
+
+  <section class="info" aria-live="polite">
+    <div><h2 id="iT"></h2><div class="ref" id="iR"></div></div>
+    <div><p id="iP"></p><ul id="iL"></ul></div>
+  </section>
+
+  <div class="sec-head" id="catalog"><h2>Питатели, дробилки, грохоты, сита</h2><span>каталог Legacy · раздел 07</span></div>
+  <section class="cat" aria-label="Каталог продуктов">
+    <nav class="plist" id="plist" aria-label="Продукты"></nav>
+    <div class="pmain">
+      <div class="pcanvas" id="pview" role="img" aria-label="3D-модель выбранного продукта">
+        <div class="labels" id="plabels"></div>
+        <div class="ptools">
+          <button class="chip" id="pCut" aria-pressed="true">Разрез</button>
+          <button class="chip" id="pLbl" aria-pressed="true">Подписи</button>
+          <button class="chip" id="pSpin" aria-pressed="true">Вращение</button>
+        </div>
+      </div>
+      <div class="pinfo" aria-live="polite">
+        <h2 id="pName"></h2>
+        <div class="ref" id="pRef"></div>
+        <h4>Конструкция</h4>
+        <ol id="pParts"></ol>
+        <h4>Как работает</h4>
+        <p id="pDesc"></p>
+        <h4>Для подбора</h4>
+        <div class="tags" id="pSel"></div>
+        <button class="act" id="pUse">Поставить на линию</button>
+        <p class="disc">3D-модель условная и построена по описанию каталога. Конструкция конкретной машины может отличаться.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="sec-head"><h2>Почему это важно</h2><span>по каталогу Legacy</span></div>
+  <div class="sheet">
+    <article>
+      <h2>Поток решает больше, чем кажется</h2>
+      <p>Питатель равномерно подаёт материал из бункера в дробильную линию. Колосниковый питатель заранее отделяет мелкий класс, и дробилка не тратит ресурс на то, что дробить не нужно.</p>
+    </article>
+    <article>
+      <h2>Стёртые щёки — крупный продукт</h2>
+      <p>По мере износа дробящих элементов разгрузочная щель растёт, и в продукт уходит кусок крупнее нормы. Щёки, брони, била и другие сменные детали подбирают под конкретную машину по модели, номеру детали или чертежу.</p>
+    </article>
+    <article>
+      <h2>Что прислать для подбора дробилки и питателя</h2>
+      <div class="tags"><span>Тип породы</span><span>Прочность и абразивность</span><span>Максимальный кусок</span><span>Производительность</span><span>Гранулометрия продукта</span><span>Влажность</span><span>Объём и геометрия бункера</span></div>
+    </article>
+    <article>
+      <h2>Что прислать для подбора грохота и сит</h2>
+      <div class="tags"><span>Гранулометрия питания</span><span>Требуемые фракции</span><span>Число дек</span><span>Влажность</span><span>Марка грохота</span><span>Чертёж панели</span><span>Размер и форма ячейки</span></div>
+    </article>
+    <article class="wide">
+      <h2>Насколько точна модель</h2>
+      <p>Модель показывает принцип. Долю крупного продукта, равномерность питания и эффективность грохочения она считает по упрощённым правилам, а не по замерам. Внутреннее устройство машин в каталоге показано схематично; конструкция конкретной машины может отличаться.</p>
+    </article>
+  </div>
+
+  <section class="contact" aria-label="Запрос">
+    <div>
+      <h2>Подобрать дробилку, грохот или запчасти?</h2>
+      <p>Для оборудования пришлите тип породы, крупность питания, производительность и нужные фракции. Для запчастей — модель машины, серийный номер, номер детали или чертёж и фото с размерами.</p>
+      <p class="addr">ТОО «Легаси Казахстан» · Астана, ул. Сыганак, 47, БЦ Zhambyl Tower, каб. 608</p>
+    </div>
+    <div class="lines">
+      <div class="line"><span id="cMail">manager@legacyrk.kz</span><button data-copy="cMail">Копировать</button></div>
+      <div class="line"><span id="cTel">+7 777 687-27-85</span><button data-copy="cTel">Копировать</button></div>
+    </div>
+  </section>
+  <p class="foot">Условная модель. Состав линии и компоновка определяются проектом. Точная комплектация согласуется в коммерческом предложении.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="realism.js"></script>
+<script>
+
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const view=$('view');
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const reduceMotion=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!window.THREE||!THREE.OrbitControls){$('loader').textContent='Не удалось загрузить 3D-движок. Обновите страницу.';return;}
+
+/* =====================================================================
+   SHARED KIT: textures, materials, profiles, rollers, product builders
+   ===================================================================== */
+function canvasTex(w,h,draw,srgb){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;if(srgb)t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t;}
+function speckle(g,w,h,n,a,b){for(let i=0;i<n;i++){g.fillStyle=Math.random()<.5?a:b;const s=Math.random()*2+.5;g.fillRect(Math.random()*w,Math.random()*h,s,s);}}
+const TX={
+  rough:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#8c8c8c';g.fillRect(0,0,w,h);speckle(g,w,h,9000,'#a6a6a6','#6e6e6e');for(let i=0;i<40;i++){g.fillStyle='rgba(255,255,255,.08)';g.beginPath();g.arc(Math.random()*w,Math.random()*h,Math.random()*18+4,0,7);g.fill();}}),
+  concrete:canvasTex(512,512,(g,w,h)=>{g.fillStyle='#55595c';g.fillRect(0,0,w,h);speckle(g,w,h,30000,'rgba(255,255,255,.06)','rgba(0,0,0,.12)');
+    for(let i=0;i<26;i++){const x=Math.random()*w,y=Math.random()*h,r=Math.random()*70+20,gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(22,19,15,.25)');gr.addColorStop(1,'rgba(22,19,15,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,2*r,2*r);}
+    g.fillStyle='rgba(0,0,0,.4)';g.fillRect(0,0,w,2);g.fillRect(0,0,2,h);},true),
+  belt:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#17191b';g.fillRect(0,0,w,h);speckle(g,w,h,5000,'rgba(255,255,255,.045)','rgba(0,0,0,.3)');
+    for(let i=0;i<70;i++){g.fillStyle='rgba(130,112,88,.09)';g.fillRect(Math.random()*w,Math.random()*h,Math.random()*30+5,1);}
+    g.fillStyle='#e8962f';g.fillRect(w/2-2,0,4,h);g.fillStyle='rgba(255,255,255,.12)';g.fillRect(0,0,3,h);g.fillRect(w-3,0,3,h);},true),
+  lag:canvasTex(128,128,(g,w,h)=>{g.fillStyle='#1c1e20';g.fillRect(0,0,w,h);speckle(g,w,h,800,'rgba(255,255,255,.04)','rgba(0,0,0,.3)');g.strokeStyle='#08090a';g.lineWidth=6;
+    for(let i=-2;i<4;i++){g.beginPath();g.moveTo(i*64,0);g.lineTo(i*64+128,h);g.stroke();g.beginPath();g.moveTo(i*64+128,0);g.lineTo(i*64,h);g.stroke();}},true)
+};
+TX.concrete.repeat.set(9,6);TX.lag.repeat.set(6,3);
+const retBeltTex=TX.belt.clone();retBeltTex.needsUpdate=true;
+const MAT={
+  paint:new THREE.MeshStandardMaterial({color:0x35526d,roughness:.55,metalness:.25,roughnessMap:TX.rough}),
+  amber:new THREE.MeshStandardMaterial({color:0xd98a2b,roughness:.48,metalness:.2,roughnessMap:TX.rough}),
+  red:new THREE.MeshStandardMaterial({color:0xb0392a,roughness:.55,metalness:.2,roughnessMap:TX.rough}),
+  shell:new THREE.MeshStandardMaterial({color:0x2b2f34,roughness:.4,metalness:.55,roughnessMap:TX.rough}),
+  cap:new THREE.MeshStandardMaterial({color:0x50565c,roughness:.32,metalness:.85}),
+  shaft:new THREE.MeshStandardMaterial({color:0xc9cfd4,roughness:.22,metalness:1}),
+  galv:new THREE.MeshStandardMaterial({color:0x9aa3aa,roughness:.38,metalness:.9,roughnessMap:TX.rough}),
+  rubber:new THREE.MeshStandardMaterial({color:0x161819,roughness:.88}),
+  pu:new THREE.MeshStandardMaterial({color:0xe9a23b,roughness:.42}),
+  hose:new THREE.MeshStandardMaterial({color:0x111214,roughness:.55}),
+  chrome:new THREE.MeshStandardMaterial({color:0xeef1f4,roughness:.06,metalness:1}),
+  hyd:new THREE.MeshStandardMaterial({color:0x26323d,roughness:.35,metalness:.6}),
+  plate:new THREE.MeshStandardMaterial({color:0x6a7178,roughness:.5,metalness:.6,roughnessMap:TX.rough,side:THREE.DoubleSide}),
+  build:new THREE.MeshStandardMaterial({color:0x6b5a44,roughness:1,flatShading:true}),
+  concrete:new THREE.MeshStandardMaterial({map:TX.concrete,roughness:.95}),
+  belt:new THREE.MeshStandardMaterial({map:TX.belt,roughness:.82,side:THREE.DoubleSide}),
+  retBelt:new THREE.MeshStandardMaterial({map:retBeltTex,roughness:.82,side:THREE.DoubleSide}),
+  beltSide:new THREE.MeshStandardMaterial({color:0x0f1011,roughness:.9,side:THREE.DoubleSide}),
+  lag:new THREE.MeshStandardMaterial({map:TX.lag,roughness:.85}),
+  ghostBelt:new THREE.MeshStandardMaterial({map:TX.belt,roughness:.8,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false}),
+  ore:new THREE.MeshStandardMaterial({color:0xffffff,roughness:.95,flatShading:true})
+};
+const UP=new THREE.Vector3(0,1,0);
+function aim(o,dir){o.quaternion.setFromUnitVectors(UP,dir.clone().normalize());return o;}
+function mesh(geo,mat,parent,x,y,z){const m=new THREE.Mesh(geo,mat);m.castShadow=true;m.receiveShadow=true;if(x!==undefined)m.position.set(x,y,z);if(parent)parent.add(m);return m;}
+function boxM(w,h,d,mat,parent,x,y,z){return mesh(new THREE.BoxGeometry(w,h,d),mat,parent,x,y,z);}
+const HEX=new THREE.CylinderGeometry(0.0115,0.0115,0.011,6);
+function bolt(parent,x,y,z,axis){const m=mesh(HEX,MAT.shaft,parent,x,y,z);m.castShadow=false;if(axis==='z')m.rotation.x=Math.PI/2;if(axis==='x')m.rotation.z=Math.PI/2;return m;}
+/* C-channel, extruded along local z, web vertical at -x, flanges toward +x */
+function channelGeo(L,h,b,t){const s=new THREE.Shape();s.moveTo(0,-h/2);s.lineTo(b,-h/2);s.lineTo(b,-h/2+t);s.lineTo(t,-h/2+t);s.lineTo(t,h/2-t);s.lineTo(b,h/2-t);s.lineTo(b,h/2);s.lineTo(0,h/2);s.lineTo(0,-h/2);
+  const g=new THREE.ExtrudeGeometry(s,{depth:L,bevelEnabled:false});g.translate(-b/2,0,-L/2);return g;}
+class Helix extends THREE.Curve{constructor(R,y0,y1,turns,hand){super();this.R=R;this.y0=y0;this.y1=y1;this.turns=turns;this.hand=hand;}
+  getPoint(u,tg){tg=tg||new THREE.Vector3();const a=this.hand*u*this.turns*Math.PI*2;return tg.set(this.R*Math.cos(a),this.y0+(this.y1-this.y0)*u,this.R*Math.sin(a));}}
+
+let spinList=[];   /* rollers that turn with the belt, filled by roller() */
+function roller(len,r,kind,r2){
+  const g=new THREE.Group(),sp=new THREE.Group();g.add(sp);
+  const L=len-0.03;kind=kind||'plain';
+  if(kind==='cone')mesh(new THREE.CylinderGeometry(r2,r,L,40),MAT.shell,sp);
+  else if(kind==='rubber'){mesh(new THREE.CylinderGeometry(r*0.8,r*0.8,L,28),MAT.shell,sp);const n=Math.max(3,Math.floor(L/0.042));
+    for(let k=0;k<n;k++){const y=-L/2+(k+0.5)*L/n;mesh(new THREE.CylinderGeometry(r,r,L/n*0.62,32),MAT.rubber,sp,0,y,0);}}
+  else if(kind==='spiral'){mesh(new THREE.CylinderGeometry(0.036,0.036,L,20),MAT.galv,sp);
+    for(const[y0,y1,hd]of[[-L/2,-0.01,1],[0.01,L/2,-1]]){const c=new Helix(r-0.014,y0,y1,(y1-y0)/0.1,hd);mesh(new THREE.TubeGeometry(c,Math.round((y1-y0)*260),0.014,8,false),MAT.pu,sp);
+      for(let k=0;k<=Math.floor((y1-y0)/0.12);k++){const s=mesh(new THREE.BoxGeometry(0.008,0.01,r*2-0.03),MAT.galv,sp,0,y0+k*0.12,0);s.rotation.y=k;}}}
+  else mesh(new THREE.CylinderGeometry(r,r,L,36),MAT.shell,sp);
+  const rt=kind==='cone'?r2:r;
+  if(kind!=='spiral'){mesh(new THREE.CylinderGeometry(rt*0.95,rt*0.95,0.012,36),MAT.cap,sp,0,L/2+0.006,0);mesh(new THREE.CylinderGeometry(r*0.95,r*0.95,0.012,36),MAT.cap,sp,0,-L/2-0.006,0);}
+  for(const s of[-1,1])mesh(new THREE.CylinderGeometry(0.026,0.026,0.007,18),MAT.galv,sp,0,s*(L/2+0.015),0);
+  for(const s of[-1,1])mesh(new THREE.CylinderGeometry(0.0125,0.0125,0.034,10),MAT.shaft,g,0,s*(len/2+0.002),0);
+  spinList.push({sp,r:kind==='cone'?(r+r2)/2:r});
+  return g;
+}
+
+/* ---- carrying troughing set; local frame: underside of belt centre at y=0 ---- */
+const TROUGH=35*Math.PI/180,R0=0.0665,WL=0.52,CL=0.40;
+function troughSet(par,o){
+  const a=TROUGH,C=Math.cos(a),S=Math.sin(a),paint=o.paint||MAT.paint,kind=o.kind||'plain',yb=o.yb!==undefined?o.yb:-0.2;
+  const c=roller(CL,R0,kind==='cone'?'plain':kind);aim(c,new THREE.Vector3(0,0,1));c.position.set(0,-R0,0);par.add(c);
+  for(const sg of[-1,1]){
+    let r=R0,r2=R0;if(kind==='cone'){r=0.054;r2=0.09;}
+    const rm=(r+r2)/2,dir=new THREE.Vector3(0,S,sg*C);
+    const w=roller(WL,r,kind,r2);aim(w,dir);w.position.set(0,0.26*S-rm*C,sg*(0.2+0.26*C+rm*S));par.add(w);
+    const oe=w.position.clone().addScaledVector(dir,WL/2+0.016);
+    const hgt=oe.y-yb+0.04;
+    boxM(0.08,hgt,0.01,paint,par,0,yb+hgt/2-0.005,oe.z+sg*0.006);
+    boxM(0.03,0.03,0.012,MAT.cap,par,0,oe.y,oe.z+sg*0.006);
+    const mh=(-R0+0.022)-yb;
+    boxM(0.07,mh,0.008,paint,par,0,yb+mh/2,sg*0.218);
+    boxM(0.024,0.024,0.01,MAT.cap,par,0,-R0+0.005,sg*0.218);
+    boxM(0.11,0.008,0.1,paint,par,0,yb-0.04,sg*0.72);
+    bolt(par,0.035,yb-0.032,sg*0.72);bolt(par,-0.035,yb-0.032,sg*0.72);
+  }
+  mesh(channelGeo(1.5,0.08,0.045,0.006),paint,par,0,yb,0);
+  return par;
+}
+/* fixed pivot base below a turning frame (carrying) */
+function pivotBase(root,big){
+  boxM(0.1,0.05,1.56,MAT.paint,root,0,-0.305,0);
+  for(const sg of[-1,1]){boxM(0.1,0.07,0.01,MAT.paint,root,0,-0.27,sg*0.77);bolt(root,0.03,-0.255,sg*0.776,'z');bolt(root,-0.03,-0.255,sg*0.776,'z');}
+  mesh(new THREE.CylinderGeometry(big?0.09:0.075,big?0.09:0.075,0.035,32),MAT.galv,root,0,-0.262,0);
+  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;bolt(root,Math.cos(a)*0.058,-0.24,Math.sin(a)*0.058);}
+}
+/* product builders: each returns {root,piv,parts,update} */
+function buildStandard(paint,kind){const root=new THREE.Group();troughSet(root,{paint,kind});return{root,piv:null,parts:[]};}
+function buildCone(){
+  const root=new THREE.Group();pivotBase(root);
+  const piv=new THREE.Group();root.add(piv);troughSet(piv,{paint:MAT.amber,kind:'cone',yb:-0.2});
+  for(const sg of[-1,1]){const p=boxM(0.16,0.012,0.09,MAT.galv,root,0,-0.334,sg*0.66);
+    boxM(0.1,0.013,0.02,MAT.rubber,root,0,-0.333,sg*0.66);bolt(root,0.05,-0.326,sg*0.66);bolt(root,-0.05,-0.326,sg*0.66);}
+  mesh(new THREE.CylinderGeometry(0.012,0.012,0.12,10),MAT.shaft,root,0.09,-0.27,0);
+  for(const y of[-0.31,-0.23])bolt(root,0.09,y,0);
+  return{root,piv,parts:[
+    {t:'Конический боковой ролик',p:[0,0.27,0.5]},
+    {t:'Центральный ролик',p:[0,0.0,0.0]},
+    {t:'Поворотный узел',p:[0,-0.24,0.05]},
+    {t:'Регулирующий элемент',p:[0,-0.33,0.66]},
+    {t:'Регулировка по высоте',p:[0.09,-0.21,0]}],
+    list:['Конические боковые ролики: узкий торец у центра, широкий снаружи','Центральный ролик и усиленные подшипниковые узлы с защитой от пыли и влаги','Поворотная рама на опорном узле','Три регулирующих элемента: по ширине става с двух сторон и по высоте']};
+}
+function buildMech(){
+  const root=new THREE.Group();pivotBase(root);
+  const piv=new THREE.Group();root.add(piv);troughSet(piv,{paint:MAT.amber,kind:'rubber',yb:-0.2});
+  return{root,piv,parts:[
+    {t:'Профилированный ролик',p:[0,0.27,0.5]},
+    {t:'Поворотная опора',p:[0,-0.24,0.05]},
+    {t:'Рама става',p:[0,-0.31,-0.6]}],
+    list:['Профилированные ролики с покрытием','Поворотная рама с тремя роликами','Опорный узел поворота на неподвижной балке','Покрытие роликов, угол желоба и размер рамы — по условиям работы']};
+}
+function buildHydro(){
+  const root=new THREE.Group();pivotBase(root);
+  const piv=new THREE.Group();root.add(piv);troughSet(piv,{paint:MAT.amber,yb:-0.2});
+  const C=Math.cos(TROUGH),S=Math.sin(TROUGH);
+  for(const sg of[-1,1]){
+    const arm=boxM(0.42,0.03,0.03,MAT.amber,piv,-0.19,-0.17,sg*0.71);
+    boxM(0.03,0.43,0.03,MAT.amber,piv,-0.38,0.03,sg*0.73);
+    const sr=roller(0.16,0.042,'plain');aim(sr,new THREE.Vector3(0,Math.cos(0.26),sg*Math.sin(0.26)));sr.position.set(-0.38,0.29,sg*0.705);piv.add(sr);
+    boxM(0.05,0.02,0.05,MAT.amber,piv,-0.38,0.2,sg*0.715);
+  }
+  /* hydraulic actuator between the fixed base and the turning frame */
+  const anchor=new THREE.Vector3(0.46,-0.25,0.56),body=mesh(new THREE.CylinderGeometry(0.032,0.032,0.2,24),MAT.hyd,root),rod=mesh(new THREE.CylinderGeometry(0.014,0.014,1,14),MAT.chrome,root);
+  boxM(0.06,0.06,0.06,MAT.paint,root,0.48,-0.27,0.56);
+  const valve=boxM(0.09,0.06,0.07,MAT.hyd,root,0.2,-0.27,-0.45);
+  const hoseA=new THREE.CatmullRomCurve3([new THREE.Vector3(0.2,-0.24,-0.45),new THREE.Vector3(0.3,-0.12,-0.1),new THREE.Vector3(0.4,-0.18,0.4),new THREE.Vector3(0.42,-0.22,0.56)]);
+  mesh(new THREE.TubeGeometry(hoseA,40,0.009,8,false),MAT.hose,root);
+  const hoseB=new THREE.CatmullRomCurve3([new THREE.Vector3(0.16,-0.24,-0.45),new THREE.Vector3(-0.1,-0.22,-0.6),new THREE.Vector3(-0.3,-0.2,-0.7),new THREE.Vector3(-0.38,-0.17,-0.71)]);
+  mesh(new THREE.TubeGeometry(hoseB,40,0.009,8,false),MAT.hose,root);
+  const tip=new THREE.Vector3(),dir=new THREE.Vector3();
+  function update(yaw){
+    const lx=0.1,lz=0.56;tip.set(lx*Math.cos(yaw)+lz*Math.sin(yaw),-0.25,-lx*Math.sin(yaw)+lz*Math.cos(yaw));
+    dir.subVectors(tip,anchor);const L=dir.length();dir.normalize();
+    aim(body,dir);body.position.copy(anchor).addScaledVector(dir,0.1);
+    const rl=Math.max(0.02,L-0.2);aim(rod,dir);rod.scale.set(1,rl,1);rod.position.copy(anchor).addScaledVector(dir,0.2+rl/2);
+  }
+  update(0);
+  boxM(0.04,0.05,0.04,MAT.amber,piv,0.1,-0.24,0.56);
+  return{root,piv,update,parts:[
+    {t:'Следящий ролик',p:[-0.38,0.37,0.7]},
+    {t:'Гидроцилиндр коррекции',p:[0.3,-0.22,0.56]},
+    {t:'Гидравлический блок',p:[0.2,-0.24,-0.45]},
+    {t:'Поворотная рама',p:[0,-0.16,-0.3]}],
+    list:['Следящие ролики у обеих кромок ленты','Гидравлический механизм коррекции: блок, рукава, цилиндр','Поворотная рама с роликоопорой','Работает от движения ленты, без внешнего питания']};
+}
+/* ---- return idlers; local frame: underside contact of return belt at y=0, stringer bottom at y=+0.17 ---- */
+function hanger(par,z,yTop,yBot,mat,thick){const t=thick||0.01,h=yTop-yBot;boxM(0.07,h,t,mat,par,0,yTop-h/2,z);boxM(0.1,0.008,0.07,mat,par,0,yTop-0.004,z);bolt(par,0.03,yTop+0.006,z);bolt(par,-0.03,yTop+0.006,z);
+  boxM(0.026,0.026,t+0.002,MAT.cap,par,0,yBot+0.02,z);}
+function buildPlainReturn(){const root=new THREE.Group();const r=roller(1.4,R0);aim(r,new THREE.Vector3(0,0,1));r.position.set(0,-R0,0);root.add(r);
+  for(const sg of[-1,1])hanger(root,sg*0.725,0.17,-R0-0.02,MAT.paint);return{root,piv:null,parts:[]};}
+function returnPivotTop(root,big){
+  boxM(0.09,big?0.07:0.05,1.56,MAT.paint,root,0,0.145,0);
+  for(const sg of[-1,1]){boxM(0.1,0.008,0.08,MAT.paint,root,0,0.174,sg*0.75);bolt(root,0.03,0.182,sg*0.75);bolt(root,-0.03,0.182,sg*0.75);}
+  if(big)for(const sg of[-1,1])boxM(0.01,0.06,0.12,MAT.paint,root,0.04,0.09,sg*0.12);
+  mesh(new THREE.CylinderGeometry(big?0.085:0.06,big?0.085:0.06,0.03,28),MAT.galv,root,0,big?0.098:0.105,0);
+}
+function buildVReturn(){
+  const root=new THREE.Group();returnPivotTop(root);
+  const piv=new THREE.Group();root.add(piv);
+  boxM(0.07,0.04,1.44,MAT.amber,piv,0,0.07,0);
+  const b=10*Math.PI/180;
+  for(const sg of[-1,1]){const r=roller(0.68,R0);const dir=new THREE.Vector3(0,Math.sin(b),sg*Math.cos(b));aim(r,dir);r.position.set(0,-0.115,sg*0.36);piv.add(r);
+    const oe=r.position.clone().addScaledVector(dir,0.355);hanger(piv,oe.z+sg*0.006,0.05,oe.y-0.02,MAT.amber);}
+  hanger(piv,0,0.05,-0.115-0.36*Math.sin(b)-0.02,MAT.amber);
+  return{root,piv,parts:[
+    {t:'Ролик V-образной опоры',p:[0,-0.03,0.42]},
+    {t:'Поворотный узел',p:[0,0.12,0.05]},
+    {t:'Поворотная траверса',p:[0,0.09,-0.55]}],
+    list:['Два ролика под углом друг к другу (V-форма)','Поворотная траверса с подвесами','Поворотный узел под балкой става','Каждый ролик снимается отдельно; низкий монтаж']};
+}
+function buildHeavyReturn(){
+  const root=new THREE.Group();returnPivotTop(root,true);
+  const piv=new THREE.Group();root.add(piv);
+  boxM(0.1,0.06,1.46,MAT.amber,piv,0,0.055,0);
+  for(const z of[-0.5,0,0.5])boxM(0.01,0.05,0.07,MAT.amber,piv,0.05,0.02,z);
+  for(const sg of[-1,1]){const r=roller(0.69,0.08);aim(r,new THREE.Vector3(0,0,1));r.position.set(0,-0.08,sg*0.36);piv.add(r);hanger(piv,sg*0.725,0.025,-0.1,MAT.amber,0.016);
+    for(const y of[-0.02,-0.05])bolt(piv,0.02,y,sg*0.735,'z');}
+  hanger(piv,0,0.025,-0.1,MAT.amber,0.016);
+  return{root,piv,parts:[
+    {t:'Жёсткая коробчатая рама',p:[0,0.09,-0.55]},
+    {t:'Поворотный механизм',p:[0,0.11,0.05]},
+    {t:'Модульный кронштейн',p:[0,-0.04,0.73]},
+    {t:'Усиленный ролик',p:[0,0.0,0.3]}],
+    list:['Жёсткая рама с рёбрами жёсткости','Поворотный механизм увеличенного диаметра','Модульные болтовые кронштейны','Два усиленных ролика; реверс — по выбранной комплектации']};
+}
+function buildCenterReturn(){
+  const root=new THREE.Group();returnPivotTop(root);
+  const piv=new THREE.Group();root.add(piv);
+  boxM(0.07,0.04,1.48,MAT.amber,piv,0,0.07,0);
+  const r=roller(1.4,R0);aim(r,new THREE.Vector3(0,0,1));r.position.set(0,-R0,0);piv.add(r);
+  for(const sg of[-1,1])hanger(piv,sg*0.725,0.05,-R0-0.02,MAT.amber);
+  boxM(0.05,0.05,0.05,MAT.amber,piv,0,0.04,0);
+  return{root,piv,parts:[
+    {t:'Возвратный ролик',p:[0,0.0,-0.3]},
+    {t:'Поворотный узел',p:[0,0.12,0.05]},
+    {t:'Поворотная рамка',p:[0,0.07,0.6]}],
+    list:['Один ролик на всю ширину холостой ветви','Поворотная рамка с двумя подвесами','Поворотный узел по центру','Есть исполнения для реверса; крепление — по раме конвейера']};
+}
+function buildSpiral(){
+  const root=new THREE.Group();const r=roller(1.4,0.075,'spiral');aim(r,new THREE.Vector3(0,0,1));r.position.set(0,-0.075,0);root.add(r);
+  for(const sg of[-1,1])hanger(root,sg*0.725,0.17,-0.095,MAT.amber);
+  return{root,piv:null,parts:[
+    {t:'Полиуретановая спираль',p:[0,0.0,0.35]},
+    {t:'Встречная навивка',p:[0,0.0,0.0]},
+    {t:'Подвес',p:[0,0.12,-0.73]}],
+    list:['Полиуретановая спираль на стальном валу','Центрирующее исполнение: навивка от центра в разные стороны','Подвесы к ставу','Чистит рабочую поверхность и поддерживает ленту']};
+}
+const BUILD={cone:buildCone,mech:buildMech,hydro:buildHydro,vret:buildVReturn,heavy:buildHeavyReturn,cret:buildCenterReturn,spiral:buildSpiral};
+
+function makeEnv(r){
+  const pm=new THREE.PMREMGenerator(r);const s=new THREE.Scene();
+  const room=new THREE.Mesh(new THREE.BoxGeometry(30,14,30),new THREE.MeshBasicMaterial({color:0x272c33,side:THREE.BackSide}));room.position.y=6;s.add(room);
+  const L=(w,h,x,y,z,rx,ry,k,col)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(col||0xffffff).multiplyScalar(k),side:THREE.DoubleSide}));m.position.set(x,y,z);m.rotation.set(rx,ry,0);s.add(m);};
+  for(let i=-2;i<=2;i++)L(1.4,12,i*5,12.9,0,Math.PI/2,0,5);
+  L(10,4,-14.9,5,0,0,Math.PI/2,2.6,0xffdcb4);L(10,4,14.9,5,0,0,-Math.PI/2,1.4,0xb8ceff);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshBasicMaterial({color:0x15181c}));fl.rotation.x=-Math.PI/2;s.add(fl);
+  const rt=pm.fromScene(s,0.04);pm.dispose();return rt.texture;
+}
+function setupRenderer(el){
+  const r=new THREE.WebGLRenderer({antialias:true});
+  r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;
+  r.outputEncoding=THREE.sRGBEncoding;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.0;
+  el.insertBefore(r.domElement,el.firstChild);return r;
+}
+if(window.LegacyRealism)LegacyRealism.applyKit(THREE,{MAT,TX,retBeltTex});
+
+/* =====================================================================
+   SECTION 07 · crushing & screening line: feeder → jaw crusher → conveyor → screen → stockpiles
+   ===================================================================== */
+const MATR={
+  mn:new THREE.MeshStandardMaterial({color:0x6d7073,roughness:.38,metalness:.85}),
+  mnWorn:new THREE.MeshStandardMaterial({color:0x4a4038,roughness:.25,metalness:.6}),
+  yel:new THREE.MeshStandardMaterial({color:0xc98a12,roughness:.5,metalness:.25,envMapIntensity:.6}),
+  dark:new THREE.MeshStandardMaterial({color:0x22272c,roughness:.5,metalness:.5}),
+  spring:new THREE.MeshStandardMaterial({color:0x2f6fb0,roughness:.4,metalness:.6}),
+  belt:new THREE.MeshStandardMaterial({color:0x121315,roughness:.88,envMapIntensity:.35}),
+  rubber:new THREE.MeshStandardMaterial({color:0x111214,roughness:.9,envMapIntensity:.35}),
+  pu:new THREE.MeshStandardMaterial({color:0xe9a23b,roughness:.45}),
+  ghost:new THREE.MeshStandardMaterial({color:0x8fa3b5,roughness:.2,metalness:.1,transparent:true,opacity:.12,side:THREE.DoubleSide,depthWrite:false})
+};
+const CUT=new THREE.Plane(new THREE.Vector3(0,0,-1),0);
+function cutable(m){const c=m.clone();c.side=THREE.DoubleSide;c.clippingPlanes=[CUT];c.userData.cut=true;return c;}
+const STX={
+  wire:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#2a2d30';g.fillRect(0,0,w,h);g.strokeStyle='#9aa1a7';g.lineWidth=3;
+    for(let x=0;x<=w;x+=16){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<=h;y+=16){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}},true),
+  clog:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#2a2d30';g.fillRect(0,0,w,h);g.strokeStyle='#8a8f94';g.lineWidth=3;
+    for(let x=0;x<=w;x+=16){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<=h;y+=16){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}
+    for(let i=0;i<40;i++){const x=Math.random()*w,y=Math.random()*h,r=rnd(10,36),gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(92,76,58,.95)');gr.addColorStop(1,'rgba(92,76,58,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,2*r,2*r);}},true),
+  pu:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#1d1a16';g.fillRect(0,0,w,h);
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){const x=i*64+3,y=j*64+3;g.fillStyle='#e39a2f';g.fillRect(x,y,58,58);g.fillStyle='#2b241b';for(let k=0;k<5;k++)g.fillRect(x+8+k*10,y+8,5,42);}},true),
+  belt:canvasTex(512,128,(g,w,h)=>{g.fillStyle='#17191b';g.fillRect(0,0,w,h);speckle(g,w,h,4000,'rgba(255,255,255,.05)','rgba(0,0,0,.3)');g.fillStyle='rgba(120,100,80,.25)';g.fillRect(0,h*.3,w,h*.4);g.fillStyle='#e8962f';g.fillRect(0,h/2-1,w,2);},true),
+  ore:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#8a7d6c';g.fillRect(0,0,w,h);speckle(g,w,h,9000,'rgba(255,255,255,.08)','rgba(0,0,0,.18)');},true)
+};
+const deckMat={clog:new THREE.MeshStandardMaterial({map:STX.clog,roughness:.8,metalness:.3,side:THREE.DoubleSide}),pu:new THREE.MeshStandardMaterial({map:STX.pu,roughness:.6,side:THREE.DoubleSide})};
+for(const k of['clog','pu'])deckMat[k].map.repeat.set(4,1.4);
+STX.belt.repeat.set(3,1);
+
+/* ---------- catalogue builders ---------- */
+function spring(par,x,y,z,h,r){const c=new Helix(r||0.06,0,h,5,1);const m=mesh(new THREE.TubeGeometry(c,80,0.012,8,false),MATR.spring,par);m.position.set(x,y,z);return m;}
+function toothedPlate(w,h,t,n,worn,mat){const g=new THREE.Group();boxM(t,h,w,worn?MATR.mnWorn:(mat||MATR.mn),g,0,0,0);
+  if(!worn)for(let i=0;i<n;i++){const z=-w/2+w*(i+0.5)/n;const b=mesh(new THREE.CylinderGeometry(0.022,0.022,h*0.96,3),mat||MATR.mn,g,t/2+0.008,0,z);b.rotation.y=Math.PI/2;}
+  return g;}
+function buildJaw(cut){const g=new THREE.Group(),M=cut?cutable:(m=>m);
+  boxM(1.3,0.7,0.06,M(MATR.yel),g,0,0.75,-0.42);
+  if(!cut)boxM(1.3,0.7,0.06,MATR.yel,g,0,0.75,0.42);
+  boxM(0.14,0.75,0.9,M(MATR.yel),g,-0.6,0.72,0);
+  const fj=toothedPlate(0.78,0.66,0.05,8,false,M(MATR.mn));fj.position.set(-0.5,0.72,0);g.add(fj);
+  const mj=toothedPlate(0.78,0.7,0.05,8,false,M(MATR.mn));mj.rotation.y=Math.PI;mj.rotation.z=-0.32;mj.position.set(-0.12,0.74,0);g.add(mj);
+  boxM(0.16,0.75,0.8,M(MATR.dark),g,0.02,0.76,0).rotation.z=-0.32;
+  const sh=mesh(new THREE.CylinderGeometry(0.05,0.05,1.3,16),MAT.shaft,g,0.12,1.12,0);sh.rotation.x=Math.PI/2;
+  for(const s of[-1,1]){const f=mesh(new THREE.CylinderGeometry(0.36,0.36,0.08,32),MATR.dark,g,0.12,1.12,s*0.6);f.rotation.x=Math.PI/2;}
+  boxM(0.06,0.1,0.8,MAT.galv,g,0.25,0.42,0).rotation.z=0.6;
+  boxM(1.5,0.12,1.0,MAT.paint,g,0,0.06,0);
+  return g;}
+function buildConeCr(gyr){const g=new THREE.Group(),h=gyr?1.5:0.9,R=gyr?0.55:0.75;
+  const bowl=new THREE.CylinderGeometry(R,R*0.85,h,40,1,true);mesh(bowl,cutable(MATR.yel),g,0,0.25+h/2,0);
+  const conc=new THREE.CylinderGeometry(R*0.9,R*0.5,h*0.8,40,1,true);mesh(conc,cutable(MATR.mn),g,0,0.3+h*0.45,0);
+  const man=new THREE.CylinderGeometry(gyr?0.12:0.18,R*0.68,h*0.75,40);mesh(man,cutable(MATR.mn),g,0.03,0.25+h*0.42,0);
+  mesh(new THREE.CylinderGeometry(0.06,0.06,h+0.3,16),cutable(MAT.shaft),g,0.03,0.25+h/2,0);
+  mesh(new THREE.CylinderGeometry(R*1.05,R*1.1,0.3,40),cutable(MATR.dark),g,0,0.15,0);
+  const sp=new THREE.CylinderGeometry(0.03,0.03,R*2.3,10);mesh(sp,MATR.yel,g,0,0.32+h,0).rotation.z=Math.PI/2;
+  if(!gyr)for(let k=0;k<8;k++){const a=k/8*Math.PI*2;spring(g,Math.cos(a)*(R+0.12),0.05,Math.sin(a)*(R+0.12),0.25,0.04);}
+  boxM(0.4,0.3,0.3,MATR.dark,g,R+0.5,0.2,0);
+  return g;}
+function buildImpact(vsi){const g=new THREE.Group();
+  if(vsi){mesh(new THREE.CylinderGeometry(0.6,0.6,0.7,40,1,true),cutable(MATR.yel),g,0,0.75,0);mesh(new THREE.CylinderGeometry(0.62,0.62,0.04,40),cutable(MATR.yel),g,0,1.11,0);
+    const rot=new THREE.Group();rot.position.set(0,0.7,0);g.add(rot);mesh(new THREE.CylinderGeometry(0.35,0.35,0.18,32),MATR.dark,rot);
+    for(let k=0;k<4;k++){const a=k/4*Math.PI*2;const t=boxM(0.08,0.14,0.08,MATR.mn,rot,Math.cos(a)*0.33,0,Math.sin(a)*0.33);t.rotation.y=-a;}
+    mesh(new THREE.CylinderGeometry(0.1,0.1,0.4,20),MATR.dark,g,0,1.3,0);
+    for(let k=0;k<16;k++){const a=k/16*Math.PI*2;boxM(0.06,0.3,0.12,MATR.mn,g,Math.cos(a)*0.55,0.72,Math.sin(a)*0.55).rotation.y=-a;}
+    mesh(new THREE.CylinderGeometry(0.5,0.3,0.4,32,1,true),MATR.yel,g,0,0.2,0);g.userData.spin=rot;}
+  else{boxM(1.1,0.9,0.05,cutable(MATR.yel),g,0,0.75,-0.45);boxM(0.05,0.9,0.9,MATR.yel,g,-0.55,0.75,0);boxM(0.05,0.9,0.9,MATR.yel,g,0.55,0.75,0);boxM(1.1,0.05,0.9,MATR.yel,g,0,1.2,0);
+    const rot=new THREE.Group();rot.position.set(0,0.62,0);g.add(rot);const d=mesh(new THREE.CylinderGeometry(0.28,0.28,0.8,32),MATR.dark,rot);d.rotation.x=Math.PI/2;
+    for(let k=0;k<4;k++){const a=k/4*Math.PI*2;const b=boxM(0.1,0.12,0.8,MATR.mn,rot,Math.cos(a)*0.31,Math.sin(a)*0.31,0);b.rotation.z=a;}
+    for(let k=0;k<5;k++){const y=1.12-k*0.1;boxM(0.08,0.04,0.8,MATR.mn,g,0.35+k*0.03,y,0).rotation.z=-0.5;}
+    const sh=mesh(new THREE.CylinderGeometry(0.05,0.05,1.3,16),MAT.shaft,g,0,0.62,0);sh.rotation.x=Math.PI/2;g.userData.spin=rot;g.userData.axis='z';}
+  boxM(1.4,0.1,1.1,MAT.paint,g,0,0.05,0);return g;}
+function buildFeeder(kind){const g=new THREE.Group(),L=1.8,W=0.8;
+  if(kind==='apron'){for(let i=0;i<14;i++){const p=boxM(0.12,0.04,W,MATR.mn,g,-L/2+0.065+i*0.127,0.62,0);p.rotation.z=0.02;}
+    for(const s of[-1,1]){boxM(L,0.25,0.04,MATR.yel,g,0,0.72,s*0.43);for(const x of[-L/2,L/2]){const sp=mesh(new THREE.CylinderGeometry(0.15,0.15,0.08,8),MATR.dark,g,x,0.55,s*0.36);sp.rotation.x=Math.PI/2;}}
+    boxM(L,0.08,0.7,MATR.dark,g,0,0.45,0);}
+  else{const pan=new THREE.Group();pan.position.y=0.65;pan.rotation.z=-0.06;g.add(pan);
+    boxM(kind==='grizzly'?L*0.6:L,0.03,W,MATR.mn,pan,kind==='grizzly'?-L*0.2:0,0,0);
+    if(kind==='grizzly')for(let k=0;k<8;k++){const z=-W/2+W*(k+0.5)/8;const b=boxM(L*0.4,0.06,0.04,MATR.mn,pan,L*0.3,0.01,z);}
+    for(const s of[-1,1]){boxM(L,0.3,0.03,MATR.yel,pan,0,0.15,s*(W/2+0.015));boxM(0.2,0.2,0.18,MATR.dark,pan,0,0.2,s*(W/2+0.12));}
+    for(const x of[-L/2+0.15,L/2-0.15])for(const s of[-1,1])spring(g,x,0.25,s*0.35,0.35,0.05);
+    for(const x of[-L/2+0.15,L/2-0.15])boxM(0.15,0.25,0.9,MAT.paint,g,x,0.12,0);}
+  return g;}
+function buildScreen(banana){const g=new THREE.Group(),L=2.4;
+  const box=new THREE.Group();box.position.y=0.6;g.add(box);
+  const decks=banana?[[-L/2,0.45],[-L/2+0.8,0.25],[-L/2+1.6,0.1]]:null;
+  for(const s of[-1,1]){boxM(L,0.6,0.03,MATR.yel,box,0,0.15,s*0.5);}
+  for(const dy of[0.25,-0.05]){
+    if(banana){for(let k=0;k<3;k++){const p=boxM(0.8,0.02,0.96,deckMat.pu,box,-L/2+0.4+k*0.8,dy+0.18-k*0.14,0);p.rotation.z=-(0.42-k*0.16);}}
+    else{const p=boxM(L,0.02,0.96,deckMat.pu,box,0,dy,0);p.rotation.z=-0.06;}}
+  boxM(0.4,0.25,0.3,MATR.dark,box,0,0.55,0);for(const s of[-1,1]){const m=mesh(new THREE.CylinderGeometry(0.1,0.1,0.25,20),MATR.dark,box,0,0.55,s*0.32);m.rotation.x=Math.PI/2;}
+  for(const x of[-L/2+0.2,L/2-0.2])for(const s of[-1,1]){spring(g,x,0.22,s*0.55,0.3,0.05);boxM(0.12,0.22,0.12,MAT.paint,g,x,0.11,s*0.55);}
+  return g;}
+function buildPanels(){const g=new THREE.Group();
+  for(let i=0;i<3;i++)for(let j=0;j<2;j++){const p=new THREE.Group();p.position.set(-0.6+i*0.6,0.15,-0.3+j*0.6);g.add(p);
+    boxM(0.58,0.05,0.58,MATR.pu,p,0,0,0);for(let k=0;k<7;k++)boxM(0.04,0.06,0.45,MATR.dark,p,-0.21+k*0.07,0.002,0);}
+  for(const z of[-0.6,0,0.6])boxM(1.9,0.06,0.06,MAT.galv,g,0,0.1,z);return g;}
+function buildWire(){const g=new THREE.Group();boxM(1.6,0.02,1.1,new THREE.MeshStandardMaterial({map:STX.wire,roughness:.4,metalness:.8,side:THREE.DoubleSide}),g,0,0.2,0);
+  for(const s of[-1,1])boxM(1.6,0.06,0.05,MAT.galv,g,0,0.21,s*0.56);
+  const r=boxM(1.3,0.04,0.9,MATR.rubber,g,0,0.2,0);r.position.x=2.0;return g;}
+function buildMobile(){const g=new THREE.Group();
+  for(const s of[-1,1]){const tr=new THREE.Group();tr.position.set(0,0.22,s*0.62);g.add(tr);boxM(2.6,0.36,0.3,MATR.dark,tr,0,0,0);for(const x of[-1.2,1.2]){const w=mesh(new THREE.CylinderGeometry(0.18,0.18,0.32,20),MATR.dark,tr,x,0,0);w.rotation.x=Math.PI/2;}}
+  boxM(2.8,0.2,1.2,MATR.yel,g,0,0.5,0);
+  const jaw=buildJaw(false);jaw.scale.setScalar(0.7);jaw.position.set(-0.2,0.55,0);g.add(jaw);
+  const hop=new THREE.CylinderGeometry(0.75,0.4,0.5,4,1,true);hop.rotateY(Math.PI/4);mesh(hop,MATR.yel,g,-1.0,1.35,0);
+  const conv=boxM(2.2,0.04,0.5,MATR.belt,g,1.9,0.9,0);conv.rotation.z=0.32;
+  boxM(0.7,0.6,0.9,MATR.dark,g,0.9,0.9,0);
+  return g;}
+
+/* =====================================================================
+   MAIN SCENE
+   ===================================================================== */
+let renderer;
+try{renderer=setupRenderer(view);}catch(e){$('loader').textContent='Браузер не поддерживает WebGL.';return;}
+renderer.localClippingEnabled=true;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0f1419);scene.fog=new THREE.Fog(0x0f1419,16,36);
+scene.environment=makeEnv(renderer);
+const camera=new THREE.PerspectiveCamera(36,1,0.05,100);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=0.08;controls.minDistance=1;controls.maxDistance=20;controls.maxPolarAngle=Math.PI*0.6;
+const sun=new THREE.DirectionalLight(0xfff0da,2.2);sun.position.set(-3,11,7);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-9,right:9,top:6,bottom:-6,near:1,far:30});sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.02;scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xb9c6d4,0x1a1612,0.3));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(70,50),MAT.concrete);ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+const mainSpin=[];spinList=mainSpin;
+
+/* --- feeder: hopper + vibrating pan, grizzly section appears on step 2 --- */
+const FX0=-5.3,FX1=-2.75,FY=2.45,FSL=0.04;const panY=x=>FY-(x-FX0)*FSL;const GX=-3.55;
+{const hop=new THREE.CylinderGeometry(1.0,0.5,1.1,4,1,true);hop.rotateY(Math.PI/4);mesh(hop,MAT.plate,scene,-4.9,FY+0.85,0);
+ for(const x of[-5.55,-4.25])for(const s of[-1,1])boxM(0.12,FY+0.3,0.12,MAT.paint,scene,x,(FY+0.3)/2,s*0.75);}
+const feeder=new THREE.Group();scene.add(feeder);
+const panFull=new THREE.Group(),panShort=new THREE.Group(),grizzly=new THREE.Group();feeder.add(panFull);feeder.add(panShort);feeder.add(grizzly);
+{const len=FX1-FX0,ang=Math.atan(FSL);
+ const pf=boxM(len,0.03,0.9,MATR.mn,panFull,(FX0+FX1)/2,panY((FX0+FX1)/2)-0.015,0);pf.rotation.z=-ang;
+ const ls=GX-FX0;const ps=boxM(ls,0.03,0.9,MATR.mn,panShort,(FX0+GX)/2,panY((FX0+GX)/2)-0.015,0);ps.rotation.z=-ang;
+ for(let k=0;k<9;k++){const z=-0.4+k*0.1;const b=boxM(FX1-GX,0.06,0.035,MATR.mn,grizzly,(GX+FX1)/2,panY((GX+FX1)/2)-0.02,z);b.rotation.z=-ang;}
+ for(const s of[-1,1]){const w=boxM(len,0.35,0.03,MATR.yel,feeder,(FX0+FX1)/2,panY((FX0+FX1)/2)+0.16,s*0.47);w.rotation.z=-ang;
+   boxM(0.3,0.25,0.22,MATR.dark,feeder,-4.0,panY(-4)+0.1,s*0.62);}
+ for(const x of[FX0+0.25,FX1-0.25])for(const s of[-1,1]){spring(scene,x,panY(x)-0.45,s*0.42,0.38,0.06);boxM(0.14,panY(x)-0.45,0.14,MAT.paint,scene,x,(panY(x)-0.45)/2,s*0.42);}
+ const ch=boxM(0.8,0.03,0.7,MAT.plate,scene,-3.15,1.55,0);ch.rotation.z=-0.55;}
+/* --- jaw crusher --- */
+const JX=-2.3,JY0=0.95,JY1=2.15,FIXX=-2.62;
+const jaw=new THREE.Group();scene.add(jaw);
+for(const s of[-1,1]){if(s<0)boxM(1.5,1.5,0.06,MATR.yel,jaw,JX,1.5,-0.5);
+  else{for(const[x,y,w,h]of[[JX,2.22,1.5,0.12],[JX,0.78,1.5,0.12],[JX-0.72,1.5,0.1,1.5],[JX+0.72,1.5,0.1,1.5]])boxM(w,h,0.07,MATR.yel,jaw,x,y,0.5);
+    boxM(1.5,1.5,0.01,MATR.ghost,jaw,JX,1.5,0.5).castShadow=false;}}
+boxM(0.16,1.4,1.0,MATR.yel,jaw,FIXX-0.13,1.55,0);
+const fixedNew=toothedPlate(0.92,1.2,0.05,9,false);fixedNew.position.set(FIXX,1.55,0);jaw.add(fixedNew);
+const fixedOld=toothedPlate(0.92,1.2,0.035,9,true);fixedOld.position.set(FIXX-0.008,1.55,0);jaw.add(fixedOld);
+const pitman=new THREE.Group();pitman.position.set(-1.95,2.2,0);jaw.add(pitman);
+const PIT_ANG={worn:-0.413,new:-0.452};
+const pitBody=boxM(0.2,1.35,0.85,MATR.dark,pitman,0.08,-0.68,0);
+const movNew=toothedPlate(0.92,1.2,0.05,9,false);movNew.rotation.y=Math.PI;movNew.position.set(-0.04,-0.68,0);pitman.add(movNew);
+const movOld=toothedPlate(0.92,1.2,0.035,9,true);movOld.position.set(-0.03,-0.68,0);pitman.add(movOld);
+{const sh=mesh(new THREE.CylinderGeometry(0.07,0.07,1.9,16),MAT.shaft,scene,-1.95,2.2,0);sh.rotation.x=Math.PI/2;}
+const flywheels=[];for(const s of[-1,1]){const fw=new THREE.Group();fw.position.set(-1.95,2.2,s*0.82);scene.add(fw);
+  const d=mesh(new THREE.TorusGeometry(0.55,0.06,10,40),MATR.dark,fw);const hub=mesh(new THREE.CylinderGeometry(0.1,0.1,0.14,20),MATR.dark,fw);hub.rotation.x=Math.PI/2;
+  for(let k=0;k<5;k++){const sp=boxM(0.05,0.55,0.04,MATR.dark,fw,0,0,0);sp.rotation.z=k/5*Math.PI*2;sp.position.set(Math.sin(-k/5*Math.PI*2)*0.27,Math.cos(k/5*Math.PI*2)*0.27,0);}flywheels.push(fw);}
+boxM(1.8,0.15,1.6,MAT.paint,scene,JX,0.6,0);for(const x of[JX-0.8,JX+0.8])for(const s of[-1,1])boxM(0.15,0.55,0.15,MAT.paint,scene,x,0.27,s*0.7);
+{const mo=mesh(new THREE.CylinderGeometry(0.22,0.22,0.6,24),new THREE.MeshStandardMaterial({color:0x3b6e8f,roughness:.45,metalness:.35}),scene,-0.9,1.0,0.82);mo.rotation.x=Math.PI/2;
+ boxM(0.6,0.5,0.6,MAT.paint,scene,-0.9,0.5,0.82);}
+/* --- discharge conveyor (incline) --- */
+const CA=new THREE.Vector3(-2.3,0.42,0),CB=new THREE.Vector3(2.75,2.55,0),CLEN=CA.distanceTo(CB),CANG=Math.atan2(CB.y-CA.y,CB.x-CA.x);
+const conv=new THREE.Group();conv.position.copy(CA);conv.rotation.z=CANG;scene.add(conv);
+{const bm=new THREE.MeshStandardMaterial({map:STX.belt,roughness:.85,envMapIntensity:.4});const top=new THREE.Mesh(new THREE.PlaneGeometry(CLEN,0.8),bm);top.rotation.x=-Math.PI/2;top.position.set(CLEN/2,0,0);top.receiveShadow=true;conv.add(top);conv.userData.tex=STX.belt;
+ for(const s of[-1,1])boxM(CLEN+0.3,0.12,0.05,MAT.paint,conv,CLEN/2,-0.1,s*0.47);
+ for(let u=0.2;u<CLEN;u+=0.55){const r=roller(0.85,0.05);aim(r,new THREE.Vector3(0,0,1));r.position.set(u,-0.05,0);conv.add(r);}
+ for(const u of[0,CLEN]){const d=mesh(new THREE.CylinderGeometry(0.12,0.12,0.9,24),MAT.cap,conv,u,-0.07,0);d.rotation.x=Math.PI/2;}
+ for(let u=1.2;u<CLEN-0.3;u+=1.6){const p=new THREE.Vector3(CA.x+Math.cos(CANG)*u,CA.y+Math.sin(CANG)*u,0);for(const s of[-1,1])boxM(0.1,p.y-0.1,0.1,MAT.paint,scene,p.x,(p.y-0.1)/2,s*0.47);}}
+/* --- vibrating screen, two decks --- */
+const SX0=2.9,SX1=6.0,SY=2.25,SSL=0.16,SDY=0.34;const d1=x=>SY-(x-SX0)*SSL,d2=x=>d1(x)-SDY;const S2X1=5.6;
+const screen=new THREE.Group();scene.add(screen);
+const deckMeshes=[];
+{const ang=Math.atan(SSL),len=(SX1-SX0)/Math.cos(ang);
+ for(const[fy,x1] of[[d1,SX1],[d2,S2X1]]){const l=(x1-SX0)/Math.cos(ang);const m=new THREE.Mesh(new THREE.PlaneGeometry(l,1.0),deckMat.clog);m.rotation.set(-Math.PI/2,0,0);
+   const gq=new THREE.Group();gq.position.set((SX0+x1)/2,fy((SX0+x1)/2),0);gq.rotation.z=-ang;gq.add(m);m.receiveShadow=true;screen.add(gq);deckMeshes.push(m);}
+ for(const s of[-1,1]){const w=boxM(len+0.1,0.75,0.04,MATR.yel,screen,(SX0+SX1)/2,d1((SX0+SX1)/2)-0.1,s*0.53);w.rotation.z=-ang;}
+ const vib=boxM(0.5,0.3,1.25,MATR.dark,screen,4.4,d1(4.4)+0.45,0);
+ for(const s of[-1,1]){const m=mesh(new THREE.CylinderGeometry(0.13,0.13,0.3,20),MATR.dark,screen,4.4,d1(4.4)+0.45,s*0.72);m.rotation.x=Math.PI/2;}
+ const pan=boxM(len*0.9,0.03,1.0,MAT.plate,screen,(SX0+SX1)/2-0.1,d2((SX0+SX1)/2)-0.45,0);pan.visible=false;}
+for(const x of[SX0+0.3,SX1-0.3])for(const s of[-1,1]){spring(scene,x,d2(x)-0.62,s*0.56,0.3,0.06);boxM(0.16,d2(x)-0.62,0.16,MAT.paint,scene,x,(d2(x)-0.62)/2,s*0.56);}
+/* stockpiles */
+const PILES=[{x:6.85,z:0,c:0x8b7d6b,n:'Крупная фракция'},{x:5.85,z:0,c:0x978a77,n:'Средняя фракция'},{x:4.3,z:0,c:0xa69a88,n:'Мелкая фракция'}];
+const pileMesh=PILES.map(p=>{const m=mesh(new THREE.ConeGeometry(0.55,0.42,24),new THREE.MeshStandardMaterial({color:p.c,roughness:1,flatShading:true,map:STX.ore}),scene,p.x,0.21,p.z);m.castShadow=false;return m;});
+
+/* ---------- rocks ---------- */
+const NO=1100,NSP=200;
+const oreMesh=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),MAT.ore,NO);oreMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);oreMesh.castShadow=true;oreMesh.frustumCulled=false;scene.add(oreMesh);
+const oreCol=new THREE.Color();
+const O={x:new Float32Array(NO),y:new Float32Array(NO),z:new Float32Array(NO),vx:new Float32Array(NO),vy:new Float32Array(NO),r:new Float32Array(NO),r1:new Float32Array(NO),s:new Float32Array(NO),st:new Uint8Array(NO),t:new Float32Array(NO),q:[]};
+for(let i=0;i<NO;i++)O.q.push(new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd(0,6),rnd(0,6),rnd(0,6))));
+function setTone(i,wet){oreCol.setHSL(rnd(.06,.1),rnd(.08,.2),wet?rnd(.2,.3):rnd(.32,.48));oreMesh.setColorAt(i,oreCol);}
+
+let mode=1,feedType='dry',finesLevel='mid',paused=reduceMotion,labelsOn=false,simTime=0,acc=0;
+const pres={feed:0,jaw:0,deck:0},target={feed:0,jaw:0,deck:0};
+const FINES={low:0.15,mid:0.3,high:0.5};
+function passP(){const base=pres.deck>0.5?0.95:0.28;return feedType==='wet'&&pres.deck<0.5?base*0.6:base;}
+const stat={out:0,big:0,fineInA:0,toA:0};
+function spawn(){for(let i=0;i<NO;i++)if(!O.st[i]){const fine=Math.random()<FINES[finesLevel];O.r[i]=fine?rnd(.015,.03):rnd(.05,.1);O.x[i]=FX0+rnd(.1,.4);O.z[i]=rnd(-.3,.3);O.y[i]=panY(O.x[i])+0.6;O.vy[i]=-0.5;O.st[i]=1;setTone(i,feedType==='wet');oreMesh.instanceColor.needsUpdate=true;return;}}
+function fall(i,dt){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;O.x[i]+=O.vx[i]*dt;}
+function step(dt){
+  simTime+=dt;
+  const even=pres.feed>0.5;
+  const rate=even?16:16*(0.25+1.6*Math.max(0,Math.sin(simTime*1.1))**2);
+  acc+=dt*rate;while(acc>=1){spawn();acc--;}
+  const vF=even?0.42:0.42*(0.35+1.3*Math.max(0,Math.sin(simTime*1.1+0.6)));
+  const gap=pres.jaw>0.5?'new':'worn';
+  for(let i=0;i<NO;i++){const st=O.st[i];if(!st)continue;const r=O.r[i];
+    if(st===1){if(O.vy[i]!==0){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;if(O.y[i]<=panY(O.x[i])+r){O.y[i]=panY(O.x[i])+r;O.vy[i]=0;}continue;}
+      O.x[i]+=vF*dt;O.y[i]=panY(O.x[i])+r+0.008*Math.sin(simTime*60+i);
+      if(even&&O.x[i]>GX&&r<0.04&&Math.random()<dt*6){O.st[i]=7;O.vx[i]=0.2;O.vy[i]=0;}
+      else if(O.x[i]>=FX1){O.st[i]=2;O.s[i]=0;O.r1[i]=r;O.vx[i]=0;}}
+    else if(st===2){O.s[i]+=dt*(0.55+0.2*Math.sin(i));const s=Math.min(1,O.s[i]);
+      const xin=FIXX+0.32*(1-s)+0.06,xout=FIXX+(gap==='new'?0.05:0.11);
+      O.x[i]=xin*(1-s)+xout*s;O.y[i]=JY1-(JY1-JY0)*s;
+      const out=O.r1[i]<0.035?O.r1[i]:(gap==='new'?rnd(.016,.032):(Math.random()<0.5?rnd(.045,.075):rnd(.02,.04)));
+      if(!O.t[i])O.t[i]=out;O.r[i]=O.r1[i]+(O.t[i]-O.r1[i])*s;
+      if(s>=1){O.st[i]=3;O.s[i]=0.04;stat.out++;if(O.r[i]>0.04)stat.big++;O.t[i]=0;}}
+    else if(st===7){fall(i,dt);if(O.y[i]<CA.y+0.35){O.st[i]=3;O.s[i]=0.12;}}
+    else if(st===3){O.s[i]+=dt*1.0/CLEN;const u=O.s[i]*CLEN;O.x[i]=CA.x+Math.cos(CANG)*u-Math.sin(CANG)*r;O.y[i]=CA.y+Math.sin(CANG)*u+Math.cos(CANG)*(r+0.01);O.z[i]=clamp(O.z[i],-0.28,0.28);
+      if(O.s[i]>=1){O.st[i]=4;O.x[i]=SX0+0.1;O.vy[i]=0;}}
+    else if(st===4){O.x[i]+=0.5*dt;O.y[i]=d1(O.x[i])+r+0.01*Math.abs(Math.sin(simTime*40+i));
+      if(r<0.045&&Math.random()<passP()*dt*1.6){O.st[i]=5;}
+      else if(O.x[i]>=SX1){O.st[i]=6;O.vx[i]=0.6;O.vy[i]=0;stat.toA++;if(r<0.045)stat.fineInA++;}}
+    else if(st===5){O.x[i]+=0.45*dt;const ty=d2(O.x[i])+r;if(O.y[i]>ty+0.005){O.y[i]-=2.5*dt;if(O.y[i]<ty)O.y[i]=ty;}else O.y[i]=ty+0.008*Math.abs(Math.sin(simTime*40+i));
+      if(r<0.023&&Math.random()<passP()*dt*1.6){O.st[i]=8;O.vx[i]=0;O.vy[i]=0;}
+      else if(O.x[i]>=S2X1){O.st[i]=6;O.vx[i]=0.35;O.vy[i]=0;}}
+    else if(st===6||st===8){fall(i,dt);if(O.y[i]<=0.45+r){O.st[i]=9;O.t[i]=1.5;}}
+    else if(st===9){O.t[i]-=dt;if(O.t[i]<=0){O.st[i]=0;O.t[i]=0;}}}
+  for(const s of mainSpin)s.sp.rotation.y+=1.0/s.r*dt;
+  for(const f of flywheels)f.rotation.z-=dt*5;
+  pitman.rotation.z=(pres.jaw>0.5?PIT_ANG.new:PIT_ANG.worn)+0.02*Math.sin(simTime*5);
+  feeder.position.set(0.006*Math.sin(simTime*50),0.006*Math.sin(simTime*50+1),0);
+  screen.position.set(0.008*Math.sin(simTime*45),0.01*Math.sin(simTime*45+1.2),0);
+  STX.belt.offset.x-=dt*1.0/CLEN*3;
+}
+const dummy=new THREE.Object3D(),zero=new THREE.Matrix4().makeScale(0,0,0);
+function writeInstances(){
+  for(let i=0;i<NO;i++){if(!O.st[i]){oreMesh.setMatrixAt(i,zero);continue;}const r=O.r[i];dummy.position.set(O.x[i],O.y[i],O.z[i]);dummy.quaternion.copy(O.q[i]);dummy.scale.set(r,r*.78,r*1.1);dummy.updateMatrix();oreMesh.setMatrixAt(i,dummy.matrix);}
+  oreMesh.instanceMatrix.needsUpdate=true;
+}
+function updateParts(dt){
+  const kk=Math.min(1,dt*3);for(const k in pres)pres[k]+=(target[k]-pres[k])*kk;
+  const g=pres.feed>0.5;panFull.visible=!g;panShort.visible=g;grizzly.visible=g;
+  const j=pres.jaw>0.5;fixedNew.visible=j;movNew.visible=j;fixedOld.visible=!j;movOld.visible=!j;
+  for(const m of deckMeshes)m.material=pres.deck>0.5?deckMat.pu:deckMat.clog;
+}
+
+/* ---------- labels ---------- */
+const tmpV=new THREE.Vector3();
+const labelDefs=[
+  {t:()=>'Подача рывками: дробилка то пустая, то завалена',p:()=>[-4.2,FY+0.5,0.5],cls:'bad',show:()=>pres.feed<0.5},
+  {t:()=>'Колосники: мелочь идёт мимо дробилки',p:()=>[(GX+FX1)/2,panY(-3.1)+0.15,0.5],cls:'pu',show:()=>pres.feed>0.6},
+  {t:()=>'Стёртые щёки — щель выросла',p:()=>[FIXX+0.1,1.2,0.55],cls:'bad',show:()=>pres.jaw<0.5},
+  {t:()=>'Новые щёки — продукт по норме',p:()=>[FIXX+0.1,1.2,0.55],cls:'pu',show:()=>pres.jaw>0.6},
+  {t:()=>'Сито забито — мелочь уходит в крупную фракцию',p:()=>[4.5,d1(4.5)+0.2,0.55],cls:'bad',show:()=>pres.deck<0.5},
+  {t:()=>'Полиуретановые панели',p:()=>[4.5,d1(4.5)+0.2,0.55],cls:'pu',show:()=>pres.deck>0.6},
+  {t:()=>'Щёковая дробилка',p:()=>[JX,2.45,0.5],show:()=>labelsOn},
+  {t:()=>'Ленточный конвейер',p:()=>[0.2,1.6,0.5],show:()=>labelsOn},
+  ...PILES.map(p=>({t:()=>p.n,p:()=>[p.x,0.6,p.z+0.3],show:()=>labelsOn}))
+];
+const lblLayer=$('labels');
+labelDefs.forEach(d=>{const el=document.createElement('div');el.className='lbl'+(d.cls?' '+d.cls:'');el.hidden=true;lblLayer.appendChild(el);d.el=el;});
+function placeLabel(el,v,cam,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||Math.abs(v.y)>1.05){el.hidden=true;return;}el.hidden=false;el.style.left=((v.x+1)/2*w).toFixed(1)+'px';el.style.top=((1-v.y)/2*h).toFixed(1)+'px';}
+function updateLabels(){const w=view.clientWidth,h=view.clientHeight;for(const d of labelDefs){if(!d.show()){d.el.hidden=true;d.was=false;continue;}const now=performance.now();if(!d.was){d.was=true;d.until=now+4500;}if(!labelsOn&&now>d.until){d.el.hidden=true;continue;}const t=d.t();if(d.el.textContent!==t)d.el.textContent=t;tmpV.set(...d.p());placeLabel(d.el,tmpV,camera,w,h);}}
+
+/* ---------- camera ---------- */
+const CAMS={overview:{p:[2.5,5.4,9.6],t:[0.4,1.3,0]},feeder:{p:[-2.6,3.9,2.9],t:[-4.0,2.3,0]},jaw:{p:[-1.75,1.05,2.3],t:[-2.4,1.35,0]},screen:{p:[5.8,4.2,3.0],t:[4.4,2.0,0]},piles:{p:[8.6,2.0,4.2],t:[5.4,0.6,0]},card:{p:[3.4,3.3,6.2],t:[-0.4,1.5,0]}};
+const STEPCAM={1:'overview',2:'feeder',3:'jaw',4:'screen'};
+camera.position.set(...CAMS.overview.p);controls.target.set(...CAMS.overview.t);
+let tween=null;
+function fitP(c){const t=new THREE.Vector3(...c.t),p=new THREE.Vector3(...c.p);if(camera.aspect<1)p.sub(t).multiplyScalar(1+(1-camera.aspect)*0.9).add(t);return p;}
+function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:fitP(c),t1:new THREE.Vector3(...c.t)};
+  document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cam===n));}
+
+/* ---------- UI ---------- */
+function info(){
+  let t,r,p,l;
+  if(mode===1){t='Изношенная линия';r='Исходное состояние';p='Материал из бункера идёт рывками: дробилка то простаивает, то завалена. Щёки стёрлись, разгрузочная щель выросла, и в продукт уходит кусок крупнее нормы. Сито грохота забито, мелочь не проходит и уходит в крупную фракцию.';l=['Камера «В дробилку» — щёки видны сквозь прозрачную боковину','Камера «Грохот» — что происходит на деках','Камера «Фракции» — куда уходит материал'];}
+  else if(mode===2){t='Колосниковый питатель';r='Каталог · раздел 07.1 · питатели';p='Вибрационный питатель подаёт материал ровным слоем, а колосниковый участок в конце отделяет мелкий класс: мелочь идёт мимо дробилки сразу на конвейер, дробилка работает только с тем, что нужно дробить.';l=['Ширину, скорость и привод подбирают по крупности питания и нагрузке','Пластинчатые питатели — для кускового материала','Монтаж согласуют с компоновкой бункера'];}
+  else if(mode===3){t='Новые щёки';r='Каталог · раздел 07.6 · дробящие элементы';p='Изношенные щёки заменены, разгрузочная щель восстановлена. Продукт выходит по норме, нагрузка на грохот и следующие стадии становится предсказуемой.';l=['Щёки, брони, била — по модели машины, номеру детали или чертежу','Материал и геометрию согласуют под конкретную машину','Втулки, валы, эксцентрики — по каталожному номеру и посадочным размерам'];}
+  else{t='Полиуретановые сита';r='Каталог · раздел 07.5 · сита и просеивающие поверхности';p='Забитая сетка заменена модульными полиуретановыми панелями. Мелочь проходит через ячейки, фракции получаются чистыми, изношенную панель меняют отдельно.';l=['Размер ячейки и тип фиксации — по посадочному месту','Для влажного материала и тонкого рассева — специальные исполнения','Резиновые и комбинированные поверхности — для ударных нагрузок'];}
+  $('iT').textContent=t;$('iR').textContent=r;$('iP').textContent=p;$('iL').innerHTML='';l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});
+}
+function setMode(m,user){const prev=mode;mode=m;if(user&&m!==prev&&STEPCAM[m])goCam(STEPCAM[m]);target.feed=m>=2?1:0;target.jaw=m>=3?1:0;target.deck=m>=4?1:0;document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));info();}
+function pick(attr,id){document.querySelectorAll('[data-'+attr+']').forEach(b=>b.setAttribute('aria-pressed',b.dataset[attr]===id));}
+document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode,true)));
+document.querySelectorAll('[data-feed]').forEach(b=>b.addEventListener('click',()=>{feedType=b.dataset.feed;pick('feed',feedType);}));
+document.querySelectorAll('[data-fines]').forEach(b=>b.addEventListener('click',()=>{finesLevel=b.dataset.fines;pick('fines',finesLevel);}));
+document.querySelectorAll('[data-cam]').forEach(b=>b.addEventListener('click',()=>goCam(b.dataset.cam)));
+function setLabels(v){labelsOn=v;$('bLbl').setAttribute('aria-pressed',v);}
+function setPause(v){paused=v;$('bPause').setAttribute('aria-pressed',v);$('bPause').textContent=v?'Пуск':'Пауза';}
+$('bLbl').onclick=()=>setLabels(!labelsOn);$('bPause').onclick=()=>setPause(!paused);
+window.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key.toLowerCase();
+  if(e.key.length===1&&'1234'.includes(e.key))setMode(+e.key,true);else if(k==='l'||k==='д')setLabels(!labelsOn);
+  else if(e.code==='Space'&&e.target.tagName!=='BUTTON'&&e.target.tagName!=='INPUT'){e.preventDefault();setPause(!paused);}});
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{const el=$(b.dataset.copy);
+  const done=()=>{const o=b.textContent;b.textContent='Скопировано';setTimeout(()=>b.textContent=o,1400);};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);};
+  try{navigator.clipboard.writeText(el.textContent).then(done,sel);}catch(err){sel();}}));
+let shownBig=0.45,mFeed=0.35,mScr=0.3;
+function hud(dt){
+  /* model rules: share of oversize by jaw state, feed evenness by feeder, screening efficiency by deck */
+  const big=pres.jaw>0.5?0.04:0.45;shownBig+=(big-shownBig)*Math.min(1,dt*2);$('hS').textContent=Math.round(shownBig*100);
+  mFeed+=((pres.feed>0.5?0.92:0.35)-mFeed)*Math.min(1,dt*2);$('mV').style.width=(mFeed*100).toFixed(1)+'%';
+  mScr+=(passP()-mScr)*Math.min(1,dt*2);$('mR').style.width=(mScr*100).toFixed(1)+'%';
+  $('lB').classList.toggle('on',passP()<0.6);
+}
+
+/* =====================================================================
+   PRODUCT CATALOGUE VIEWER
+   ===================================================================== */
+const SEL_F=['Объём и геометрия бункера','Насыпная плотность','Максимальный кусок','Расход','Режим разгрузки'];
+const SEL_C=['Тип породы','Прочность и абразивность','Максимальный кусок','Производительность','Гранулометрия продукта','Влажность'];
+const SEL_S=['Гранулометрия питания','Влажность','Требуемые фракции','Число дек','Расход','Ограничения по высоте и площади'];
+const SEL_P=['Марка грохота','Чертёж панели','Размер и форма ячейки','Открытая площадь','Крепление'];
+const SEL_Z=['Модель оборудования','Серийный номер','Номер детали','Чертёж или фото с размерами','Количество'];
+const PRODUCTS=[
+ {id:'apron',grp:'Питатели',name:'Пластинчатые питатели',short:'Для кускового материала',cut:false,build:()=>({root:buildFeeder('apron'),parts:[{t:'Пластины полотна',p:[0,0.66,0.2]},{t:'Звёздочка цепи',p:[0.9,0.55,0.4]},{t:'Борта',p:[-0.4,0.85,0.45]}]}),
+  list:['Полотно из стальных пластин на цепях','Приводные и натяжные звёздочки','Борта и опорная рама'],desc:'Для подачи кускового материала. Подбор ширины, скорости и привода по крупности питания и нагрузке на рабочий орган.',sel:SEL_F},
+ {id:'grizzly',grp:'Питатели',name:'Колосниковые питатели',short:'С отделением мелкого класса',cut:false,act:2,build:()=>({root:buildFeeder('grizzly'),parts:[{t:'Колосники',p:[0.55,0.7,0.2]},{t:'Лоток',p:[-0.5,0.7,0]},{t:'Вибратор',p:[0,0.85,0.55]},{t:'Пружины',p:[-0.75,0.4,0.4]}]}),
+  list:['Вибрирующий лоток','Колосниковый участок в конце','Вибраторы на бортах','Пружинные опоры'],desc:'Подача с предварительным отделением мелкого класса на колосниковом участке.',sel:SEL_F},
+ {id:'vibro',grp:'Питатели',name:'Вибрационные питатели',short:'Ровная подача',cut:false,build:()=>({root:buildFeeder('vibro'),parts:[{t:'Лоток',p:[0,0.7,0]},{t:'Вибратор',p:[0,0.85,0.55]},{t:'Пружины',p:[0.75,0.4,0.4]}]}),
+  list:['Лоток','Вибраторы','Пружинные опоры','Варианты монтажа под бункер'],desc:'Исполнения для подачи сыпучих материалов. Варианты монтажа согласуют с компоновкой бункера.',sel:SEL_F},
+ {id:'jaw',grp:'Дробилки',name:'Щёковые дробилки',short:'Первичное дробление',cut:true,act:3,build:()=>({root:buildJaw(true),parts:[{t:'Неподвижная щека',p:[-0.5,0.95,0]},{t:'Подвижная щека',p:[-0.12,0.9,0]},{t:'Эксцентриковый вал',p:[0.12,1.12,0.66]},{t:'Маховик',p:[0.12,1.45,0.62]}]}),
+  list:['Станина','Неподвижная и подвижная щёки со сменными плитами','Шатун на эксцентриковом валу','Маховики и привод','Регулировка разгрузочной щели'],desc:'Для первичной стадии дробления. Размер загрузочного отверстия, разгрузочную щель и исполнение привода выбирают по характеристикам исходного материала.',sel:SEL_C},
+ {id:'gyr',grp:'Дробилки',name:'Гирационные дробилки',short:'Первичное, высокая производительность',cut:true,build:()=>({root:buildConeCr(true),parts:[{t:'Подвижный конус',p:[0.03,1.0,0]},{t:'Броня чаши',p:[0.45,1.1,0]},{t:'Траверса',p:[0.6,1.82,0]}]}),
+  list:['Высокая чаша с бронёй','Подвижный конус на главном валу','Траверса с верхней опорой вала','Эксцентриковый привод внизу'],desc:'Для первичного дробления в производительных технологических линиях. Подбор по крупности питания, требуемому продукту и компоновке приёмного узла.',sel:SEL_C},
+ {id:'cone',grp:'Дробилки',name:'Конусные дробилки',short:'Среднее и мелкое',cut:true,build:()=>({root:buildConeCr(false),parts:[{t:'Подвижный конус',p:[0.03,0.6,0]},{t:'Камера дробления',p:[0.55,0.8,0]},{t:'Пружины',p:[0.85,0.2,0]},{t:'Привод',p:[1.25,0.3,0]}]}),
+  list:['Чаша с бронёй','Подвижный конус','Камера дробления под стадию','Узлы привода, смазки и управления'],desc:'С подбором камеры под требуемую стадию переработки. Комплектация включает согласованные узлы привода, смазки и управления.',sel:SEL_C},
+ {id:'hsi',grp:'Дробилки',name:'Роторные дробилки',short:'Ударное дробление',cut:true,build:()=>({root:buildImpact(false),parts:[{t:'Ротор',p:[0,0.62,0.3]},{t:'Била',p:[0.31,0.62,0.4]},{t:'Отбойные плиты',p:[0.4,1.05,0.3]}]}),
+  list:['Корпус','Ротор с билами','Отбойные плиты','Износостойкие элементы — под материал'],desc:'Дробление за счёт ударного воздействия ротора. Исполнение и износостойкие элементы подбирают под свойства перерабатываемого материала.',sel:SEL_C},
+ {id:'vsi',grp:'Дробилки',name:'Центробежно-ударные дробилки',short:'Формирование зерна',cut:true,build:()=>({root:buildImpact(true),parts:[{t:'Ротор',p:[0,0.75,0.3]},{t:'Разгонные элементы',p:[0.33,0.7,0]},{t:'Футеровка камеры',p:[0.55,0.9,0.1]}]}),
+  list:['Вертикальный вал','Ротор с разгонными элементами','Камера с футеровкой','Загрузочная воронка сверху'],desc:'Дробилки с вертикальным валом для соответствующих стадий дробления и формирования зёрен. Режим работы зависит от питания и требуемого продукта.',sel:SEL_C},
+ {id:'mob',grp:'Мобильные комплексы',name:'Самоходные и мобильные установки',short:'Гусеничные, колёсные',cut:false,build:()=>({root:buildMobile(),parts:[{t:'Гусеничный ход',p:[0,0.3,0.7]},{t:'Дробилка',p:[-0.2,1.1,0.4]},{t:'Приёмный бункер',p:[-1,1.6,0]},{t:'Конвейер продукта',p:[1.9,1.1,0]}]}),
+  list:['Гусеничное или колёсное шасси','Приёмный бункер и питатель','Дробилка или грохот','Конвейеры продукта'],desc:'Гусеничные щёковые, конусные, ударные и сортировочные установки; дробильно-сортировочные комплексы на колёсном шасси и полустационарные модульные решения.',sel:['Материал и фракции','Производительность','Способ перемещения','Источник питания','Площадка и подъездные пути']},
+ {id:'banana',grp:'Грохоты',name:'Грохоты бананового типа',short:'Многоскатная дека',cut:false,act:4,build:()=>({root:buildScreen(true),parts:[{t:'Многоскатная дека',p:[-0.6,1.15,0.2]},{t:'Вибровозбудитель',p:[0,1.2,0.4]},{t:'Пружины',p:[1,0.4,0.55]}]}),
+  list:['Короб с двумя деками','Деки с разным углом наклона','Вибровозбудитель','Пружинные опоры'],desc:'Многоскатная просеивающая поверхность для подбора под требуемый поток материала.',sel:SEL_S},
+ {id:'horiz',grp:'Грохоты',name:'Горизонтальные и эллиптические',short:'Чёткое разделение',cut:false,act:4,build:()=>({root:buildScreen(false),parts:[{t:'Деки',p:[-0.5,0.85,0.2]},{t:'Вибровозбудитель',p:[0,1.2,0.4]},{t:'Пружины',p:[1,0.4,0.55]}]}),
+  list:['Короб с декам','Вибровозбудитель','Пружинные опоры','Число дек и размеры по эффективности разделения'],desc:'Исполнения для соответствующих схем размещения и сортировки. Подбор числа дек, размеров поверхности и параметров движения по требуемой эффективности разделения. Для влажных продуктов — обезвоживающие и высокочастотные грохоты.',sel:SEL_S},
+ {id:'pu',grp:'Сита и просеивающие поверхности',name:'Полиуретановые панели',short:'Модульные, щелевые и квадратные',cut:false,act:4,build:()=>({root:buildPanels(),parts:[{t:'Модульная панель',p:[-0.6,0.2,-0.3]},{t:'Щелевая ячейка',p:[0,0.2,0.3]},{t:'Несущий профиль',p:[0.9,0.13,0]}]}),
+  list:['Модульные панели','Квадратные и щелевые ячейки','Фиксация на несущих профилях'],desc:'Модульные панели с квадратными и щелевыми отверстиями. Размер ячейки и тип фиксации подбирают по посадочному месту.',sel:SEL_P},
+ {id:'wire',grp:'Сита и просеивающие поверхности',name:'Резиновые, металлические, натяжные',short:'Под нагрузку и абразив',cut:false,build:()=>({root:buildWire(),parts:[{t:'Металлическая сетка',p:[0,0.22,0.2]},{t:'Резиновая панель',p:[2,0.22,0.2]}]}),
+  list:['Металлические сетки','Резиновые и комбинированные панели','Натяжные, гибкие и профильные поверхности'],desc:'Резиновые, металлические и комбинированные решения для различных нагрузок, абразивности и условий просеивания; натяжные, гибкие и профильные поверхности, панели для тонкого рассева.',sel:SEL_P},
+ {id:'plates',grp:'Запасные и износостойкие части',name:'Дробящие элементы',short:'Щёки, брони, била',cut:false,act:3,build:()=>{const g=new THREE.Group();const a=toothedPlate(0.8,1.0,0.06,8,false);a.rotation.z=Math.PI/2;a.position.set(-0.5,0.08,0);g.add(a);const b=toothedPlate(0.8,1.0,0.04,8,true);b.rotation.z=Math.PI/2;b.position.set(0.6,0.07,0);g.add(b);return{root:g,parts:[{t:'Новая щека',p:[-0.5,0.15,0]},{t:'Изношенная щека',p:[0.6,0.12,0]}]};},
+  list:['Щёки, брони, конусы, била','Материал и геометрия — под конкретную машину','Комплектование по объёму ремонта'],desc:'Конусы, брони, щёки, била и другие сменные рабочие детали. Материал и геометрия согласуются под конкретную машину. Механические узлы — втулки, валы, эксцентрики — по каталожному номеру и посадочным размерам.',sel:SEL_Z}
+];
+const pview=$('pview');let pr=null,pscene,pcam,pctl,cur=null,pid='apron',pLblOn=true,pSpinOn=!reduceMotion,pCut=true;
+const plabels=$('plabels');
+function initViewer(){
+  try{pr=setupRenderer(pview);}catch(e){return;}
+  pr.localClippingEnabled=true;
+  pscene=new THREE.Scene();pscene.background=new THREE.Color(0x121820);pscene.environment=makeEnv(pr);
+  pcam=new THREE.PerspectiveCamera(32,1,0.02,60);pctl=new THREE.OrbitControls(pcam,pr.domElement);pctl.enableDamping=true;pctl.minDistance=0.8;pctl.maxDistance=9;
+  pctl.autoRotate=pSpinOn;pctl.autoRotateSpeed=0.8;
+  const l=new THREE.DirectionalLight(0xfff0da,2.0);l.position.set(-2,5,3);l.castShadow=true;l.shadow.mapSize.set(1024,1024);Object.assign(l.shadow.camera,{left:-2.5,right:2.5,top:2.5,bottom:-2.5,near:.5,far:14});l.shadow.bias=-0.0005;pscene.add(l);
+  pscene.add(new THREE.HemisphereLight(0xb9c6d4,0x1a1612,0.35));
+  const fl=mesh(new THREE.CircleGeometry(3.2,64),MAT.concrete,pscene);fl.rotation.x=-Math.PI/2;fl.castShadow=false;
+  pctl.addEventListener('start',()=>{pctl.autoRotate=false;});
+}
+function applyCut(root,on){root.traverse(n=>{if(n.material&&n.material.userData&&n.material.userData.cut)n.material.clippingPlanes=on?[CUT]:[];});}
+const VC={gyr:[[2.6,2.4,2.8],[0,0.9,0]],mob:[[3.4,2.6,3.6],[0.3,0.7,0]],wire:[[2.4,2.0,2.6],[1,0.2,0]],banana:[[2.6,2.0,2.8],[0,0.7,0]],horiz:[[2.6,2.0,2.8],[0,0.7,0]],jaw:[[1.4,1.4,2.4],[-0.2,0.7,0]]};
+function showProduct(id){
+  pid=id;const P0=PRODUCTS.find(p=>p.id===id);
+  document.querySelectorAll('.pbtn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===id));
+  if(pr){
+    if(cur){pscene.remove(cur.wrap);cur.wrap.traverse(n=>{if(n.geometry&&n.geometry!==HEX)n.geometry.dispose();});}
+    spinList=[];const b=P0.build();spinList=mainSpin;
+    const w=new THREE.Group();w.add(b.root);pscene.add(w);cur={wrap:w,b};applyCut(b.root,pCut&&P0.cut);
+    plabels.innerHTML='';cur.lbls=(b.parts||[]).map(pp=>{const el=document.createElement('div');el.className='lbl pu';el.textContent=pp.t;plabels.appendChild(el);return{el,p:pp.p};});
+    const vc=VC[id]||[[2.0,1.6,2.3],[0,0.55,0]];pcam.position.set(...vc[0]);pctl.target.set(...vc[1]);pctl.autoRotate=pSpinOn;
+  }
+  $('pCut').hidden=!P0.cut;
+  $('pName').textContent=P0.name;$('pRef').textContent='Каталог · раздел 07 · '+P0.grp.toLowerCase();
+  $('pDesc').textContent=P0.desc;
+  $('pParts').innerHTML='';P0.list.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('pParts').appendChild(li);});
+  $('pSel').innerHTML='';P0.sel.forEach(s=>{const sp=document.createElement('span');sp.textContent=s;$('pSel').appendChild(sp);});
+  $('pUse').hidden=!P0.act;
+}
+{const nav=$('plist');let last='';
+ for(const p of PRODUCTS){if(p.grp!==last){const g=document.createElement('div');g.className='grp';g.textContent=p.grp;nav.appendChild(g);last=p.grp;}
+   const b=document.createElement('button');b.className='pbtn';b.dataset.p=p.id;b.setAttribute('aria-pressed','false');
+   const bb=document.createElement('b');bb.textContent=p.name;const sp=document.createElement('span');sp.textContent=p.short;b.append(bb,sp);
+   b.addEventListener('click',()=>showProduct(p.id));nav.appendChild(b);}}
+$('pCut').onclick=()=>{pCut=!pCut;$('pCut').setAttribute('aria-pressed',pCut);if(cur)applyCut(cur.b.root,pCut);};
+$('pLbl').onclick=()=>{pLblOn=!pLblOn;$('pLbl').setAttribute('aria-pressed',pLblOn);};
+$('pSpin').onclick=()=>{pSpinOn=!pSpinOn;$('pSpin').setAttribute('aria-pressed',pSpinOn);if(pctl)pctl.autoRotate=pSpinOn;};
+$('pSpin').setAttribute('aria-pressed',pSpinOn);$('pCut').setAttribute('aria-pressed',pCut);
+$('pUse').onclick=()=>{const P0=PRODUCTS.find(p=>p.id===pid);if(!P0||!P0.act)return;if(mode<P0.act)setMode(P0.act,true);else goCam(STEPCAM[P0.act]);
+  if(view.scrollIntoView)view.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'center'});};
+let pVisible=true;
+if(window.IntersectionObserver)new IntersectionObserver(es=>{pVisible=es[0].isIntersecting;}).observe(pview);
+function viewerFrame(dt){
+  if(!pr||!cur||!pVisible)return;
+  const sp=cur.b.root.userData.spin;if(sp){if(cur.b.root.userData.axis==='z')sp.rotation.z+=dt*6;else sp.rotation.y+=dt*6;}
+  pctl.update();pr.render(pscene,pcam);
+  const w=pview.clientWidth,h=pview.clientHeight;cur.wrap.updateMatrixWorld();
+  for(const L of cur.lbls){if(!pLblOn){L.el.hidden=true;continue;}tmpV.set(...L.p);cur.b.root.localToWorld(tmpV);placeLabel(L.el,tmpV,pcam,w,h);}
+}
+
+/* ---------- loop ---------- */
+function resize(){
+  const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/(h||1);camera.updateProjectionMatrix();
+  if(pr){const pw=pview.clientWidth,ph=pview.clientHeight;pr.setSize(pw,ph,false);pcam.aspect=pw/(ph||1);pcam.updateProjectionMatrix();}
+}
+window.addEventListener('resize',resize);
+if(window.ResizeObserver){const ro=new ResizeObserver(resize);ro.observe(view);ro.observe(pview);}
+initViewer();
+setMode(1);setPause(paused);showProduct('apron');resize();
+{const st=+new URLSearchParams(location.search).get('step');if(st>=2&&st<=4)setTimeout(()=>setMode(st,true),700);}
+if(location.hash==='#shot'){camera.position.set(...CAMS.card.p);controls.target.set(...CAMS.card.t);}
+for(let i=0;i<300;i++){updateParts(1/30);step(1/30);}
+const clock=new THREE.Clock();let first=true;
+function tick(){
+  requestAnimationFrame(tick);
+  const dt=Math.min(0.033,clock.getDelta());
+  updateParts(dt);
+  if(!paused)step(dt);
+  writeInstances();
+  if(tween){tween.t=Math.min(1,tween.t+dt/0.9);const s=tween.t*tween.t*(3-2*tween.t);camera.position.lerpVectors(tween.p0,tween.p1,s);controls.target.lerpVectors(tween.t0,tween.t1,s);if(tween.t>=1)tween=null;}
+  controls.update();renderer.render(scene,camera);updateLabels();hud(dt);viewerFrame(dt);
+  if(first){first=false;$('loader').hidden=true;}
+}
+tick();
+})();
+
+</script>
+</body>
+</html>
