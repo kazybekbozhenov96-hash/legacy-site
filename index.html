@@ -73,7 +73,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .btn:hover{filter:brightness(1.06)}
 .btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}
 .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-@media (max-width:900px){.nav{display:none}.tel{margin-left:auto}}
+.about-m{display:none}
+@media (max-width:900px){.nav{display:none}.about-m{display:inline-block;margin-left:auto}.about-m+.tel{margin-left:0}.tel{margin-left:auto}}
+@media (max-width:900px){.bar .in{gap:8px}}
 @media (max-width:420px){.logo span{display:none}}
 
 /* hero */
@@ -248,6 +250,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       <a href="#models">3D-модели</a>
       <a href="#request">Запрос</a>
     </nav>
+    <a class="tel about-m" href="about.html">О нас</a>
     <a class="tel" href="#contacts">Контакты</a>
   </div>
 </header>
