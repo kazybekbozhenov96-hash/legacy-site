@@ -54,7 +54,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .nav{display:flex;gap:20px;margin-left:auto;font-size:14px}
 .nav a{text-decoration:none;color:var(--muted)}
 .nav a:hover{color:var(--ink)}
-.tel{font-family:var(--mono);font-size:14px;white-space:nowrap;text-decoration:none}
+.tel{font-size:14px;font-weight:600;white-space:nowrap;text-decoration:none;padding:8px 14px;border:1px solid var(--line);border-radius:4px}
+.tel:hover{border-color:var(--pu);color:var(--pu)}
 .btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:13px 20px;border-radius:4px;background:var(--pu);color:var(--on-pu);text-decoration:none}
 .btn:hover{filter:brightness(1.06)}
 .btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}
@@ -232,9 +233,8 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       <a href="#catalog">Каталог</a>
       <a href="#models">3D-модели</a>
       <a href="#request">Запрос</a>
-      <a href="#contacts">Контакты</a>
     </nav>
-    <a class="tel" href="tel:+77015039255">+7 701 503-92-55</a>
+    <a class="tel" href="#contacts">Контакты</a>
   </div>
 </header>
 
