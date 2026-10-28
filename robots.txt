@@ -1,0 +1,5 @@
+# legacyrk.kz — ТОО «Легаси Казахстан»
+User-agent: *
+Allow: /
+
+Sitemap: https://legacyrk.kz/sitemap.xml
