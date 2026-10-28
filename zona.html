@@ -1,0 +1,786 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Зона загрузки конвейера</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Интерактивная 3D-модель зоны загрузки ленточного конвейера: демпферный стол с торсионными опорами, уплотнения течки и пылезащита. Legacy Kazakhstan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: full-bleed 3D bench on top, an operator console under it, then a two-column reference sheet. Dark by design: it is a lit lab scene. */
+:root{
+  color-scheme:dark;
+  --bg:#0f1419;
+  --panel:#151c23;
+  --panel-2:#1b242d;
+  --line:#28333e;
+  --fg:#e6e9ec;
+  --muted:#8f9ba7;
+  --pu:#f2a33a;        /* полиуретан: цвет уплотнений в модели */
+  --pu-ink:#1a1206;
+  --uhmw:#d6e1d3;      /* балки UHMWPE */
+  --spill:#e46a4b;
+  --dust:#cdbd9c;
+  --ok:#7fbf8e;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+a{color:var(--pu)}
+:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.eyebrow b{color:var(--pu);font-weight:500}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.6vw,52px);line-height:1.02;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 span{color:var(--pu)}
+.lede{max-width:52ch;color:var(--muted);margin:0;font-size:15px}
+
+/* stage */
+.view{position:relative;height:clamp(360px,64vh,720px);border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#0f1419;touch-action:none}
+.view canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;top:12px;left:12px;display:grid;gap:8px;background:rgba(15,20,25,.78);border:1px solid var(--line);border-radius:5px;padding:10px 12px;min-width:200px;backdrop-filter:blur(4px);pointer-events:none}
+.hud .big{display:flex;align-items:baseline;gap:8px}
+.hud .big b{font-family:var(--mono);font-weight:500;font-size:22px;font-variant-numeric:tabular-nums}
+.hud .big small,.hud .cap{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.meter{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.bar{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:3px;transition:width .25s linear}
+.bar.d i{background:var(--pu)} .bar.s i{background:var(--spill)} .bar.p i{background:var(--dust)}
+.hint{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:var(--muted);pointer-events:none;background:rgba(15,20,25,.6);padding:3px 8px;border-radius:4px}
+.badge{position:absolute;right:12px;top:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--pu-ink);background:var(--pu);padding:4px 9px;border-radius:3px}
+.loader{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-family:var(--mono);font-size:13px;background:var(--bg)}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;transform:translate(-50%,calc(-100% - 10px));white-space:nowrap;font-size:11.5px;padding:3px 8px;border-radius:3px;background:rgba(21,28,35,.92);border:1px solid var(--line);color:var(--fg)}
+.lbl::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:10px;background:var(--muted)}
+.lbl.pu{border-color:var(--pu)}
+
+/* console */
+.console{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.box h3{margin:0;font-size:11.5px;font-family:var(--mono);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mode{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:3px;padding:10px;border:1px solid var(--line);border-radius:5px;background:var(--panel-2);min-width:0}
+.mode .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.mode .t{font-weight:600;font-size:13.5px;line-height:1.2}
+.mode:hover{border-color:#3d4a57}
+.mode[aria-pressed="true"]{border-color:var(--pu);background:#231d14}
+.mode[aria-pressed="true"] .n{color:var(--pu)}
+.mode:focus-visible{outline:2px solid var(--pu)}
+.ctl{display:grid;gap:4px}
+.ctl label{display:flex;justify-content:space-between;font-size:13px}
+.ctl output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--pu)}
+input[type=range]{width:100%;accent-color:var(--pu)}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--muted)}
+.readout b{display:block;font-family:var(--mono);font-weight:500;color:var(--fg);font-size:15px;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{all:unset;cursor:pointer;font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:4px;background:var(--panel-2)}
+.chip:hover{border-color:#3d4a57}
+.chip[aria-pressed="true"]{border-color:var(--pu);color:var(--pu)}
+.chip:focus-visible{outline:2px solid var(--pu)}
+kbd{font-family:var(--mono);font-size:11px;padding:1px 5px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.keys{font-size:12px;color:var(--muted);line-height:1.9}
+
+.info{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px 28px}
+.info h2{font-family:var(--display);font-weight:500;font-size:20px;margin:0;text-wrap:balance}
+.info .ref{font-family:var(--mono);font-size:12px;color:var(--pu);margin-top:6px}
+.info p{margin:0;max-width:68ch}
+.info ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+
+/* reference sheet */
+.sheet{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+.sheet article{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sheet h2{font-family:var(--display);font-weight:500;font-size:18px;margin:0;line-height:1.25;text-wrap:balance}
+.sheet p{margin:0;max-width:66ch}
+.sheet .wide{grid-column:1/-1}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-top:22px}
+.sec-head h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,30px);margin:0}
+.sec-head span{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:420px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.04em}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12.5px;padding:4px 9px;border-radius:3px;background:var(--panel-2);border:1px solid var(--line)}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.trio div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.trio b{font-weight:600}
+.trio .sw{width:28px;height:6px;border-radius:2px}
+.muted{color:var(--muted)}
+
+.contact{background:var(--pu);color:var(--pu-ink);border-radius:6px;padding:22px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px 32px;margin-top:10px}
+.contact h2{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.6vw,28px);margin:0;text-wrap:balance}
+.contact p{margin:6px 0 0;max-width:60ch}
+.lines{display:grid;gap:8px;align-content:start}
+.line{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(26,18,6,.08);border:1px solid rgba(26,18,6,.25);border-radius:4px;padding:8px 10px}
+.line span{font-family:var(--mono);font-size:15px;user-select:all;overflow-wrap:anywhere;min-width:0}
+.line button{all:unset;cursor:pointer;font-size:12px;font-weight:600;padding:4px 8px;border-radius:3px;background:var(--pu-ink);color:var(--pu);flex:none}
+.line button:focus-visible{outline:2px solid var(--pu-ink)}
+.addr{font-size:13px}
+.foot{font-size:12px;color:var(--muted);max-width:90ch}
+
+@media (max-width:980px){
+  .console{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .console .box:first-child{grid-column:1/-1}
+}
+@media (max-width:720px){
+  .console,.info,.sheet,.contact,.trio{grid-template-columns:minmax(0,1fr)}
+  .modes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .view{height:clamp(340px,58vh,560px)}
+  .hud{min-width:0;padding:8px 10px;transform-origin:top left;transform:scale(.88)}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+
+<style>html.embed .top,html.embed .info~*{display:none!important}html.embed body{padding-block:12px}</style><script>try{if(location.hash==="#embed")document.documentElement.classList.add("embed")}catch(e){}</script>
+<div class="wrap">
+  <style>.backlink{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:14px;font-weight:600;color:var(--fg);text-decoration:none;padding:8px 12px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}.backlink:hover{border-color:var(--pu);color:var(--pu)}</style>
+  <a class="backlink" href="./" onclick="try{if(document.referrer&&new URL(document.referrer).origin===location.origin){history.back();return false}}catch(e){}">← На сайт Legacy</a>
+  <header class="top">
+    <div>
+      <p class="eyebrow"><b>Legacy Kazakhstan</b> · Конвейерные решения · разделы 02–03</p>
+      <h1>Зона <span>загрузки</span></h1>
+    </div>
+    <p class="lede">Здесь лента получает удар каждым куском руды, провисает и пропускает мелочь и пыль. Включайте защиту по шагам и смотрите, как меняется узел.</p>
+  </header>
+
+  <section aria-label="3D-модель зоны загрузки">
+    <div class="view" id="view" role="img" aria-label="Трёхмерная модель перегрузочного узла ленточного конвейера">
+      <div class="labels" id="labels"></div>
+      <div class="hud" aria-live="off">
+        <div class="big"><b id="hE">0</b><small>Дж — удар крупного куска</small></div>
+        <div class="meter"><span>Прогиб</span><div class="bar d"><i id="mD"></i></div></div>
+        <div class="meter"><span>Просыпь</span><div class="bar s"><i id="mS"></i></div></div>
+        <div class="meter"><span>Пыль</span><div class="bar p"><i id="mP"></i></div></div>
+        <div class="cap">полосы считает сама модель</div>
+      </div>
+      <div class="badge" id="badge">Без защиты</div>
+      <div class="hint">Тяните — вращать · колесо — масштаб · правая кнопка — сдвиг</div>
+      <div class="loader" id="loader">Собираю став…</div>
+    </div>
+  </section>
+
+  <section class="console" aria-label="Пульт">
+    <div class="box">
+      <h3>Защита узла · добавляется по шагам</h3>
+      <div class="modes" id="modes">
+        <button class="mode" data-mode="1" aria-pressed="true"><span class="n">1</span><span class="t">Без защиты</span></button>
+        <button class="mode" data-mode="2" aria-pressed="false"><span class="n">2</span><span class="t">Демпферный стол</span></button>
+        <button class="mode" data-mode="3" aria-pressed="false"><span class="n">3</span><span class="t">+ Уплотнения</span></button>
+        <button class="mode" data-mode="4" aria-pressed="false"><span class="n">4</span><span class="t">+ Пылезащита</span></button>
+      </div>
+      <div class="chips" role="group" aria-label="Вид">
+        <button class="chip" id="bSec" aria-pressed="false">Разрез</button>
+        <button class="chip" id="bExp" aria-pressed="false">Разборка</button>
+        <button class="chip" id="bLbl" aria-pressed="false">Подписи</button>
+        <button class="chip" id="bPause" aria-pressed="false">Пауза</button>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Груз</h3>
+      <div class="ctl"><label for="rH">Высота падения <output id="oH">1,8 м</output></label><input type="range" id="rH" min="0.5" max="3" step="0.1" value="1.8"></div>
+      <div class="ctl"><label for="rA">Крупный кусок <output id="oA">150 мм</output></label><input type="range" id="rA" min="50" max="300" step="10" value="150"></div>
+      <div class="readout">
+        <div>Масса куска<b id="rM">—</b></div>
+        <div>Энергия удара<b id="rE">—</b></div>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Камера</h3>
+      <div class="chips" role="group" aria-label="Камера">
+        <button class="chip" data-cam="overview" aria-pressed="true">Обзор</button>
+        <button class="chip" data-cam="chute" aria-pressed="false">В течку</button>
+        <button class="chip" data-cam="under" aria-pressed="false">Под лентой</button>
+      </div>
+      <div class="keys"><kbd>1</kbd>–<kbd>4</kbd> шаги защиты · <kbd>S</kbd> разрез · <kbd>X</kbd> разборка · <kbd>L</kbd> подписи · <kbd>Пробел</kbd> пауза</div>
+    </div>
+  </section>
+
+  <section class="info" id="info" aria-live="polite">
+    <div><h2 id="iT"></h2><div class="ref" id="iR"></div></div>
+    <div><p id="iP"></p><ul id="iL"></ul></div>
+  </section>
+
+  <div class="sec-head"><h2>Как это устроено</h2><span>по каталогу Legacy</span></div>
+  <div class="sheet">
+    <article>
+      <h2>Почему зона загрузки изнашивается первой</h2>
+      <p>Материал падает на ленту с высоты течки. Чем крупнее кусок и выше падение, тем сильнее удар: энергия растёт пропорционально массе и высоте. На обычных роликоопорах лента между роликами не опирается ни на что, поэтому прогибается и рвётся обкладка.</p>
+      <p>Прогиб открывает щель под бортами течки. Через неё уходит мелочь, а поднятая ударом пыль выходит наружу. Поэтому удар, просыпь и пыль решают вместе: сначала опора, затем уплотнения, затем укрытие.</p>
+    </article>
+    <article>
+      <h2>Демпферный стол с торсионными опорами</h2>
+      <p>Центральная секция подвешена на каучуковых торсионных демпферах. При ударе упругие элементы закручиваются, секция получает упругий ход и гасит колебания. В модели это видно по оранжевым меткам на торсионах; ход показан увеличенным.</p>
+      <p>Боковые секции закреплены неподвижно и держат края ленты у бортовых уплотнений. Поверхность скольжения — направляющие из UHMWPE, без вращающихся узлов. По данным каталога стол увеличивает срок службы ленты на 30 %.</p>
+    </article>
+    <article class="wide">
+      <h2>Бортовые уплотнения работают как система</h2>
+      <div class="trio">
+        <div><span class="sw" style="background:var(--uhmw)"></span><b>Поддержка ленты</b><span class="muted">Ограничивает провисание под бортами и принимает удар. Зазор уплотнений согласуют с профилем опор.</span></div>
+        <div><span class="sw" style="background:var(--pu)"></span><b>Внутреннее уплотнение</b><span class="muted">Планки внутри течки удерживают основной поток и разгружают наружный профиль.</span></div>
+        <div><span class="sw" style="background:var(--pu);opacity:.6"></span><b>Наружное уплотнение</b><span class="muted">Гибкий профиль K-Snap-Loc закрывает зазор у кромки и не выпускает мелочь и пыль.</span></div>
+      </div>
+    </article>
+    <article>
+      <h2>Внутренние уплотнения течки</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Исполнение</th><th>Размер, мм</th><th>Состав</th></tr></thead>
+        <tbody>
+          <tr><td>Полиуретан на стали</td><td class="num">1219 / 1524 × 178 × 25</td><td>Полиуретан 19 мм, сталь 6 мм, пазы для регулировки</td></tr>
+          <tr><td>Полиуретан с керамикой</td><td class="num">1219 / 1524 × 178 × 25</td><td>Керамика 13 мм (92 % Al₂O₃), полиуретан 6 мм, сталь 6 мм</td></tr>
+        </tbody>
+      </table></div>
+    </article>
+    <article>
+      <h2>Пылезащитное уплотнение K-Snap-Loc</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Параметр</th><th>Варианты</th></tr></thead>
+        <tbody>
+          <tr><td>Высота профиля</td><td class="num">127 / 150 / 230 / 355 мм</td></tr>
+          <tr><td>Монтажная рейка</td><td class="num">2000 мм</td></tr>
+          <tr><td>Состав R69</td><td class="num">−30…+80 °C</td></tr>
+          <tr><td>Состав B93</td><td class="num">−25…+120 °C</td></tr>
+          <tr><td>Исполнение</td><td>Профиль с полостью для гибкости</td></tr>
+        </tbody>
+      </table></div>
+    </article>
+    <article>
+      <h2>Для подбора демпферного стола</h2>
+      <div class="tags"><span>Высота падения</span><span>Масса и размер куска</span><span>Производительность</span><span>Ширина и скорость ленты</span><span>Угол желоба</span><span>Монтажная высота</span></div>
+    </article>
+    <article>
+      <h2>Для подбора уплотнений</h2>
+      <div class="tags"><span>Зазор до ленты</span><span>Угол желобчатости</span><span>Толщина стенки течки</span><span>Длина зоны</span><span>Скорость и температура</span><span>Опора под лентой</span><span>Фото зоны пересыпа</span></div>
+    </article>
+    <article class="wide">
+      <h2>Насколько точна модель</h2>
+      <p>Масса куска и энергия удара считаются честно: плотность породы 2,7 т/м³, кусок как половина куба заданного размера, энергия равна массе, умноженной на ускорение свободного падения и высоту. Прогиб, просыпь и пыль модель считает по упрощённым правилам, чтобы показать разницу между шагами, а не точные значения. Ход торсионов и провисание ленты увеличены для наглядности. Подбор под ваш конвейер выполняют инженеры Legacy по параметрам выше.</p>
+    </article>
+  </div>
+
+  <section class="contact" aria-label="Запрос">
+    <div>
+      <h2>Подберём защиту под ваш узел</h2>
+      <p>Пришлите ширину и скорость ленты, производительность, тип и крупность груза, высоту падения и фото зоны пересыпа целиком, креплений и мест износа.</p>
+      <p class="addr">ТОО «Легаси Казахстан» · Астана, ул. Сыганак, 47, БЦ Zhambyl Tower, каб. 608</p>
+    </div>
+    <div class="lines">
+      <div class="line"><span id="cMail">general@legacyrk.kz</span><button data-copy="cMail">Копировать</button></div>
+      <div class="line"><span id="cTel">+7 701 503-92-55</span><button data-copy="cTel">Копировать</button></div>
+    </div>
+  </section>
+  <p class="foot">Условная модель. Состав оборудования и места установки определяются конструкцией конвейера. Точная комплектация, размеры и условия поставки согласуются в коммерческом предложении.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const view=$('view');
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const reduceMotion=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if(!window.THREE||!THREE.OrbitControls){$('loader').textContent='Не удалось загрузить 3D-движок. Обновите страницу.';return;}
+
+/* ---------- renderer ---------- */
+let renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(e){$('loader').textContent='Браузер не поддерживает WebGL.';return;}
+renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled=true;
+renderer.outputEncoding=THREE.sRGBEncoding;
+view.insertBefore(renderer.domElement,view.firstChild);
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0f1419);
+scene.fog=new THREE.Fog(0x0f1419,16,34);
+const camera=new THREE.PerspectiveCamera(38,1,0.05,100);
+camera.position.set(1.4,3.5,7.4);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.target.set(-2.2,1.1,0);
+controls.enableDamping=true;controls.dampingFactor=0.08;
+controls.minDistance=1.2;controls.maxDistance=18;controls.maxPolarAngle=Math.PI*0.64;
+
+scene.add(new THREE.HemisphereLight(0xd3dce6,0x1b1610,0.6));
+const sun=new THREE.DirectionalLight(0xfff0da,1.15);
+sun.position.set(-3,9,6);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-9,right:9,top:6,bottom:-6,near:1,far:25});
+sun.shadow.bias=-0.0006;
+scene.add(sun);
+const fill=new THREE.DirectionalLight(0x8fb2e8,0.4);fill.position.set(6,3,-6);scene.add(fill);
+
+/* ---------- constants ---------- */
+const BELT_Y=1.0, X0=-6, X1=7, TROUGH=35*Math.PI/180;
+const LZ0=-4.8, LZ1=-0.6, DROP_X=-4.05;
+const SK_Z=0.405, SK_BOT=1.17, SK_TOP=1.75;
+const NX=280, NS=24;
+const clipPlane=new THREE.Plane(new THREE.Vector3(0,0,-1),0.02);
+
+/* ---------- materials ---------- */
+const M={
+  frame:new THREE.MeshStandardMaterial({color:0x3a4653,metalness:.5,roughness:.55}),
+  roller:new THREE.MeshStandardMaterial({color:0x7a848e,metalness:.75,roughness:.35}),
+  steel:new THREE.MeshStandardMaterial({color:0x5b6670,metalness:.55,roughness:.45,side:THREE.DoubleSide}),
+  spout:new THREE.MeshStandardMaterial({color:0x5b6670,metalness:.5,roughness:.5,side:THREE.DoubleSide,transparent:true,opacity:.42,depthWrite:false}),
+  pu:new THREE.MeshStandardMaterial({color:0xf2a33a,roughness:.55,metalness:0}),
+  puSoft:new THREE.MeshStandardMaterial({color:0xe8913a,roughness:.6,side:THREE.DoubleSide}),
+  rail:new THREE.MeshStandardMaterial({color:0x2a3138,metalness:.6,roughness:.4}),
+  uhmw:new THREE.MeshStandardMaterial({color:0xd6e1d3,roughness:.45}),
+  rubber:new THREE.MeshStandardMaterial({color:0x17191c,roughness:.95}),
+  fabric:new THREE.MeshStandardMaterial({color:0xc9bfa9,roughness:1,transparent:true,opacity:.58,side:THREE.DoubleSide,depthWrite:false}),
+  ground:new THREE.MeshStandardMaterial({color:0x161b21,roughness:1}),
+  rock:new THREE.MeshStandardMaterial({color:0xffffff,roughness:.9,flatShading:true}),
+  fine:new THREE.MeshStandardMaterial({color:0x8a7f72,roughness:1,flatShading:true})
+};
+const clipMats=[M.steel,M.spout,M.pu,M.puSoft,M.rail,M.fabric];
+
+function beltTexture(){
+  const c=document.createElement('canvas');c.width=128;c.height=512;const g=c.getContext('2d');
+  g.fillStyle='#1d2023';g.fillRect(0,0,128,512);
+  for(let i=0;i<2600;i++){g.fillStyle=Math.random()<.5?'rgba(255,255,255,.035)':'rgba(0,0,0,.25)';g.fillRect(Math.random()*128,Math.random()*512,1.5,1.5);}
+  g.fillStyle='rgba(255,255,255,.06)';for(let y=0;y<512;y+=64)g.fillRect(0,y,128,2);
+  g.fillStyle='rgba(242,163,58,.35)';g.fillRect(0,250,128,4);
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t;
+}
+const beltTex=beltTexture(), retTex=beltTex.clone();retTex.needsUpdate=true;
+M.belt=new THREE.MeshStandardMaterial({map:beltTex,roughness:.92,side:THREE.DoubleSide});
+M.retBelt=new THREE.MeshStandardMaterial({map:retTex,roughness:.92,side:THREE.DoubleSide});
+
+function box(w,h,d,mat,x,y,z,parent){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;if(parent)parent.add(m);return m;}
+function cylX(r,len,mat,x,y,z,parent,seg){const g=new THREE.CylinderGeometry(r,r,len,seg||20);g.rotateZ(Math.PI/2);const m=new THREE.Mesh(g,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;if(parent)parent.add(m);return m;}
+
+/* ---------- belt profile ---------- */
+function prof(s,k){const a=TROUGH*k,as=Math.abs(s),sg=s<0?-1:1;if(as<=0.2)return[s,0];const d=as-0.2;return[sg*(0.2+d*Math.cos(a)),d*Math.sin(a)];}
+function kAt(x){return clamp((x-X0)/0.9,0,1);}
+function sFromZ(z,k){const a=TROUGH*k,az=Math.abs(z);if(az<=0.2)return z;return(z<0?-1:1)*(0.2+(az-0.2)/Math.cos(a));}
+function wS(s){const as=Math.abs(s);return as<=0.2?1:1-0.7*(as-0.2)/0.4;}
+
+/* ---------- ground & structure ---------- */
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(60,40),M.ground);ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+const grid=new THREE.GridHelper(40,40,0x26303a,0x1d252d);grid.position.y=0.002;scene.add(grid);
+
+const frame=new THREE.Group();scene.add(frame);
+for(const z of[-0.74,0.74]){box(X1-X0+0.4,0.16,0.07,M.frame,(X0+X1)/2,0.78,z,frame);}
+for(let x=-5.6;x<=X1;x+=2.1){for(const z of[-0.74,0.74])box(0.09,0.78,0.09,M.frame,x,0.39,z,frame);box(0.07,0.07,1.48,M.frame,x,0.14,0,frame);}
+
+function troughIdler(x,parent){
+  const g=new THREE.Group();g.position.x=x;parent.add(g);
+  const r=0.0635,len=0.38,a=TROUGH;
+  const c=cylX(r,len,M.roller,0,BELT_Y-r-0.004,0,g);c.rotation.set(0,Math.PI/2,0);
+  for(const sg of[-1,1]){
+    const pz=sg*(0.2+0.2*Math.cos(a)),py=0.2*Math.sin(a);
+    const cz=pz+sg*r*Math.sin(a),cy=BELT_Y+py-r*Math.cos(a)-0.004;
+    const geo=new THREE.CylinderGeometry(r,r,len,20);
+    const m=new THREE.Mesh(geo,M.roller);m.castShadow=true;
+    m.position.set(0,cy,cz);m.rotation.x=Math.atan2(sg*Math.cos(a),Math.sin(a));g.add(m);
+    box(0.06,0.34,0.05,M.frame,0,BELT_Y-0.13,sg*0.66,g);
+  }
+  box(0.07,0.07,1.42,M.frame,0,BELT_Y-0.16,0,g);
+  return g;
+}
+const OUT=[-5.4,0,1.2,2.4,3.6,4.8,6.0];
+const LZI=[-4.8,-4.2,-3.6,-3.0,-2.4,-1.8,-1.2,-0.6];
+const outIdlers=new THREE.Group();scene.add(outIdlers);
+OUT.forEach(x=>troughIdler(x,outIdlers));
+const lzIdlers=new THREE.Group();scene.add(lzIdlers);
+LZI.forEach(x=>troughIdler(x,lzIdlers));
+for(const x of[-4.2,-1.2,1.8,4.8]){cylX(0.065,1.32,M.roller,x,0.355,0,frame).rotation.set(0,Math.PI/2,0);}
+
+/* tail pulley + return belt */
+cylX(0.29,1.3,M.frame,X0,0.71,0,frame,32).rotation.set(0,Math.PI/2,0);
+{const g=new THREE.CylinderGeometry(0.296,0.296,1.2,40,1,true,Math.PI,Math.PI);g.rotateX(Math.PI/2);const m=new THREE.Mesh(g,M.belt);m.position.set(X0,0.71,0);scene.add(m);
+ const sh=new THREE.CylinderGeometry(0.05,0.05,1.7,12);sh.rotateX(Math.PI/2);const s=new THREE.Mesh(sh,M.roller);s.position.set(X0,0.71,0);scene.add(s);}
+{const g=new THREE.PlaneGeometry(X1-X0,1.2);const m=new THREE.Mesh(g,M.retBelt);m.rotation.x=-Math.PI/2;m.position.set((X0+X1)/2,0.424,0);m.receiveShadow=true;scene.add(m);
+ const uv=g.attributes.uv;for(let i=0;i<uv.count;i++){uv.setXY(i,uv.getY(i),uv.getX(i)*(X1-X0)/2);}uv.needsUpdate=true;}
+
+/* ---------- belt (carrying strand) ---------- */
+const beltGeo=new THREE.BufferGeometry();
+const bpos=new Float32Array((NX+1)*(NS+1)*3),buv=new Float32Array((NX+1)*(NS+1)*2),bidx=[];
+for(let i=0;i<=NX;i++)for(let j=0;j<=NS;j++){const n=i*(NS+1)+j;buv[n*2]=j/NS;buv[n*2+1]=(X0+(X1-X0)*i/NX)/2;}
+for(let i=0;i<NX;i++)for(let j=0;j<NS;j++){const a=i*(NS+1)+j,b=a+NS+1;bidx.push(a,b,a+1,b,b+1,a+1);}
+beltGeo.setIndex(bidx);
+beltGeo.setAttribute('position',new THREE.BufferAttribute(bpos,3).setUsage(THREE.DynamicDrawUsage));
+beltGeo.setAttribute('uv',new THREE.BufferAttribute(buv,2));
+const belt=new THREE.Mesh(beltGeo,M.belt);belt.castShadow=true;belt.receiveShadow=true;belt.frustumCulled=false;scene.add(belt);
+const Darr=new Float32Array(NX+1);
+function updateBelt(){
+  for(let i=0;i<=NX;i++){const x=X0+(X1-X0)*i/NX,k=kAt(x),d=Darr[i];
+    for(let j=0;j<=NS;j++){const s=-0.6+1.2*j/NS,p=prof(s,k),n=(i*(NS+1)+j)*3;bpos[n]=x;bpos[n+1]=BELT_Y+p[1]-d*wS(s)+0.006;bpos[n+2]=p[0];}}
+  beltGeo.attributes.position.needsUpdate=true;beltGeo.computeVertexNormals();
+}
+function Dat(x){const f=(x-X0)/(X1-X0)*NX,i=clamp(Math.floor(f),0,NX-1),t=f-i;return Darr[i]*(1-t)+Darr[i+1]*t;}
+function surf(x,z){const k=kAt(x),s=clamp(sFromZ(z,k),-0.6,0.6),p=prof(s,k);return BELT_Y+0.006+p[1]-Dat(x)*wS(s);}
+
+/* ---------- parts with presence & explode ---------- */
+const parts=[];
+function part(obj,ex,pres){obj.userData.ex=ex||new THREE.Vector3();obj.userData.pres=pres||null;parts.push(obj);scene.add(obj);return obj;}
+
+/* impact bed */
+const bed=new THREE.Group();scene.add(bed);
+const bedCenter=new THREE.Group(),sideL=new THREE.Group(),sideR=new THREE.Group();
+bed.add(bedCenter,sideL,sideR);
+[bedCenter,sideL,sideR].forEach((g,i)=>{g.userData.ex=[new THREE.Vector3(0,-0.75,0),new THREE.Vector3(0,-0.25,-0.75),new THREE.Vector3(0,-0.25,0.75)][i];});
+const NM=5,ML=(LZ1-LZ0)/NM,modules=[];
+for(const z of[-0.62,0.62]){box(LZ1-LZ0+0.1,0.1,0.08,M.frame,(LZ0+LZ1)/2,BELT_Y-0.31,z,bedCenter);}
+for(let m=0;m<NM;m++){
+  const cx=LZ0+ML*(m+0.5);
+  const g=new THREE.Group();bedCenter.add(g);
+  for(const z of[-0.13,0,0.13])box(ML-0.04,0.05,0.1,M.uhmw,cx,BELT_Y-0.03,z,g);
+  box(0.09,0.06,0.5,M.frame,cx-ML*0.25,BELT_Y-0.085,0,g);box(0.09,0.06,0.5,M.frame,cx+ML*0.25,BELT_Y-0.085,0,g);
+  box(ML-0.06,0.05,0.08,M.frame,cx,BELT_Y-0.135,0,g);
+  const arms=[];
+  for(const sg of[-1,1]){
+    const piv=new THREE.Group();piv.position.set(cx,BELT_Y-0.31,sg*0.62);bedCenter.add(piv);
+    const ez=sg*0.25-sg*0.62,ey=(BELT_Y-0.11)-(BELT_Y-0.31);
+    const len=Math.hypot(ez,ey);
+    const arm=box(0.06,0.04,len,M.frame,0,ey/2,ez/2,piv);arm.rotation.x=-Math.atan2(ey,ez)+(ez<0?Math.PI:0);
+    const tors=cylX(0.075,0.22,M.rubber,0,0,0,piv,24);
+    const mark=box(0.23,0.02,0.04,M.pu,0,0.07,0,piv);
+    cylX(0.1,0.04,M.frame,0.13,0,0,bedCenter===piv.parent?piv:piv,16);
+    arms.push({piv,ez,base:0});
+  }
+  modules.push({g,cx,y:0,v:0,arms});
+}
+for(const [grp,sg] of[[sideL,-1],[sideR,1]]){
+  for(const s of[0.34,0.52]){
+    const p=prof(sg*s,1);
+    const b=box(LZ1-LZ0,0.045,0.1,M.uhmw,(LZ0+LZ1)/2,BELT_Y+p[1]-0.03*Math.cos(TROUGH),p[0]+sg*0.03*Math.sin(TROUGH),grp);
+    b.rotation.x=-sg*TROUGH;
+  }
+  for(let m=0;m<=NM;m++){const x=LZ0+ML*m;box(0.06,0.3,0.06,M.frame,x,BELT_Y-0.06,sg*0.56,grp);}
+}
+part(bed,null,'bed');
+const lzPart=part(lzIdlers,null,'lz');
+
+/* chute */
+const skirtL=new THREE.Group(),skirtR=new THREE.Group(),back=new THREE.Group(),spout=new THREE.Group();
+for(const[g,sg]of[[skirtL,-1],[skirtR,1]]){
+  box(LZ1-LZ0,SK_TOP-SK_BOT,0.012,M.steel,(LZ0+LZ1)/2,(SK_TOP+SK_BOT)/2,sg*SK_Z,g);
+  box(LZ1-LZ0,0.03,0.12,M.steel,(LZ0+LZ1)/2,SK_TOP,sg*(SK_Z+0.05),g);
+  for(let x=LZ0+0.3;x<LZ1;x+=0.7)box(0.04,SK_TOP-SK_BOT-0.05,0.06,M.steel,x,(SK_TOP+SK_BOT)/2,sg*(SK_Z+0.035),g);
+}
+box(0.012,SK_TOP-1.02,SK_Z*2,M.steel,LZ0,(SK_TOP+1.02)/2,0,back);
+part(skirtL,new THREE.Vector3(0,0.35,-0.75));
+part(skirtR,new THREE.Vector3(0,0.35,0.75));
+part(back,new THREE.Vector3(-0.7,0.3,0));
+const spW=[];
+spW.push(box(0.012,1,0.7,M.spout,-4.5,0,0,spout));
+spW.push(box(0.8,1,0.012,M.spout,-4.1,0,-0.35,spout));
+spW.push(box(0.8,1,0.012,M.spout,-4.1,0,0.35,spout));
+spW.forEach(w=>w.castShadow=false);
+part(spout,new THREE.Vector3(0,1.3,0));
+function updateSpout(H){const top=Math.max(SK_TOP+0.2,BELT_Y+H+0.35),h=top-SK_TOP;spW.forEach(w=>{w.scale.y=h;w.position.y=SK_TOP+h/2;});}
+
+/* inner liners (polyurethane on steel, 1219 x 178 x 25) */
+const linerL=new THREE.Group(),linerR=new THREE.Group();
+for(const[g,sg]of[[linerL,-1],[linerR,1]]){
+  for(let i=0;i<3;i++){const x=LZ0+0.25+1.219*(i+0.5)+i*0.01;
+    box(1.215,0.178,0.019,M.pu,x,SK_BOT+0.089,sg*(SK_Z-0.0125-0.0095),g);
+    box(1.215,0.178,0.006,M.rail,x,SK_BOT+0.089,sg*(SK_Z-0.009),g);}
+}
+part(linerL,new THREE.Vector3(0,0.12,-0.38),'seal');
+part(linerR,new THREE.Vector3(0,0.12,0.38),'seal');
+
+/* outer K-Snap-Loc seal: rail + flexible lip */
+function lipGeo(sg){
+  const pts=[];const N=14;
+  for(let i=0;i<=N;i++){const t=i/N;const z=SK_Z+0.018+t*0.11;const y=1.31-t*0.06-Math.sin(t*Math.PI)*0.015;pts.push([z,y]);}
+  const sh=new THREE.Shape();
+  sh.moveTo(-pts[0][0],pts[0][1]);for(const p of pts)sh.lineTo(-p[0],p[1]);
+  for(let i=pts.length-1;i>=0;i--)sh.lineTo(-pts[i][0],pts[i][1]+0.008+0.006*(1-i/N));
+  const g=new THREE.ExtrudeGeometry(sh,{depth:LZ1-LZ0,bevelEnabled:false});
+  g.rotateY(Math.PI/2);g.translate(LZ0,0,0);
+  if(sg<0)g.scale(1,1,-1);
+  return g;
+}
+const sealL=new THREE.Group(),sealR=new THREE.Group();
+for(const[g,sg]of[[sealL,-1],[sealR,1]]){
+  box(LZ1-LZ0,0.08,0.022,M.rail,(LZ0+LZ1)/2,1.34,sg*(SK_Z+0.017),g);
+  const lip=new THREE.Mesh(lipGeo(sg),M.puSoft);lip.castShadow=true;g.add(lip);
+}
+part(sealL,new THREE.Vector3(0,0.05,-1.2),'seal');
+part(sealR,new THREE.Vector3(0,0.05,1.2),'seal');
+
+/* dust cover: filter fabric over the skirts + exit curtain */
+const cover=new THREE.Group();
+{const L=LZ1-(-3.6);const g=new THREE.CylinderGeometry(SK_Z+0.03,SK_Z+0.03,L,36,1,true,0,Math.PI);g.rotateZ(Math.PI/2);
+ const m=new THREE.Mesh(g,M.fabric);m.position.set((-3.6+LZ1)/2,SK_TOP,0);cover.add(m);
+ for(let x=-3.6;x<=LZ1+0.01;x+=0.6){const a=new THREE.TorusGeometry(SK_Z+0.035,0.012,6,24,Math.PI);const t=new THREE.Mesh(a,M.rail);t.rotation.y=Math.PI/2;t.position.set(x,SK_TOP,0);cover.add(t);}
+ for(let z=-0.36;z<=0.37;z+=0.08){box(0.01,0.5,0.07,M.rubber,LZ1+0.01,SK_TOP-0.25+0.04,z,cover);}
+}
+part(cover,new THREE.Vector3(0,1.1,0),'cover');
+
+/* ---------- rocks / fines / dust ---------- */
+const NR=320,NF=1900,ND=1500;
+const rockMesh=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),M.rock,NR);
+rockMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);rockMesh.castShadow=true;rockMesh.receiveShadow=true;rockMesh.frustumCulled=false;
+const fineMesh=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),M.fine,NF);
+fineMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);fineMesh.frustumCulled=false;fineMesh.receiveShadow=true;
+scene.add(rockMesh,fineMesh);
+const col=new THREE.Color();
+for(let i=0;i<NR;i++){col.setHSL(rnd(.06,.1),rnd(.08,.2),rnd(.32,.5));rockMesh.setColorAt(i,col);}
+rockMesh.instanceColor.needsUpdate=true;
+
+const R={x:new Float32Array(NR),y:new Float32Array(NR),z:new Float32Array(NR),vx:new Float32Array(NR),vy:new Float32Array(NR),r:new Float32Array(NR),st:new Uint8Array(NR),sx:new Float32Array(NR),sy:new Float32Array(NR),sz:new Float32Array(NR),q:[]};
+for(let i=0;i<NR;i++)R.q.push(new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd(0,6),rnd(0,6),rnd(0,6))));
+const F={x:new Float32Array(NF),y:new Float32Array(NF),z:new Float32Array(NF),vx:new Float32Array(NF),vy:new Float32Array(NF),vz:new Float32Array(NF),r:new Float32Array(NF),st:new Uint8Array(NF),t:new Float32Array(NF)};
+const Dd={x:new Float32Array(ND),y:new Float32Array(ND),z:new Float32Array(ND),vx:new Float32Array(ND),vy:new Float32Array(ND),vz:new Float32Array(ND),l:new Float32Array(ND),lm:new Float32Array(ND)};
+const dustGeo=new THREE.BufferGeometry();
+const dPos=new Float32Array(ND*3),dA=new Float32Array(ND);
+dustGeo.setAttribute('position',new THREE.BufferAttribute(dPos,3).setUsage(THREE.DynamicDrawUsage));
+dustGeo.setAttribute('a',new THREE.BufferAttribute(dA,1).setUsage(THREE.DynamicDrawUsage));
+const dustMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,
+  uniforms:{uColor:{value:new THREE.Color(0xcdbd9c)},uSize:{value:0.18}},
+  vertexShader:'attribute float a;varying float va;uniform float uSize;void main(){va=a;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=uSize*(320.0/-mv.z);gl_Position=projectionMatrix*mv;}',
+  fragmentShader:'varying float va;uniform vec3 uColor;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);if(d>0.5)discard;gl_FragColor=vec4(uColor,va*smoothstep(0.5,0.0,d));}'});
+const dust=new THREE.Points(dustGeo,dustMat);dust.frustumCulled=false;scene.add(dust);
+
+/* ---------- state ---------- */
+let mode=1,H=1.8,A=0.15,SPEED=1.6,paused=reduceMotion,explodeOn=false,sectionOn=false,labelsOn=false;
+let explodeT=0,simTime=0,rockAcc=0,fineAcc=0;
+const pres={bed:0,lz:1,seal:0,cover:0},target={bed:0,lz:1,seal:0,cover:0};
+const pulses=[],spillTimes=[];
+let mDefl=0,mSpill=0,mDust=0,peakD=0;
+const SUP1=[X0,...OUT,...LZI,X1].sort((a,b)=>a-b);
+const SUP2=[X0,...OUT,LZ0,LZ1,X1].sort((a,b)=>a-b);
+function sagFrom(sup,x){for(let n=0;n<sup.length-1;n++){const a=sup[n],b=sup[n+1];if(x>=a&&x<=b){const L=b-a;if(L<1e-6)return 0;const t=(x-a)/L,load=x>DROP_X-0.4?0.022:0.006;return load*L*L*4*t*(1-t);}}return 0;}
+function bedD(x){const f=(x-LZ0)/ML-0.5;if(f<=0)return -modules[0].y;if(f>=NM-1)return -modules[NM-1].y;const i=Math.floor(f),t=f-i;return -(modules[i].y*(1-t)+modules[i+1].y*t);}
+const mass=a=>0.5*2700*a*a*a;
+
+function computeD(){
+  const pb=pres.bed;let pk=0;
+  for(let i=0;i<=NX;i++){
+    const x=X0+(X1-X0)*i/NX;
+    const inBed=x>=LZ0&&x<=LZ1;
+    let d=(1-pb)*sagFrom(SUP1,x)+pb*(inBed?bedD(x)+0.002:sagFrom(SUP2,x));
+    for(const p of pulses){const dx=(x-p.x)/0.42;if(dx>-3&&dx<3)d+=p.a*Math.exp(-dx*dx)*Math.exp(-5*p.t)*Math.cos(16*p.t);}
+    Darr[i]=d;if(inBed&&d>pk)pk=d;
+  }
+  return pk;
+}
+function impact(x,E){
+  const pb=pres.bed;
+  if(pb<0.99&&pulses.length<40)pulses.push({x,a:Math.min(0.15,0.0045*Math.sqrt(E))*(1-pb),t:0});
+  if(pb>0.01&&x>=LZ0&&x<=LZ1){const f=clamp((x-LZ0)/ML-0.5,0,NM-1),i=Math.floor(f),t=f-i;const dv=0.03*Math.sqrt(E)*pb;
+    modules[i].v-=dv*(1-t);if(i+1<NM)modules[i+1].v-=dv*t;}
+}
+let dCursor=0;
+function spawnDust(x,y,z,n){for(let k=0;k<n;k++){const i=dCursor;dCursor=(dCursor+1)%ND;
+  Dd.x[i]=x+rnd(-.08,.08);Dd.y[i]=y+0.03;Dd.z[i]=z+rnd(-.08,.08);
+  Dd.vx[i]=rnd(-.25,.35)+SPEED*0.25;Dd.vy[i]=rnd(.35,1.0);Dd.vz[i]=rnd(-.45,.45);Dd.lm[i]=Dd.l[i]=rnd(3,6);}}
+function spawnRock(){for(let i=0;i<NR;i++)if(R.st[i]===0){
+  const r=A/2*Math.pow(Math.random(),0.6)*0.55+A/2*0.45;R.r[i]=r;
+  R.sx[i]=r*rnd(.85,1.15);R.sy[i]=r*rnd(.7,1);R.sz[i]=r*rnd(.85,1.15);
+  R.x[i]=DROP_X+rnd(-.22,.22);R.z[i]=rnd(-.18,.18);R.y[i]=BELT_Y+H+rnd(0,.15);R.vx[i]=0.55;R.vy[i]=-0.4;R.st[i]=1;return;}}
+function spawnFine(){for(let i=0;i<NF;i++)if(F.st[i]===0){
+  F.r[i]=rnd(.009,.024);F.x[i]=DROP_X+rnd(-.28,.28);F.z[i]=rnd(-.24,.24);F.y[i]=BELT_Y+H+rnd(-.05,.25);F.vx[i]=0.55;F.vy[i]=-0.4;F.vz[i]=0;F.st[i]=1;return;}}
+
+function step(dt){
+  simTime+=dt;
+  /* emission */
+  rockAcc+=dt*clamp(2.6*(0.15/A),0.9,6);fineAcc+=dt*75;
+  while(rockAcc>=1){spawnRock();rockAcc--;}
+  while(fineAcc>=1){spawnFine();fineAcc--;}
+  /* module springs */
+  for(let s=0;s<2;s++){const h=dt/2;for(const m of modules){m.v+=(-420*m.y-13*m.v)*h;m.y+=m.v*h;}}
+  for(let i=pulses.length-1;i>=0;i--){pulses[i].t+=dt;if(pulses[i].t>1.3)pulses.splice(i,1);}
+  const pEsc=(0.10*(1-pres.bed)+0.045*pres.bed)*(1-pres.seal)+0.002;
+  /* rocks */
+  for(let i=0;i<NR;i++){const st=R.st[i];if(!st)continue;
+    if(st===1){R.vy[i]-=9.81*dt;R.x[i]+=R.vx[i]*dt;R.y[i]+=R.vy[i]*dt;
+      const sy=surf(R.x[i],R.z[i])+R.r[i]*0.7;
+      if(R.y[i]<=sy){R.y[i]=sy;R.st[i]=2;const m=mass(R.r[i]*2),E=0.5*m*R.vy[i]*R.vy[i];impact(R.x[i],E);spawnDust(R.x[i],sy,R.z[i],Math.round(2+1.1*Math.pow(E,0.35)));
+        if(pres.seal<0.5&&R.x[i]>LZ0&&R.x[i]<LZ1){const n=Math.round((1.5+0.5*Math.pow(E,0.35))*(1-pres.seal)*(0.6+0.4*(1-pres.bed)));spawnDust(R.x[i],1.2,0.47,n);spawnDust(R.x[i],1.2,-0.47,n);}}
+    }else{R.x[i]+=SPEED*dt;const lim=R.x[i]<LZ1?0.3:0.4;R.z[i]=clamp(R.z[i]*(1-0.25*dt),-lim,lim);R.y[i]=surf(R.x[i],R.z[i])+R.r[i]*0.7;if(R.x[i]>X1-0.25)R.st[i]=0;}
+  }
+  /* fines */
+  for(let i=0;i<NF;i++){const st=F.st[i];if(!st)continue;
+    if(st===1){F.vy[i]-=9.81*dt;F.x[i]+=F.vx[i]*dt;F.y[i]+=F.vy[i]*dt;const sy=surf(F.x[i],F.z[i])+F.r[i];
+      if(F.y[i]<=sy){F.y[i]=sy;
+        if(F.x[i]>LZ0+0.1&&F.x[i]<LZ1-0.2&&Math.random()<pEsc){F.st[i]=3;const sg=F.z[i]>=0?1:-1;F.vz[i]=sg*rnd(.3,.6);}
+        else F.st[i]=2;
+        if(Math.random()<0.22)spawnDust(F.x[i],sy,F.z[i],1);}
+    }else if(st===2){F.x[i]+=SPEED*dt;F.y[i]=surf(F.x[i],F.z[i])+F.r[i];if(F.x[i]>X1-0.25)F.st[i]=0;}
+    else if(st===3){F.x[i]+=SPEED*0.55*dt;F.z[i]+=F.vz[i]*dt;F.y[i]=surf(F.x[i],F.z[i])+F.r[i];
+      if(Math.abs(F.z[i])>0.6){F.st[i]=4;F.vx[i]=SPEED*0.35;F.vy[i]=0.15;spillTimes.push(simTime);}}
+    else if(st===4){F.vy[i]-=9.81*dt;F.x[i]+=F.vx[i]*dt;F.y[i]+=F.vy[i]*dt;F.z[i]+=F.vz[i]*0.6*dt;
+      if(F.y[i]<=F.r[i]){F.y[i]=F.r[i]+Math.random()*0.025;F.st[i]=5;F.t[i]=20;}}
+    else{F.t[i]-=dt;if(F.t[i]<=0)F.st[i]=0;}
+  }
+  while(spillTimes.length&&spillTimes[0]<simTime-5)spillTimes.shift();
+  /* dust */
+  let esc=0;const cov=pres.cover>0.5,sealed=pres.seal>0.5;
+  for(let i=0;i<ND;i++){if(Dd.l[i]<=0)continue;
+    const px=Dd.x[i],py=Dd.y[i],pz=Dd.z[i];
+    const wasIn=px>LZ0&&px<LZ1&&Math.abs(pz)<SK_Z&&py<SK_TOP;
+    Dd.vx[i]+=(SPEED*0.22-Dd.vx[i])*0.6*dt;Dd.vy[i]+=(0.12-Dd.vy[i])*1.1*dt;Dd.vz[i]*=1-0.8*dt;
+    let nx=px+Dd.vx[i]*dt,ny=py+Dd.vy[i]*dt,nz=pz+Dd.vz[i]*dt;
+    if(wasIn){
+      if(Math.abs(nz)>=SK_Z){if(ny<1.3&&!sealed){}else{Dd.vz[i]*=-0.3;nz=Math.sign(nz)*(SK_Z-0.01);}}
+      if(nx<=LZ0){Dd.vx[i]=Math.abs(Dd.vx[i])*0.3;nx=LZ0+0.01;}
+      if(ny>=SK_TOP&&cov&&nx>-3.6){ny=SK_TOP-0.01;Dd.vy[i]=-Math.abs(Dd.vy[i])*0.2;Dd.l[i]-=dt*1.5;}
+      if(nx>=LZ1&&cov){Dd.vx[i]*=0.2;nx=LZ1-0.01;Dd.l[i]-=dt*3;}
+    }
+    if(ny<0.02)ny=0.02;
+    Dd.x[i]=nx;Dd.y[i]=ny;Dd.z[i]=nz;Dd.l[i]-=dt;
+    if(Dd.l[i]>0&&(ny>SK_TOP+0.06||Math.abs(nz)>SK_Z+0.05||(nx>LZ1+0.05&&ny>1.35)))esc++;
+  }
+  /* meters */
+  peakD=Math.max(peakD*(1-1.2*dt),computeD());
+  mDefl+=(clamp(peakD/0.11,0,1)-mDefl)*Math.min(1,dt*4);
+  mSpill+=(clamp(spillTimes.length/32,0,1)-mSpill)*Math.min(1,dt*2);
+  mDust+=(clamp(esc/220,0,1)-mDust)*Math.min(1,dt*2);
+}
+
+const dummy=new THREE.Object3D(),mtx=new THREE.Matrix4(),zero=new THREE.Matrix4().makeScale(0,0,0);
+function writeInstances(show){
+  for(let i=0;i<NR;i++){if(!show||!R.st[i]){rockMesh.setMatrixAt(i,zero);continue;}
+    dummy.position.set(R.x[i],R.y[i],R.z[i]);dummy.quaternion.copy(R.q[i]);dummy.scale.set(R.sx[i],R.sy[i],R.sz[i]);dummy.updateMatrix();rockMesh.setMatrixAt(i,dummy.matrix);}
+  rockMesh.instanceMatrix.needsUpdate=true;
+  for(let i=0;i<NF;i++){if(!show||!F.st[i]){fineMesh.setMatrixAt(i,zero);continue;}
+    const r=F.r[i];mtx.makeScale(r,r*0.8,r);mtx.setPosition(F.x[i],F.y[i],F.z[i]);fineMesh.setMatrixAt(i,mtx);}
+  fineMesh.instanceMatrix.needsUpdate=true;
+  for(let i=0;i<ND;i++){const l=Dd.l[i];dPos[i*3]=Dd.x[i];dPos[i*3+1]=Dd.y[i];dPos[i*3+2]=Dd.z[i];
+    dA[i]=show&&l>0?0.32*Math.min(1,l/Dd.lm[i]*1.6)*Math.min(1,(Dd.lm[i]-l)*3):0;}
+  dustGeo.attributes.position.needsUpdate=true;dustGeo.attributes.a.needsUpdate=true;
+}
+
+/* ---------- parts animation ---------- */
+const tmpV=new THREE.Vector3();
+function updateParts(dt){
+  const kk=Math.min(1,dt*3.2);
+  for(const key in pres)pres[key]+=(target[key]-pres[key])*kk;
+  explodeT+=((explodeOn?1:0)-explodeT)*Math.min(1,dt*3.5);
+  const e=explodeT*explodeT*(3-2*explodeT);
+  for(const o of parts){
+    const p=o.userData.pres?pres[o.userData.pres]:1;
+    o.visible=p>0.02;
+    const lift=(1-p)*(1-p)*2.6;
+    o.position.copy(o.userData.ex).multiplyScalar(e);o.position.y+=lift;
+  }
+  for(const g of[bedCenter,sideL,sideR]){g.position.copy(g.userData.ex).multiplyScalar(e);}
+  for(const m of modules){m.g.position.y=m.y;for(const a of m.arms){a.piv.rotation.x=(-m.y)/a.ez;}}
+}
+
+/* ---------- labels ---------- */
+const labelDefs=[
+  {t:'Центральная секция на торсионах',o:()=>modules[2].g,p:[modules[2].cx,BELT_Y+0.02,0],pu:false,need:'bed'},
+  {t:'Торсионная опора',o:()=>modules[0].arms[1].piv,p:[0,0.09,0],local:true,pu:true,need:'bed'},
+  {t:'Боковая секция',o:()=>sideR,p:[-1.6,BELT_Y+0.18,0.5],need:'bed'},
+  {t:'Балки UHMWPE',o:()=>modules[4].g,p:[modules[4].cx,BELT_Y,0.13],need:'bed'},
+  {t:'Бортовая стенка течки',o:()=>skirtR,p:[-1.4,SK_TOP+0.02,SK_Z]},
+  {t:'Внутреннее уплотнение',o:()=>linerR,p:[-3.2,SK_BOT+0.18,SK_Z-0.02],pu:true,need:'seal'},
+  {t:'Наружное уплотнение K-Snap-Loc',o:()=>sealR,p:[-2.2,1.38,SK_Z+0.05],pu:true,need:'seal'},
+  {t:'Фильтрующее укрытие',o:()=>cover,p:[-2.0,SK_TOP+SK_Z,0],need:'cover'},
+  {t:'Роликоопора',o:()=>outIdlers,p:[1.2,BELT_Y-0.2,0.66]},
+  {t:'Конвейерная лента',o:null,p:[2.6,BELT_Y+0.15,0]}
+];
+const lblLayer=$('labels');
+labelDefs.forEach(d=>{const el=document.createElement('div');el.className='lbl'+(d.pu?' pu':'');el.textContent=d.t;el.hidden=true;lblLayer.appendChild(el);d.el=el;});
+function updateLabels(){
+  const show=labelsOn||explodeT>0.6;const w=view.clientWidth,h=view.clientHeight;
+  for(const d of labelDefs){
+    if(!show||(d.need&&pres[d.need]<0.6)){d.el.hidden=true;continue;}
+    tmpV.set(d.p[0],d.p[1],d.p[2]);
+    const o=d.o&&d.o();
+    if(o){if(d.local)o.localToWorld(tmpV);else{o.updateMatrixWorld();tmpV.applyMatrix4(o.matrixWorld);}}
+    tmpV.project(camera);
+    if(tmpV.z>1||tmpV.x<-1.1||tmpV.x>1.1||tmpV.y<-1.1||tmpV.y>1.1){d.el.hidden=true;continue;}
+    d.el.hidden=false;d.el.style.left=((tmpV.x+1)/2*w).toFixed(1)+'px';d.el.style.top=((1-tmpV.y)/2*h).toFixed(1)+'px';
+  }
+}
+
+/* ---------- camera tween ---------- */
+const CAMS={overview:{p:[1.4,3.5,7.4],t:[-2.2,1.1,0]},chute:{p:[0.9,2.55,0.75],t:[-3.4,1.15,0]},under:{p:[-1.4,0.32,2.3],t:[-2.8,0.86,0]}};
+let tween=null;
+function goCam(name){const c=CAMS[name];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:new THREE.Vector3(...c.p),t1:new THREE.Vector3(...c.t)};
+  document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cam===name));}
+
+/* ---------- UI ---------- */
+const INFO={
+ 1:{t:'Без защиты',r:'Исходное состояние узла',p:'Лента лежит на обычных роликоопорах. Между роликами она провисает, и каждый крупный кусок продавливает её. Под бортами течки открывается щель: мелочь уходит под конвейер, пыль выходит наружу.',l:['Удар принимают ролики и подшипники','Лента прогибается между опорами','Зазор под бортами меняется на каждом ударе']},
+ 2:{t:'Демпферный стол',r:'Каталог · раздел 02',p:'Вместо роликов под зоной падения стоит сплошная опора. Центральная секция подвешена на каучуковых торсионных демпферах: при ударе они закручиваются и гасят его. Боковые секции неподвижны и держат края ленты ровно. По данным каталога стол увеличивает срок службы ленты на 30 %.',l:['Скольжение по балкам UHMWPE, без вращающихся узлов','Пыль и часть мелочи пока выходят наружу','Посмотрите режим «Под лентой» — видно ход торсионов']},
+ 3:{t:'+ Уплотнения течки',r:'Каталог · раздел 03',p:'Внутри течки полиуретановые планки удерживают основной поток. Снаружи гибкий профиль K-Snap-Loc закрывает зазор у кромки ленты. Это работает, потому что стол уже держит ленту ровно и зазор не меняется при ударах.',l:['Внутренние планки 1219 × 178 × 25 мм','Наружный профиль защёлкивается в монтажную рейку','Изношенный участок меняется без разборки стенки']},
+ 4:{t:'+ Пылезащита',r:'Каталог · раздел 03',p:'Фильтрующее укрытие над лентой выпускает воздух через полотно и удерживает часть пыли внутри перегрузочного узла. На выходе стоит шторка. Укрытие ставят вместе с бортовыми уплотнениями и системой аспирации.',l:['Длину укрытия подбирают по пылеобразованию','Учитывают влажность и температуру груза','Нужны фото зоны пересыпа']}
+};
+function setMode(m){mode=m;target.bed=m>=2?1:0;target.lz=m>=2?0:1;target.seal=m>=3?1:0;target.cover=m>=4?1:0;
+  document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));
+  const I=INFO[m];$('iT').textContent=I.t;$('iR').textContent=I.r;$('iP').textContent=I.p;$('badge').textContent=I.t.replace('+ ','');
+  $('iL').innerHTML='';I.l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});}
+document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));
+document.querySelectorAll('[data-cam]').forEach(b=>b.addEventListener('click',()=>goCam(b.dataset.cam)));
+function setSection(v){sectionOn=v;$('bSec').setAttribute('aria-pressed',v);clipMats.forEach(m=>{m.clippingPlanes=v?[clipPlane]:[];m.needsUpdate=true;});}
+function setExplode(v){explodeOn=v;$('bExp').setAttribute('aria-pressed',v);}
+function setLabels(v){labelsOn=v;$('bLbl').setAttribute('aria-pressed',v);}
+function setPause(v){paused=v;$('bPause').setAttribute('aria-pressed',v);$('bPause').textContent=v?'Пуск':'Пауза';}
+$('bSec').onclick=()=>setSection(!sectionOn);
+$('bExp').onclick=()=>setExplode(!explodeOn);
+$('bLbl').onclick=()=>setLabels(!labelsOn);
+$('bPause').onclick=()=>setPause(!paused);
+const fmt=(v,d)=>v.toLocaleString('ru-RU',{maximumFractionDigits:d,minimumFractionDigits:d});
+function readout(){
+  H=+$('rH').value;A=+$('rA').value/1000;
+  $('oH').textContent=fmt(H,1)+' м';$('oA').textContent=Math.round(A*1000)+' мм';
+  const m=mass(A),E=m*9.81*H;
+  $('rM').textContent=(m<10?fmt(m,1):fmt(Math.round(m),0))+' кг';
+  $('rE').textContent=fmt(Math.round(E),0)+' Дж';$('hE').textContent=fmt(Math.round(E),0);
+  updateSpout(H);
+}
+$('rH').addEventListener('input',readout);$('rA').addEventListener('input',readout);
+window.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'&&e.target.type!=='range')return;
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  const k=e.key.toLowerCase();
+  if('1234'.includes(e.key)&&e.key.length===1){setMode(+e.key);}
+  else if(k==='s'||k==='ы')setSection(!sectionOn);
+  else if(k==='x'||k==='ч')setExplode(!explodeOn);
+  else if(k==='l'||k==='д')setLabels(!labelsOn);
+  else if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();setPause(!paused);}
+});
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
+  const el=$(b.dataset.copy),txt=el.textContent;
+  const done=()=>{const o=b.textContent;b.textContent='Скопировано';setTimeout(()=>b.textContent=o,1400);};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);};
+  try{navigator.clipboard.writeText(txt).then(done,sel);}catch(err){sel();}
+}));
+
+/* ---------- loop ---------- */
+function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+window.addEventListener('resize',resize);
+if(window.ResizeObserver)new ResizeObserver(resize).observe(view);
+setMode(1);setPause(paused);readout();resize();
+/* warm-up so the first frame already shows a loaded belt */
+for(let i=0;i<240;i++)step(1/30);
+const clock=new THREE.Clock();let first=true;
+function tick(){
+  requestAnimationFrame(tick);
+  const dt=Math.min(0.033,clock.getDelta());
+  updateParts(dt);
+  const run=!paused&&explodeT<0.05;
+  if(run){
+    step(dt);
+    beltTex.offset.y-=SPEED*dt/2;retTex.offset.y+=SPEED*dt/2;
+  }else{for(const m of modules){m.v+=(-420*m.y-13*m.v)*dt;m.y+=m.v*dt;}computeD();}
+  updateBelt();
+  writeInstances(explodeT<0.05);
+  if(tween){tween.t=Math.min(1,tween.t+dt/0.9);const s=tween.t*tween.t*(3-2*tween.t);camera.position.lerpVectors(tween.p0,tween.p1,s);controls.target.lerpVectors(tween.t0,tween.t1,s);if(tween.t>=1)tween=null;}
+  controls.update();
+  renderer.render(scene,camera);
+  updateLabels();
+  $('mD').style.width=(mDefl*100).toFixed(1)+'%';$('mS').style.width=(mSpill*100).toFixed(1)+'%';$('mP').style.width=(mDust*100).toFixed(1)+'%';
+  if(first){first=false;$('loader').hidden=true;}
+}
+tick();
+})();
+</script>
+
+</body></html>
