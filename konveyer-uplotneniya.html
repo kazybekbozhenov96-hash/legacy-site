@@ -372,6 +372,29 @@ section.blk{padding-block:72px 8px}
 .sc ul{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:3px;font-size:13.5px}
 .sc li::before{content:"— ";color:var(--muted)}
 .sc .go{margin-top:auto;padding-top:8px;font-weight:600;font-size:14px;color:var(--pu)}
+
+/* 3D promo banner on section pages */
+.m3d{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);background:#0f1419;color:#e6e9ec;border:1px solid rgba(242,163,58,.55);box-shadow:0 8px 28px rgba(12,15,18,.18);border-radius:8px;overflow:hidden;text-decoration:none;margin-top:28px;position:relative;transition:border-color .2s,box-shadow .2s}
+.m3d:hover{border-color:#f2a33a;box-shadow:0 10px 34px rgba(242,163,58,.18)}
+.m3d .pic{position:relative;min-height:240px;overflow:hidden;background:#0f1419}
+.m3d .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:m3dpan 14s ease-in-out infinite alternate;transform-origin:40% 50%}
+@keyframes m3dpan{0%{transform:scale(1.04) translateX(0)}100%{transform:scale(1.16) translateX(-3%)}}
+.m3d .pic::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,#0f1419 100%)}
+.m3d .badge{position:absolute;left:14px;top:14px;z-index:1;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:#f2a33a;color:#1a1206;padding:4px 8px;border-radius:3px}
+.m3d .play{position:absolute;left:50%;top:50%;z-index:1;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;padding:12px 18px 12px 14px;border-radius:999px;background:rgba(12,15,18,.82);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:15px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.m3d .play svg{width:28px;height:28px;color:#f2a33a;animation:spin3d 6s linear infinite}
+@keyframes spin3d{to{transform:rotate(360deg)}}
+.m3d .t{padding:24px 26px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.m3d .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.m3d h3{font-family:var(--display);font-weight:500;font-size:clamp(20px,2.4vw,26px)}
+.m3d p{color:#a8b3bd;font-size:15px}
+.m3d ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px;color:#d3dae0}
+.m3d li::before{content:"✓ ";color:#f2a33a}
+.m3d .go{align-self:flex-start;margin-top:6px;background:#f2a33a;color:#1a1206;font-weight:600;font-size:15px;padding:12px 18px;border-radius:4px}
+@media (max-width:760px){.m3d{grid-template-columns:minmax(0,1fr)}.m3d .pic{aspect-ratio:16/9;min-height:0}.m3d .pic::after{background:linear-gradient(transparent 60%,#0f1419)}}
+@media (prefers-reduced-motion:reduce){.m3d .pic img,.m3d .play svg{animation:none}}
+.sc .b3d{position:absolute;left:10px;top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:#f2a33a;color:#1a1206;padding:3px 7px;border-radius:3px}
+.sc .ph{position:relative}
 /* section page */
 .shero~.jump+.in .dsec{padding-top:0}
 .shero{background:#0f1419;color:#e6e9ec;margin-top:14px}
@@ -428,7 +451,9 @@ section.blk{padding-block:72px 8px}
     </div>
   </section>
 <nav class="jump" aria-label="Разделы направления «Конвейерные решения»"><div class="in"><a class="ov" href="konveyer.html">Обзор</a><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html" aria-current="page"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></nav>
-  <div class="in" style="padding-top:40px">
+  <div class="in" style="padding-top:12px">
+    <a class="m3d" href="zona.html" aria-label="Открыть 3D-модель «Зона загрузки»"><div class="pic"><img src="img/3d-zona.jpg" alt="" loading="lazy"><span class="badge">3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></div><div class="t"><span class="tag">Интерактивно · в браузере</span><h3>Зона загрузки в 3D</h3><p>Удар куска, прогиб ленты, просыпь и пыль у течки — и как это решают демпферный стол, уплотнения и пылезащита.</p><ul><li>Демпферный стол с торсионными опорами</li><li>Внутренние и наружные уплотнения течки</li><li>Включайте защиту по шагам</li></ul><span class="go">Открыть 3D-модель →</span></div></a>
+    <div style="height:40px"></div>
 <section class="dsec" id="c3">
 <div class="grp"><h3>Внутренние уплотнения течки</h3><p>Уплотнения первичного типа устанавливаются внутри течки, удерживают поток материала и снижают нагрузку на наружный фартук.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/33.jpg" alt="Полиуретан на стальном основании" loading="lazy"></div><div class="t"><b>Полиуретан на стальном основании</b><em>1219 / 1524 × 178 × 25 мм</em><p>Полиуретановый рабочий слой 19 мм и стальная основа 6 мм. Продолговатые крепёжные отверстия позволяют регулировать положение секции.</p><p class="adv">Принимает воздействие потока и защищает наружный фартук; крепёжные пазы упрощают регулировку.</p><a class="ask" href="index.html?sec=c3&item=Полиуретан на стальном основании#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/34.jpg" alt="Полиуретан с керамикой" loading="lazy"></div><div class="t"><b>Полиуретан с керамикой</b><em>1219 / 1524 × 178 × 25 мм</em><p>Керамические элементы 13 мм (92 % Al₂O₃), полиуретановая основа 6 мм и стальная подложка 6 мм. Для защиты от абразивного износа.</p><p class="adv">Керамика защищает зону контакта от абразивного износа, а полиуретановая основа поддерживает вставки.</p><a class="ask" href="index.html?sec=c3&item=Полиуретан с керамикой#request">Запросить →</a></div></article></div></div>
 <div class="grp"><h3>Наружные бортовые уплотнения</h3><p>Гибкие профили ограничивают выход мелкого материала и пыли через зазор между бортом течки и лентой.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/38.jpg" alt="Двухконтурный полиуретановый профиль" loading="lazy"></div><div class="t"><b>Двухконтурный полиуретановый профиль</b><p>Основная кромка удерживает материал, а эластичный фартук образует вторую линию уплотнения. Цельнолитой профиль устанавливают снаружи течки с возможностью регулировки и замены.</p><p class="adv">Вторая кромка ограничивает выход мелочи и пыли за основной контур.</p><a class="ask" href="index.html?sec=c3&item=Двухконтурный полиуретановый профиль#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/39.jpg" alt="Профили на монтажной рейке" loading="lazy"></div><div class="t"><b>Профили на монтажной рейке</b><p>Полиуретановые профили для контактного уплотнения зоны пересыпа. Крепление на рейке и фиксация позволяют менять изношенный участок.</p><p class="adv">Позволяют заменить изношенный участок и восстановить положение уплотнения на монтажной рейке.</p><a class="ask" href="index.html?sec=c3&item=Профили на монтажной рейке#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/40.jpg" alt="Уплотнения Super Block" loading="lazy"></div><div class="t"><b>Уплотнения Super Block</b><p>Для самых тяжёлых условий. Сменные элементы для боковых и задней стенок загрузочного узла. Прижимные пластины и опоры под лентой подбирают совместно с уплотнением.</p><p class="adv">Закрывают боковые и задние зоны просыпи; отдельные блоки можно заменять по износу.</p><a class="ask" href="index.html?sec=c3&item=Уплотнения Super Block#request">Запросить →</a></div></article></div></div>

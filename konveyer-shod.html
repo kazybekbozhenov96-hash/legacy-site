@@ -372,6 +372,29 @@ section.blk{padding-block:72px 8px}
 .sc ul{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:3px;font-size:13.5px}
 .sc li::before{content:"— ";color:var(--muted)}
 .sc .go{margin-top:auto;padding-top:8px;font-weight:600;font-size:14px;color:var(--pu)}
+
+/* 3D promo banner on section pages */
+.m3d{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);background:#0f1419;color:#e6e9ec;border:1px solid rgba(242,163,58,.55);box-shadow:0 8px 28px rgba(12,15,18,.18);border-radius:8px;overflow:hidden;text-decoration:none;margin-top:28px;position:relative;transition:border-color .2s,box-shadow .2s}
+.m3d:hover{border-color:#f2a33a;box-shadow:0 10px 34px rgba(242,163,58,.18)}
+.m3d .pic{position:relative;min-height:240px;overflow:hidden;background:#0f1419}
+.m3d .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:m3dpan 14s ease-in-out infinite alternate;transform-origin:40% 50%}
+@keyframes m3dpan{0%{transform:scale(1.04) translateX(0)}100%{transform:scale(1.16) translateX(-3%)}}
+.m3d .pic::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,#0f1419 100%)}
+.m3d .badge{position:absolute;left:14px;top:14px;z-index:1;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:#f2a33a;color:#1a1206;padding:4px 8px;border-radius:3px}
+.m3d .play{position:absolute;left:50%;top:50%;z-index:1;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;padding:12px 18px 12px 14px;border-radius:999px;background:rgba(12,15,18,.82);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:15px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.m3d .play svg{width:28px;height:28px;color:#f2a33a;animation:spin3d 6s linear infinite}
+@keyframes spin3d{to{transform:rotate(360deg)}}
+.m3d .t{padding:24px 26px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.m3d .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.m3d h3{font-family:var(--display);font-weight:500;font-size:clamp(20px,2.4vw,26px)}
+.m3d p{color:#a8b3bd;font-size:15px}
+.m3d ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px;color:#d3dae0}
+.m3d li::before{content:"✓ ";color:#f2a33a}
+.m3d .go{align-self:flex-start;margin-top:6px;background:#f2a33a;color:#1a1206;font-weight:600;font-size:15px;padding:12px 18px;border-radius:4px}
+@media (max-width:760px){.m3d{grid-template-columns:minmax(0,1fr)}.m3d .pic{aspect-ratio:16/9;min-height:0}.m3d .pic::after{background:linear-gradient(transparent 60%,#0f1419)}}
+@media (prefers-reduced-motion:reduce){.m3d .pic img,.m3d .play svg{animation:none}}
+.sc .b3d{position:absolute;left:10px;top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:#f2a33a;color:#1a1206;padding:3px 7px;border-radius:3px}
+.sc .ph{position:relative}
 /* section page */
 .shero~.jump+.in .dsec{padding-top:0}
 .shero{background:#0f1419;color:#e6e9ec;margin-top:14px}
@@ -428,7 +451,9 @@ section.blk{padding-block:72px 8px}
     </div>
   </section>
 <nav class="jump" aria-label="Разделы направления «Конвейерные решения»"><div class="in"><a class="ov" href="konveyer.html">Обзор</a><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html" aria-current="page"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></nav>
-  <div class="in" style="padding-top:40px">
+  <div class="in" style="padding-top:12px">
+    <a class="m3d" href="shod.html" aria-label="Открыть 3D-модель «Сход ленты»"><div class="pic"><img src="img/3d-shod.jpg" alt="" loading="lazy"><span class="badge">3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></div><div class="t"><span class="tag">Интерактивно · в браузере</span><h3>Сход ленты в 3D</h3><p>Перекос роликоопоры, загрузка не по центру, налипание — и как центрирующие системы возвращают ленту на ось.</p><ul><li>Конусная самоцентрирующая система</li><li>Механическое и гидравлическое центрирование</li><li>Нижние центрирующие опоры</li></ul><span class="go">Открыть 3D-модель →</span></div></a>
+    <div style="height:40px"></div>
 <section class="dsec" id="c5">
 <div class="grp"><h3>Центрирование рабочей ветви</h3><p>Боковое смещение устраняют с учётом загрузки, геометрии конвейера и состояния ленты.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/52.jpg" alt="Механические самоцентрирующие роликоопоры" loading="lazy"></div><div class="t"><b>Механические самоцентрирующие роликоопоры</b><p>Поворотная опора с профилированными роликами корректирует положение загруженной ленты. Покрытие роликов, угол желоба и размеры рамы выбирают по условиям эксплуатации.</p><p class="adv">Корректируют положение загруженной ленты без внешнего электропривода.</p><a class="ask" href="index.html?sec=c5&item=Механические самоцентрирующие роликоопоры#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/53.jpg" alt="Гидравлическое центрирование" loading="lazy"></div><div class="t"><b>Гидравлическое центрирование</b><p>При отклонении ленты следящий ролик приводит гидравлический механизм коррекции. Система не требует внешнего электрического питания.</p><p class="adv">Использует движение ленты для коррекции и не требует отдельного электрического питания.</p><a class="ask" href="index.html?sec=c5&item=Гидравлическое центрирование#request">Запросить →</a></div></article></div></div>
 <div class="grp"><h3>Нижние самоцентрирующие устройства</h3><p>Коррекция положения холостой ветви перед возвратом ленты к загрузочному и хвостовому узлам.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/55.jpg" alt="Нижняя V-образная роликоопора" loading="lazy"></div><div class="t"><b>Нижняя V-образная роликоопора</b><p>Двухроликовое исполнение для обратной ветви, в том числе при ограниченной монтажной высоте. Автоматическая механическая коррекция и раздельная замена роликов.</p><p class="adv">Корректирует холостую ветвь при небольшой монтажной высоте; ролики заменяются отдельно.</p><a class="ask" href="index.html?sec=c5&item=Нижняя V-образная роликоопора#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/56.jpg" alt="Усиленная нижняя роликоопора" loading="lazy"></div><div class="t"><b>Усиленная нижняя роликоопора</b><p>Жёсткая рама и поворотный механизм для тяжёлых условий. Модульные элементы упрощают обслуживание. Возможность реверса проверяют для выбранной комплектации.</p><p class="adv">Жёсткая рама поддерживает геометрию узла, а модульная конструкция упрощает замену элементов.</p><a class="ask" href="index.html?sec=c5&item=Усиленная нижняя роликоопора#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/57.jpg" alt="Центрирующий возвратный ролик" loading="lazy"></div><div class="t"><b>Центрирующий возвратный ролик</b><p>Ролик с поворотным узлом реагирует на боковое смещение ленты. Предусмотрены исполнения для реверсивного движения.</p><p class="adv">Реагирует на смещение обратной ветви и помогает стабилизировать её движение к барабану.</p><a class="ask" href="index.html?sec=c5&item=Центрирующий возвратный ролик#request">Запросить →</a></div></article></div></div>
