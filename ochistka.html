@@ -1095,6 +1095,7 @@ window.addEventListener('resize',resize);
 if(window.ResizeObserver){const ro=new ResizeObserver(resize);ro.observe(view);ro.observe(pview);}
 initViewer();
 setMode(1);setPause(paused);$('oStick').textContent=STICK[Math.min(4,Math.floor(stick*4.999))];
+{const st=+new URLSearchParams(location.search).get('step');if(st>=2&&st<=4)setTimeout(()=>setMode(st),700);}
 showProduct('prim_seg');resize();
 if(location.hash==='#shot'){camera.position.set(...CAMS.card.p);controls.target.set(...CAMS.card.t);}
 for(let i=0;i<200;i++){updateParts(1/30);step(1/30);}

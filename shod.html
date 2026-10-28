@@ -1000,6 +1000,7 @@ if(window.ResizeObserver){const ro=new ResizeObserver(resize);ro.observe(view);r
 initViewer();
 buildSolutions();
 setMode(1);setCause('skew');setMode(1);setPause(paused);
+{const st=+new URLSearchParams(location.search).get('step');if(st>=2&&st<=4)setTimeout(()=>setMode(st),700);}
 showProduct('cone');resize();
 for(let i=0;i<180;i++){updateParts(1/30);step(1/30);updateBelts();}
 const clock=new THREE.Clock();let first=true;

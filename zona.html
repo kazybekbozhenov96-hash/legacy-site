@@ -801,6 +801,7 @@ function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(
 window.addEventListener('resize',resize);
 if(window.ResizeObserver)new ResizeObserver(resize).observe(view);
 setMode(1);setPause(paused);readout();resize();
+{const st=+new URLSearchParams(location.search).get('step');if(st>=2&&st<=4)setTimeout(()=>setMode(st),700);}
 /* warm-up so the first frame already shows a loaded belt */
 for(let i=0;i<240;i++)step(1/30);
 const clock=new THREE.Clock();let first=true;

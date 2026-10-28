@@ -1143,6 +1143,7 @@ window.addEventListener('resize',resize);
 if(window.ResizeObserver){const ro=new ResizeObserver(resize);ro.observe(view);ro.observe(pview);}
 initViewer();
 setMode(1);setPause(paused);showProduct('ep');resize();
+{const st=+new URLSearchParams(location.search).get('step');if(st>=2&&st<=4)setTimeout(()=>setMode(st),700);}
 if(location.hash==='#shot'){camera.position.set(...CAMS.card.p);controls.target.set(...CAMS.card.t);}
 for(let i=0;i<150;i++){updateParts(1/30);step(1/30);}
 const clock=new THREE.Clock();let first=true;
