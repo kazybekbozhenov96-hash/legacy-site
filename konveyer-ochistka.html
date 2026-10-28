@@ -398,17 +398,20 @@ section.blk{padding-block:72px 8px}
 
 /* 3D tile on the hero photo + in-page viewer */
 .shero .pic{position:relative}
-.t3d{all:unset;box-sizing:border-box;cursor:pointer;position:absolute;left:14px;bottom:14px;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:8px;background:rgba(12,15,18,.86);border:1px solid rgba(242,163,58,.7);color:#fff;box-shadow:0 8px 26px rgba(0,0,0,.4);backdrop-filter:blur(4px);transition:transform .2s,border-color .2s}
+.t3d{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:10px;padding:6px 20px 6px 6px;min-height:70px;border-radius:8px;background:linear-gradient(90deg,rgba(242,163,58,.16),rgba(12,15,18,.9) 70%);border:1.5px solid #f2a33a;color:#fff;box-shadow:0 0 0 0 rgba(242,163,58,.5);animation:t3dglow 2.8s ease-out infinite;backdrop-filter:blur(4px);transition:transform .2s,border-color .2s}
 .t3d:hover{transform:translateY(-2px);border-color:#f2a33a}
 .t3d:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
-.t3d .th{position:relative;width:118px;height:66px;border-radius:5px;overflow:hidden;flex:none;background:#0f1419}
+.t3d .th{position:relative;width:108px;height:58px;border-radius:5px;overflow:hidden;flex:none;background:#0f1419}
 .t3d .th img{width:100%;height:100%;object-fit:cover;animation:m3dpan 9s ease-in-out infinite alternate}
 @keyframes m3dpan{0%{transform:scale(1.05)}100%{transform:scale(1.22) translateX(-6%)}}
 .t3d .th svg{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;color:#f2a33a;filter:drop-shadow(0 1px 4px rgba(0,0,0,.8));animation:spin3d 6s linear infinite}
 @keyframes spin3d{to{transform:rotate(360deg)}}
-.t3d b{display:block;font-weight:600;font-size:15px}
+.t3d b{display:block;font-weight:600;font-size:16.5px;line-height:1.2}
 .t3d small{display:block;font-family:var(--mono);font-size:11.5px;color:#f2a33a;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
-@media (max-width:480px){.t3d .th{width:86px;height:50px}.t3d b{font-size:14px}}
+.shero .cta{align-items:center}
+@keyframes t3dglow{0%{box-shadow:0 0 0 0 rgba(242,163,58,.45)}70%,100%{box-shadow:0 0 0 12px rgba(242,163,58,0)}}
+@media (prefers-reduced-motion:reduce){.t3d{animation:none}}
+@media (max-width:480px){.t3d{width:100%}}
 @media (prefers-reduced-motion:reduce){.t3d .th img,.t3d .th svg{animation:none}}
 .viewer{position:fixed;inset:0;z-index:30;background:rgba(8,11,14,.88);display:flex;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
 .viewer .box{width:min(1180px,100%);height:min(780px,100%);display:flex;flex-direction:column;gap:8px}
@@ -469,9 +472,9 @@ section.blk{padding-block:72px 8px}
         <p class="eyebrow"><b>Конвейерные решения</b> · раздел 01</p>
         <h1><i>01</i>Очистка ленты</h1>
         <p class="lede">Материал остаётся на ленте, накапливается у барабана и уносится на обратную ветвь. Решение — первичные и вторичные очистители: снять основной слой на барабане и остатки на обратной ветви.</p>
-        <div class="cta"><a class="btn" href="index.html?sec=c1#request">Обсудить задачу</a></div>
+        <div class="cta"><a class="btn" href="index.html?sec=c1#request">Обсудить задачу</a><button class="t3d" data-3d="ochistka.html" data-name="Очистка ленты" aria-label="Открыть 3D-модель «Очистка ленты»"><span class="th"><img src="img/3d-ochistka.jpg" alt=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span><small>3D-модель</small><b>Покрутить «Очистка ленты»</b></span></button></div>
       </div>
-      <div class="pic"><img src="img/cat/5.jpg" alt="Налипание и очистка ленты"><button class="t3d" data-3d="ochistka.html" data-name="Очистка ленты" aria-label="Открыть 3D-модель «Очистка ленты»"><span class="th"><img src="img/3d-ochistka.jpg" alt=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span><small>3D-модель</small><b>Покрутить «Очистка ленты»</b></span></button></div>
+      <div class="pic"><img src="img/cat/5.jpg" alt="Налипание и очистка ленты"></div>
     </div>
   </section>
 <nav class="jump" aria-label="Разделы направления «Конвейерные решения»"><div class="in"><a class="ov" href="konveyer.html">Обзор</a><a href="konveyer-ochistka.html" aria-current="page"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></nav>

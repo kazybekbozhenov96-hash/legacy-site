@@ -398,17 +398,20 @@ section.blk{padding-block:72px 8px}
 
 /* 3D tile on the hero photo + in-page viewer */
 .shero .pic{position:relative}
-.t3d{all:unset;box-sizing:border-box;cursor:pointer;position:absolute;left:14px;bottom:14px;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:8px;background:rgba(12,15,18,.86);border:1px solid rgba(242,163,58,.7);color:#fff;box-shadow:0 8px 26px rgba(0,0,0,.4);backdrop-filter:blur(4px);transition:transform .2s,border-color .2s}
+.t3d{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:10px;padding:6px 20px 6px 6px;min-height:70px;border-radius:8px;background:linear-gradient(90deg,rgba(242,163,58,.16),rgba(12,15,18,.9) 70%);border:1.5px solid #f2a33a;color:#fff;box-shadow:0 0 0 0 rgba(242,163,58,.5);animation:t3dglow 2.8s ease-out infinite;backdrop-filter:blur(4px);transition:transform .2s,border-color .2s}
 .t3d:hover{transform:translateY(-2px);border-color:#f2a33a}
 .t3d:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
-.t3d .th{position:relative;width:118px;height:66px;border-radius:5px;overflow:hidden;flex:none;background:#0f1419}
+.t3d .th{position:relative;width:108px;height:58px;border-radius:5px;overflow:hidden;flex:none;background:#0f1419}
 .t3d .th img{width:100%;height:100%;object-fit:cover;animation:m3dpan 9s ease-in-out infinite alternate}
 @keyframes m3dpan{0%{transform:scale(1.05)}100%{transform:scale(1.22) translateX(-6%)}}
 .t3d .th svg{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;color:#f2a33a;filter:drop-shadow(0 1px 4px rgba(0,0,0,.8));animation:spin3d 6s linear infinite}
 @keyframes spin3d{to{transform:rotate(360deg)}}
-.t3d b{display:block;font-weight:600;font-size:15px}
+.t3d b{display:block;font-weight:600;font-size:16.5px;line-height:1.2}
 .t3d small{display:block;font-family:var(--mono);font-size:11.5px;color:#f2a33a;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
-@media (max-width:480px){.t3d .th{width:86px;height:50px}.t3d b{font-size:14px}}
+.shero .cta{align-items:center}
+@keyframes t3dglow{0%{box-shadow:0 0 0 0 rgba(242,163,58,.45)}70%,100%{box-shadow:0 0 0 12px rgba(242,163,58,0)}}
+@media (prefers-reduced-motion:reduce){.t3d{animation:none}}
+@media (max-width:480px){.t3d{width:100%}}
 @media (prefers-reduced-motion:reduce){.t3d .th img,.t3d .th svg{animation:none}}
 .viewer{position:fixed;inset:0;z-index:30;background:rgba(8,11,14,.88);display:flex;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
 .viewer .box{width:min(1180px,100%);height:min(780px,100%);display:flex;flex-direction:column;gap:8px}
