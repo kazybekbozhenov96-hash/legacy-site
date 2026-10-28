@@ -168,8 +168,15 @@ section.blk{padding-block:72px 8px}
 /* models */
 .models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .mcard{background:#0f1419;color:#e6e9ec;border-radius:6px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;min-width:0}
-.mcard .pic{position:relative;aspect-ratio:16/8}
-.mcard .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+.mcard .pic{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;width:100%;aspect-ratio:16/8;background:#0f1419;overflow:hidden}
+.mcard .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.mcard .pic:hover img{transform:scale(1.03)}
+.mcard .pic:focus-visible{outline:2px solid #f2a33a;outline-offset:-2px}
+.mcard .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;padding:12px 18px 12px 14px;border-radius:999px;background:rgba(12,15,18,.8);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:15px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.35);transition:background .2s}
+.mcard .play svg{width:26px;height:26px;color:#f2a33a;animation:spin3d 6s linear infinite}
+.mcard .pic:hover .play{background:rgba(12,15,18,.92)}
+@keyframes spin3d{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.mcard .play svg{animation:none}.mcard .pic img{transition:none}}
 .mcard .pic span{position:absolute;left:14px;top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:#f2a33a;color:#1a1206;padding:4px 8px;border-radius:3px}
 .mcard .txt{padding:18px 20px 20px;display:flex;flex-direction:column;gap:8px}
 .mcard .ref{font-family:var(--mono);font-size:12px;color:#f2a33a;letter-spacing:.06em;text-transform:uppercase}
@@ -331,21 +338,21 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       </div>
       <div class="models">
         <article class="mcard">
-          <div class="pic"><img src="img/discharge.jpg" alt="" loading="lazy"><span>3D</span></div>
+          <button class="pic" data-open="zona" aria-label="Открыть 3D-модель «Зона загрузки»"><img src="img/3d-zona.jpg" alt="Кадр из 3D-модели зоны загрузки: течка, демпферный стол и уплотнения" loading="lazy"><span>3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></button>
           <div class="txt">
             <span class="ref">Разделы 02–03</span>
             <h3>Зона загрузки</h3>
             <p>Удар куска, прогиб ленты, просыпь и пыль. Демпферный стол с торсионными опорами, уплотнения течки и пылезащита.</p>
-            <div class="row"><button class="btn" data-open="zona">Открыть модель</button></div>
+            <div class="row"><button class="btn" data-open="zona">Открыть 3D-модель</button></div>
           </div>
         </article>
         <article class="mcard">
-          <div class="pic"><img src="img/aerial.jpg" alt="" loading="lazy"><span>3D</span></div>
+          <button class="pic" data-open="shod" aria-label="Открыть 3D-модель «Сход ленты»"><img src="img/3d-shod.jpg" alt="Кадр из 3D-модели ленточного конвейера со сходом ленты" loading="lazy"><span>3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></button>
           <div class="txt">
             <span class="ref">Раздел 05</span>
             <h3>Сход ленты</h3>
-            <p>Перекос роликоопоры, загрузка не по центру, налипание. Конусные самоцентрирующие роликоопоры и нижняя центрирующая.</p>
-            <div class="row"><button class="btn" data-open="shod">Открыть модель</button></div>
+            <p>Перекос роликоопоры, загрузка не по центру, налипание. Конусные, механические и гидравлические центрирующие роликоопоры, нижние центрирующие опоры.</p>
+            <div class="row"><button class="btn" data-open="shod">Открыть 3D-модель</button></div>
           </div>
         </article>
       </div>
