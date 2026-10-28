@@ -166,7 +166,7 @@ section.blk{padding-block:72px 8px}
 @media (prefers-reduced-motion:reduce){.field img{transition:none}}
 
 /* models */
-.models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.models{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
 .mcard{background:#0f1419;color:#e6e9ec;border-radius:6px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;min-width:0}
 .mcard .pic{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;width:100%;aspect-ratio:16/8;background:#0f1419;overflow:hidden}
 .mcard .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
@@ -338,6 +338,15 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       </div>
       <div class="models">
         <article class="mcard">
+          <button class="pic" data-open="ochistka" aria-label="Открыть 3D-модель «Очистка ленты»"><img src="img/3d-ochistka.jpg" alt="Кадр из 3D-модели: разгрузочный барабан с первичным очистителем ленты" loading="lazy"><span>3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></button>
+          <div class="txt">
+            <span class="ref">Раздел 01</span>
+            <h3>Очистка ленты</h3>
+            <p>Налипание после разгрузки, просыпь под обратной ветвью, камни у хвостового барабана. Первичные и вторичные очистители, плужки, щётки.</p>
+            <div class="row"><button class="btn" data-open="ochistka">Открыть 3D-модель</button></div>
+          </div>
+        </article>
+        <article class="mcard">
           <button class="pic" data-open="zona" aria-label="Открыть 3D-модель «Зона загрузки»"><img src="img/3d-zona.jpg" alt="Кадр из 3D-модели зоны загрузки: течка, демпферный стол и уплотнения" loading="lazy"><span>3D-модель</span><b class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить в 3D</b></button>
           <div class="txt">
             <span class="ref">Разделы 02–03</span>
@@ -429,7 +438,7 @@ const CAT=[
   ["Вторичные скребки","Модульные твердосплавные сегменты, раздельные лезвия с амортизацией, очистители для шлама.","до 10 м/с"],
   ["Плужки","V-образные и диагональные. Защищают барабан от материала на внутренней стороне ленты.",""],
   ["Щёточные очистители и спиральные ролики","Для профильных лент и стойких налипаний.",""]],
-  p:"Ширина и скорость ленты • диаметр барабана • тип стыка • материал и влажность • реверс • место установки"},
+  p:"Ширина и скорость ленты • диаметр барабана • тип стыка • материал и влажность • реверс • место установки",model:"ochistka"},
  {id:"c2",img:"discharge",t:"Ударные нагрузки в зоне пересыпа",s:"Демпферные столы, амортизирующие балки, опоры",items:[
   ["Демпферный стол с торсионными опорами","Центральная секция на каучуковых торсионах. Увеличивает срок службы ленты на 30 %.","самые тяжёлые условия"],
   ["Демпферные станции","Распределяют удар падающего материала и ограничивают прогиб ленты.",""],
@@ -502,7 +511,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b
 if(/^#c\d$/.test(location.hash))openSec(location.hash.slice(1));
 
 /* ---------- 3D viewer (lazy) ---------- */
-const MODELS={zona:["Зона загрузки","zona.html"],shod:["Сход ленты","shod.html"]};
+const MODELS={zona:["Зона загрузки","zona.html"],shod:["Сход ленты","shod.html"],ochistka:["Очистка ленты","ochistka.html"]};
 let lastFocus=null;
 function openModel(k){location.href=MODELS[k][1];}
 function closeModel(){$('viewer').hidden=true;$('vF').removeAttribute('src');document.body.style.overflow='';if(lastFocus)lastFocus.focus();}

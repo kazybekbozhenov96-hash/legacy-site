@@ -684,8 +684,8 @@ function finishBelt(B){
 }
 const CB=mkBelt(NS,MAT.belt),RB=mkBelt(12,MAT.retBelt);
 const wrapGeo=new THREE.CylinderGeometry(0.299,0.299,1.2,48,1,true,0,Math.PI);wrapGeo.rotateX(Math.PI/2);
-const tailWrap=mesh(wrapGeo,MAT.belt,scene,X0,0.715,0);tailWrap.rotation.z=Math.PI/2;
-const headWrap=mesh(wrapGeo,MAT.belt,scene,X1,0.715,0);headWrap.rotation.z=-Math.PI/2;
+const tailWrap=mesh(wrapGeo,MAT.belt,scene,X0,0.715,0);tailWrap.rotation.z=Math.PI;
+const headWrap=mesh(wrapGeo,MAT.belt,scene,X1,0.715,0);headWrap.rotation.z=0;
 let contactSamples=[];
 function updateBelts(){
   contactSamples.length=0;
