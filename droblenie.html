@@ -198,6 +198,21 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 @media (max-width:860px){.dirs{grid-template-columns:minmax(0,1fr)}.dir:first-child{grid-row:auto}.dir ul{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){.dir .pic img{transition:none}}
 
+/* motion: hover lift + amber glow, click pulse, reveal on scroll */
+.prob{position:relative;transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s,background .22s;will-change:transform}
+.prob i{transition:transform .22s,letter-spacing .22s}
+.prob::after{content:"";position:absolute;inset:0;border:1.5px solid transparent;pointer-events:none;transition:border-color .22s}
+@media (hover:hover){.prob:hover{transform:scale(1.035);z-index:2;background:var(--paper);box-shadow:0 12px 32px rgba(0,0,0,.28),0 0 0 1px rgba(242,163,58,.5),0 0 24px rgba(242,163,58,.18)}
+  .prob:hover::after{border-color:var(--pu)}.prob:hover i{transform:translateX(4px)}.prob:hover b{color:var(--pu)}}
+.prob b{transition:color .22s}
+.prob.go{animation:probGo .32s ease-out forwards;z-index:3}
+@keyframes probGo{0%{transform:scale(1.035)}35%{transform:scale(.97);box-shadow:0 0 0 2px var(--pu),0 0 40px rgba(242,163,58,.45)}100%{transform:scale(1.02);box-shadow:0 0 0 2px var(--pu),0 0 28px rgba(242,163,58,.3)}}
+.dir,.mcard,.svc article{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+@media (hover:hover){.dir:hover,.svc article:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.22);border-color:var(--pu)}.mcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.35),0 0 0 1px rgba(242,163,58,.5)}}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.prob,.prob i,.dir,.mcard,.svc article,.rv{transition:none!important;animation:none!important;transform:none!important;opacity:1!important}}
+
 /* nav: «Направления» mega-menu + mobile burger */
 .bar .in{position:relative}
 .nav{align-items:center}
@@ -423,6 +438,15 @@ section.blk{padding-block:72px 8px}
 .viewer iframe{flex:1;width:100%;border:1px solid #28333e;border-radius:8px;background:#0f1419}
 @media (max-width:640px){.viewer{padding:0}.viewer .box{height:100%;padding:8px}.viewer .vbar a{display:none}}
 /* section page */
+
+/* motion */
+.card,.sc,.oc,.pn a{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+@media (hover:hover){.card:hover,.sc:hover,.pn a:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.22),0 0 0 1px rgba(242,163,58,.45);border-color:var(--pu)}.oc:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.3)}
+  .card:hover .ph img{transform:scale(1.06)}.card a.ask{transition:transform .2s}.card:hover a.ask{transform:translateX(4px)}}
+.card .ph img{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.jump a{transition:background .2s,border-color .2s,transform .2s}
+@media (hover:hover){.jump a:hover{border-color:var(--pu);transform:translateY(-1px)}}
+@media (prefers-reduced-motion:reduce){.card,.sc,.oc,.pn a,.card .ph img,.jump a{transition:none!important;transform:none!important}}
 .shero~.jump+.in .dsec{padding-top:0}
 .shero{background:#0f1419;color:#e6e9ec;margin-top:14px}
 .shero .in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:center;padding-block:36px}
