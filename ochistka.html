@@ -360,6 +360,7 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="realism.js"></script>
 <script>
 
 (function(){
@@ -612,6 +613,7 @@ function setupRenderer(el){
   r.outputEncoding=THREE.sRGBEncoding;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.0;
   el.insertBefore(r.domElement,el.firstChild);return r;
 }
+if(window.LegacyRealism)LegacyRealism.applyKit(THREE,{MAT,TX,retBeltTex});
 
 /* =====================================================================
    CLEANER BUILDERS  (local frame: +y points INTO the belt, contact line at y=0, z across belt)

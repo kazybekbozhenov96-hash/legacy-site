@@ -342,6 +342,7 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="realism.js"></script>
 <script>
 
 (function(){
@@ -594,6 +595,7 @@ function setupRenderer(el){
   r.outputEncoding=THREE.sRGBEncoding;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.0;
   el.insertBefore(r.domElement,el.firstChild);return r;
 }
+if(window.LegacyRealism)LegacyRealism.applyKit(THREE,{MAT,TX,retBeltTex});
 
 /* =====================================================================
    DETAILED PARTS (catalogue viewer, cutaway-capable)
@@ -622,6 +624,7 @@ function lagTexture(kind){
 const LAG={worn:null,diamond:lagTexture('diamond'),cer:lagTexture('cer'),quick:lagTexture('quick')};
 for(const k of['diamond','cer','quick'])LAG[k].repeat.set(6,2);
 const lagMat={worn:MATR.worn,diamond:new THREE.MeshStandardMaterial({map:LAG.diamond,roughness:.85}),cer:new THREE.MeshStandardMaterial({map:LAG.cer,roughness:.6}),quick:new THREE.MeshStandardMaterial({map:LAG.quick,roughness:.85})};
+if(window.LegacyRealism){for(const k of['diamond','cer','quick','worn'])LegacyRealism.setLag(THREE,lagMat[k],k,[2,1.25],k==='worn'?0.6:1.6);}
 const CUT=new THREE.Plane(new THREE.Vector3(0,0,-1),0);   /* viewer cutaway: hides z>0 half */
 function cutable(m){const c=m.clone();c.side=THREE.DoubleSide;c.clippingPlanes=[CUT];c.userData.cut=true;return c;}
 /* detailed idler roller along local Y, centred, with bearings and labyrinth seals */
@@ -706,11 +709,11 @@ const tailP=new THREE.Group();tailP.position.set(X0,HY,0);scene.add(tailP);
    boxM(0.04,0.14,0.14,MAT.amber,scene,X0+0.56,HY,sg*0.92);}}
 /* head (drive) pulley */
 const headP=new THREE.Group();headP.position.set(X1,HY,0);scene.add(headP);
-const headShell=mesh(new THREE.CylinderGeometry(0.285,0.285,1.3,48),MAT.cap,headP);headShell.rotation.x=Math.PI/2;
-const headLag=mesh(new THREE.CylinderGeometry(0.299,0.299,1.24,64,1,true),lagMat.worn,headP);headLag.rotation.x=Math.PI/2;
+const headShell=mesh(new THREE.CylinderGeometry(0.285,0.285,1.62,48),MAT.cap,headP);headShell.rotation.x=Math.PI/2;
+const headLag=mesh(new THREE.CylinderGeometry(0.299,0.299,1.56,96,1,true),lagMat.worn,headP);headLag.rotation.x=Math.PI/2;
 const headInner=new THREE.Group();headP.add(headInner);
-for(const sg of[-1,1]){const e=mesh(new THREE.CylinderGeometry(0.27,0.27,0.02,40),MAT.cap,headP,0,0,sg*0.66);e.rotation.x=Math.PI/2;
-  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;bolt(headP,Math.cos(a)*0.065,Math.sin(a)*0.065,sg*0.672,'z');}}
+for(const sg of[-1,1]){const e=mesh(new THREE.CylinderGeometry(0.27,0.27,0.02,40),MAT.cap,headP,0,0,sg*0.81);e.rotation.x=Math.PI/2;
+  for(let k=0;k<6;k++){const a=k/6*Math.PI*2;bolt(headP,Math.cos(a)*0.065,Math.sin(a)*0.065,sg*0.822,'z');}}
 const headShaft=mesh(new THREE.CylinderGeometry(0.06,0.06,2.3,20),MAT.shaft,scene,X1,HY,-0.25);headShaft.rotation.x=Math.PI/2;
 const headStand=new THREE.Group();scene.add(headStand);
 for(const sg of[-1,1]){boxM(0.36,0.06,0.16,MAT.hyd,headStand,X1,HY-0.09,sg*0.9);const hb=mesh(new THREE.CylinderGeometry(0.1,0.1,0.15,24),MAT.hyd,headStand,X1,HY,sg*0.9);hb.rotation.x=Math.PI/2;
@@ -849,7 +852,7 @@ function placeLabel(el,v,cam,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||M
 function updateLabels(){const w=view.clientWidth,h=view.clientHeight;for(const d of labelDefs){if(!d.show()){d.el.hidden=true;d.was=false;continue;}const now=performance.now();if(!d.was){d.was=true;d.until=now+4500;}if(!labelsOn&&now>d.until){d.el.hidden=true;continue;}const t=d.t();if(d.el.textContent!==t)d.el.textContent=t;tmpV.set(...d.p());placeLabel(d.el,tmpV,camera,w,h);}}
 
 /* ---------- camera ---------- */
-const CAMS={overview:{p:[5.2,3.2,5.2],t:[0.0,0.7,0]},roller:{p:[SEIZED_X+0.9,1.45,1.25],t:[SEIZED_X,0.95,0]},under:{p:[BROKEN_X+1.3,0.15,1.6],t:[BROKEN_X,0.38,0]},drive:{p:[X1+1.8,1.4,-1.2],t:[X1,0.7,-0.5]},card:{p:[X1+1.6,1.6,2.6],t:[X1-1.4,0.75,-0.2]}};
+const CAMS={overview:{p:[5.2,3.2,5.2],t:[0.0,0.7,0]},roller:{p:[SEIZED_X+0.9,1.45,1.25],t:[SEIZED_X,0.95,0]},under:{p:[BROKEN_X+1.3,0.15,1.6],t:[BROKEN_X,0.38,0]},drive:{p:[X1+1.05,1.05,-1.75],t:[X1-0.05,0.72,-0.62]},card:{p:[X1+1.6,1.6,2.6],t:[X1-1.4,0.75,-0.2]}};
 camera.position.set(...CAMS.overview.p);controls.target.set(...CAMS.overview.t);
 let tween=null;
 function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:new THREE.Vector3(...c.p),t1:new THREE.Vector3(...c.t)};
