@@ -114,7 +114,7 @@ section.blk{padding-block:72px 8px}
 .pphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pphoto figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;color:#fff;font-size:14px;background:linear-gradient(transparent,rgba(12,15,18,.85))}
 .probs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.prob{all:unset;box-sizing:border-box;cursor:pointer;background:var(--paper);padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.prob{all:unset;box-sizing:border-box;cursor:pointer;text-decoration:none;color:inherit;background:var(--paper);padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .prob:hover{background:var(--steel)}
 .prob:focus-visible{outline:2px solid var(--pu);outline-offset:-2px}
 .prob b{font-weight:600;font-size:16.5px}
@@ -241,24 +241,83 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--pu);outline-offs
 footer{padding-block:22px 36px;color:var(--muted);font-size:12.5px}
 footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
 @media (max-width:760px){.contacts .in{grid-template-columns:minmax(0,1fr)}}
+
+/* nav: «Направления» mega-menu + mobile burger */
+.bar .in{position:relative}
+.nav{align-items:center}
+.nav a[aria-current]{color:var(--ink)}
+.dd-b{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;color:var(--muted);font-size:14px}
+.dd-b svg{width:12px;height:12px;transition:transform .2s}
+.dd-b:hover,.dd-b.on,.dd.open .dd-b{color:var(--ink)}
+.dd.open .dd-b svg{transform:rotate(180deg)}
+.dd-b:focus-visible{outline:2px solid var(--pu);outline-offset:4px}
+.dd-m{display:none;position:absolute;top:60px;right:16px;width:min(860px,calc(100vw - 32px));background:var(--paper);border:1px solid var(--line);border-top:2px solid var(--pu);border-radius:0 0 6px 6px;box-shadow:0 18px 40px rgba(12,15,18,.16);padding:18px;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 22px;z-index:12}
+.dd.open .dd-m{display:grid}
+.dd-col{display:grid;gap:10px;align-content:start;min-width:0}
+.dd-h{display:grid;gap:3px;text-decoration:none;padding:10px 12px;border-radius:4px;background:var(--steel)}
+.dd-h b{font-family:var(--display);font-weight:500;font-size:15px;color:var(--ink)}
+.dd-h small{font-size:12.5px;color:var(--muted);line-height:1.4}
+.dd-h:hover b{color:var(--pu)}
+.dd-s{display:grid;gap:2px}
+.dd-s a{display:flex;gap:10px;font-size:13.5px;color:var(--ink)!important;text-decoration:none;padding:5px 12px;border-radius:3px}
+.dd-s a:hover{background:var(--steel)}
+.dd-s i{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--pu);min-width:30px;padding-top:2px}
+.dd-all{grid-column:1/-1;justify-self:end;font-size:13px;color:var(--pu)!important;font-weight:600}
+.burger{all:unset;cursor:pointer;display:none;width:40px;height:38px;border:1px solid var(--line);border-radius:4px;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:none}
+.burger span{display:block;width:18px;height:2px;background:var(--ink);transition:transform .2s,opacity .2s}
+.burger:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+.bar.menu .burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.bar.menu .burger span:nth-child(2){opacity:0}
+.bar.menu .burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media (max-width:900px){
+  .burger{display:inline-flex}
+  .bar .tel{margin-left:auto}
+  .bar.menu .nav{display:flex;position:absolute;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(12,15,18,.18);padding:6px 16px 16px;max-height:calc(100dvh - 60px - env(safe-area-inset-top,0px));overflow:auto}
+  .bar.menu .nav>a{padding:13px 0;border-bottom:1px solid var(--line);font-size:16px;color:var(--ink)}
+  .dd-b{display:none}
+  .bar.menu .dd-m{display:grid;position:static;width:auto;border:0;box-shadow:none;padding:8px 0 12px;grid-template-columns:minmax(0,1fr);gap:12px;border-bottom:1px solid var(--line);border-radius:0}
+  .dd-s{display:none}
+  .dd-all{justify-self:start}
+}
+
+/* directions (home) */
+.dirs{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto auto;gap:16px}
+.dir{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.dir:first-child{grid-row:span 2}
+.dir .pic{display:block;position:relative;aspect-ratio:16/8;background:#1b1f22;overflow:hidden}
+.dir:first-child .pic{aspect-ratio:16/10}
+.dir .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.dir .pic:hover img{transform:scale(1.03)}
+.dir .pic span{position:absolute;left:14px;top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;background:#f2a33a;color:#1a1206;padding:4px 8px;border-radius:3px}
+.dir .t{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.dir h3{font-family:var(--display);font-weight:500;font-size:clamp(19px,2.2vw,24px)}
+.dir h3 a{text-decoration:none}.dir h3 a:hover{color:var(--pu)}
+.dir p{color:var(--muted);font-size:14.5px}
+.dir ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+.dir li a{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);text-decoration:none;font-size:14.5px}
+.dir li a:hover{color:var(--pu)}
+.dir li i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--pu);min-width:32px;padding-top:2px}
+.dir .btn{align-self:flex-start;margin-top:auto}
+@media (max-width:860px){.dirs{grid-template-columns:minmax(0,1fr)}.dir:first-child{grid-row:auto}.dir ul{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.dir .pic img{transition:none}}
 </style>
 </head>
 <body>
 
 
-<header class="bar">
+<header class="bar" id="bar">
   <div class="in">
-    <a class="logo" href="#top"><b>LEGACY</b><span>Kazakhstan</span></a>
-    <nav class="nav" aria-label="Разделы">
+    <a class="logo" href="./"><b>LEGACY</b><span>Kazakhstan</span></a>
+    <nav class="nav" id="nav" aria-label="Разделы">
+      <div class="dd" id="dd"><button class="dd-b" id="ddB" aria-expanded="false" aria-controls="ddM">Направления<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+        <div class="dd-m" id="ddM"><div class="dd-col"><a class="dd-h" href="konveyer.html"><b>Конвейерные решения</b><small>Очистка, удар в зоне загрузки, уплотнения, ролики и барабаны, центрирование, ленты</small></a><div class="dd-s"><a href="konveyer.html#c1"><i>01</i>Очистка ленты</a><a href="konveyer.html#c2"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer.html#c3"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer.html#c4"><i>04</i>Качественные комплектующие</a><a href="konveyer.html#c5"><i>05</i>Сход ленты</a><a href="konveyer.html#c6"><i>06</i>Ленты и защита конвейера</a></div></div><div class="dd-col"><a class="dd-h" href="droblenie.html"><b>Дробление и сортировка</b><small>Питатели, дробилки, мобильные комплексы, грохоты, сита, запчасти</small></a><div class="dd-s"><a href="droblenie.html#c7a"><i>07.1</i>Питатели</a><a href="droblenie.html#c7b"><i>07.2</i>Дробилки</a><a href="droblenie.html#c7c"><i>07.3</i>Мобильные комплексы</a><a href="droblenie.html#c7d"><i>07.4</i>Грохоты</a><a href="droblenie.html#c7e"><i>07.5</i>Сита и просеивающие поверхности</a><a href="droblenie.html#c7f"><i>07.6</i>Запасные и износостойкие части</a></div></div><div class="dd-col"><a class="dd-h" href="nasosy.html"><b>Насосы</b><small>Центробежные, химические, шламовые насосы и станции</small></a><div class="dd-s"></div></div><a class="dd-all" href="#catalog">Все направления на главной →</a></div></div>
       <a href="about.html">О нас</a>
-      <a href="#services">Услуги</a>
       <a href="#problems">Решения</a>
-      <a href="#catalog">Каталог</a>
       <a href="#models">3D-модели</a>
       <a href="#request">Запрос</a>
     </nav>
-    <a class="tel about-m" href="about.html">О нас</a>
     <a class="tel" href="#contacts">Контакты</a>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="nav" aria-label="Меню"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -295,7 +354,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
     <div class="in">
       <div class="head">
         <div><p class="eyebrow">Как выбрать решение</p><h2>Начните с проблемы на конвейере</h2></div>
-        <p>Очистка, поддержка ленты и уплотнение работают как единая система. Выберите, что происходит у вас, и откроется нужный раздел каталога.</p>
+        <p>Очистка, поддержка ленты и уплотнение работают как единая система. Выберите, что происходит у вас, и откроется нужный раздел каталога с решениями.</p>
       </div>
       <div class="pgrid">
         <figure class="pphoto" style="margin:0"><img src="img/belt.jpg" alt="Разгрузка горной массы с ленточного конвейера" loading="lazy"><figcaption>Зона разгрузки: здесь налипание, удары и просыпь видны первыми.</figcaption></figure>
@@ -307,10 +366,23 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
   <section class="blk" id="catalog">
     <div class="in">
       <div class="head">
-        <div><p class="eyebrow">Каталог оборудования · 2026</p><h2>Восемь направлений поставки</h2></div>
+        <div><p class="eyebrow">Каталог оборудования · 2026</p><h2>Три направления поставки</h2></div>
         <p>Характеристики относятся к описанным исполнениям. Точная комплектация, размеры и условия поставки согласуются в коммерческом предложении.</p>
       </div>
-      <div class="cat" id="cat"></div>
+      <div class="dirs">
+        <article class="dir">
+          <a class="pic" href="konveyer.html" tabindex="-1" aria-hidden="true"><img src="img/cat/3.jpg" alt="" loading="lazy"><span>Направление 1</span></a>
+          <div class="t"><h3><a href="konveyer.html">Конвейерные решения</a></h3><p>Очистка, поддержка ленты, уплотнения, комплектующие и защита поверхностей. Начните с проблемы на конвейере — решения можно сочетать: очистка, поддержка ленты и уплотнение работают как единая система.</p><ul><li><a href="konveyer.html#c1"><i>01</i>Очистка ленты</a></li><li><a href="konveyer.html#c2"><i>02</i>Ударные нагрузки в зоне пересыпа</a></li><li><a href="konveyer.html#c3"><i>03</i>Уплотнения в зоне течки</a></li><li><a href="konveyer.html#c4"><i>04</i>Качественные комплектующие</a></li><li><a href="konveyer.html#c5"><i>05</i>Сход ленты</a></li><li><a href="konveyer.html#c6"><i>06</i>Ленты и защита конвейера</a></li></ul><a class="btn" href="konveyer.html">Открыть направление</a></div>
+        </article>
+        <article class="dir">
+          <a class="pic" href="droblenie.html" tabindex="-1" aria-hidden="true"><img src="img/cat/87.jpg" alt="" loading="lazy"><span>Направление 2</span></a>
+          <div class="t"><h3><a href="droblenie.html">Дробление и сортировка</a></h3><p>Питатели, дробилки, грохоты и запасные части для линий дробления и переработки. Подбираем по типу породы, крупности питания, производительности и требуемому продукту.</p><ul><li><a href="droblenie.html#c7a"><i>07.1</i>Питатели</a></li><li><a href="droblenie.html#c7b"><i>07.2</i>Дробилки</a></li><li><a href="droblenie.html#c7c"><i>07.3</i>Мобильные комплексы</a></li><li><a href="droblenie.html#c7d"><i>07.4</i>Грохоты</a></li><li><a href="droblenie.html#c7e"><i>07.5</i>Сита и просеивающие поверхности</a></li><li><a href="droblenie.html#c7f"><i>07.6</i>Запасные и износостойкие части</a></li></ul><a class="btn" href="droblenie.html">Открыть направление</a></div>
+        </article>
+        <article class="dir">
+          <a class="pic" href="nasosy.html" tabindex="-1" aria-hidden="true"><img src="img/pumps.jpg" alt="" loading="lazy"><span>Направление 3</span></a>
+          <div class="t"><h3><a href="nasosy.html">Насосы</a></h3><p>Подбор типа насосного оборудования по среде, расходу, напору и компоновке объекта — от отдельного насоса до комплектной станции.</p><a class="btn" href="nasosy.html">Открыть направление</a></div>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -440,70 +512,16 @@ const $=id=>document.getElementById(id);
 
 /* ---------- catalog ---------- */
 const CAT=[
- {id:"c1",img:"belt",t:"Очистка ленты",s:"Первичная и вторичная очистка, плужки, щётки",items:[
-  ["Полиуретановые очистители","Сегментированное или цельное лезвие, пружинный натяжитель.","600–2400 мм · до 4,5 м/с"],
-  ["Керамические лезвия и RLTC","Сегменты из алюмооксидной керамики для абразивного продукта и высокой температуры.","600–2400 мм · до 4,5 м/с"],
-  ["Твердосплавные лезвия","Карбид вольфрама с упругими модулями для мелкого и липкого материала.","600–2400 мм · до 6,5 м/с"],
-  ["Вторичные скребки","Модульные твердосплавные сегменты, раздельные лезвия с амортизацией, очистители для шлама.","до 10 м/с"],
-  ["Плужки","V-образные и диагональные. Защищают барабан от материала на внутренней стороне ленты.",""],
-  ["Щёточные очистители и спиральные ролики","Для профильных лент и стойких налипаний.",""]],
-  p:"Ширина и скорость ленты • диаметр барабана • тип стыка • материал и влажность • реверс • место установки",model:"ochistka"},
- {id:"c2",img:"discharge",t:"Ударные нагрузки в зоне пересыпа",s:"Демпферные столы, амортизирующие балки, опоры",items:[
-  ["Демпферный стол с торсионными опорами","Центральная секция на каучуковых торсионах. Увеличивает срок службы ленты на 30 %.","самые тяжёлые условия"],
-  ["Демпферные станции","Распределяют удар падающего материала и ограничивают прогиб ленты.",""],
-  ["Амортизирующие балки","Сменные элементы из резины, UHMWPE или композитов.",""],
-  ["Комбинированные опоры","Ролики и опорные брусья, регулируемые и выдвижные конструкции.",""]],
-  p:"Высота падения • масса и размер куска • производительность • ширина и скорость ленты • угол желоба",model:"zona"},
- {id:"c3",img:"stackers",t:"Уплотнения в зоне течки",s:"Внутренние и наружные уплотнения, пылезащита",items:[
-  ["Полиуретан на стальном основании","Внутреннее уплотнение, крепёжные пазы для регулировки.","1219 / 1524 × 178 × 25 мм"],
-  ["Полиуретан с керамикой","Керамика 92 % Al₂O₃ для защиты от абразивного износа.","1219 / 1524 × 178 × 25 мм"],
-  ["K-Snap-Loc","Наружный профиль защёлкивается в монтажную рейку.","127 / 150 / 230 / 355 мм"],
-  ["Двухконтурный профиль и Super Block","Вторая кромка против мелочи и пыли; блоки для тяжёлых условий.",""],
-  ["Бесконтактные уплотнения и фильтрующее укрытие","Дополнительная пылезащита зоны перегрузки.",""]],
-  p:"Толщина стенки течки • зазор до ленты • свободный край ленты • длина уплотнения • температура",model:"zona"},
- {id:"c4",img:"beltclose",t:"Качественные комплектующие",s:"Ролики, роликоопоры, барабаны, мотор-барабаны",items:[
-  ["Стальные ролики","Несущие и обратные, лабиринтные уплотнения подшипников.",""],
-  ["Полимерные ролики","HDPE, UHMWPE, полиуретан. Меньшая масса, меньше налипаний.",""],
-  ["Роликоопоры","Желобчатые, прямые и специальные.",""],
-  ["Барабаны","Приводные, натяжные, обводные; резиновая и резинокерамическая футеровка.",""],
-  ["Мотор-барабаны","Двигатель и редуктор внутри обечайки.",""]],
-  p:"Диаметр и длина ролика • концы оси • подшипник • ширина ленты • чертёж",model:"roliki"},
- {id:"c5",img:"aerial",t:"Сход ленты",s:"Конусные и другие системы для рабочей и холостой ветвей",items:[
-  ["Конусная самоцентрирующая система","Механическая коррекция рабочей ветви, три регулирующих элемента.",""],
-  ["Механические самоцентрирующие роликоопоры","Поворотная опора с профилированными роликами.",""],
-  ["Гидравлическое центрирование","Следящий ролик, без внешнего электропитания.",""],
-  ["Нижние центрирующие устройства","V-образная, усиленная роликоопора, центрирующий возвратный ролик.",""]],
-  p:"Место и характер схода • ширина и скорость ленты • реверс • угол желоба • схема рамы",model:"shod"},
- {id:"c6",img:"bridge",t:"Ленты и защита конвейера",s:"Ленты, ремонт и стыковка, футеровка",items:[
-  ["Резинотканевые и резинотросовые ленты","Каркасы EP, NN, CC и стальной трос.",""],
-  ["Ленты специального назначения","Шевронные, с гофробортами, трубчатые; износо-, масло-, морозо-, теплостойкие.",""],
-  ["Ремонт и соединение","Холодный ремонт, Rubbafix, механические соединения.",""],
-  ["Вулканизация","Прессы, подготовка стыка, ловители ленты.",""],
-  ["Футеровка барабанов и защита от износа","Резиновая, резинокерамическая, быстросъёмная; керамические панели.",""]],
-  p:"Ширина и длина • прочность каркаса • обкладки • скорость • материал • диаметры барабанов"},
- {id:"c7",img:"crushing",t:"Дробление и сортировка",s:"Питатели, дробилки, грохоты, запасные части",items:[
-  ["Питатели","Пластинчатые, колосниковые, вибрационные.",""],
-  ["Дробилки","Щёковые, гирационные, конусные, роторные, центробежно-ударные.",""],
-  ["Мобильные комплексы","Гусеничные, колёсные и полустационарные установки.",""],
-  ["Грохоты","Банановые, горизонтальные, эллиптические, обезвоживающие, высокочастотные.",""],
-  ["Сита и просеивающие поверхности","Полиуретановые, резиновые и комбинированные панели.",""],
-  ["Запасные и износостойкие части","Брони, щёки, била, втулки, валы, роторы.",""]],
-  p:"Тип породы • максимальный кусок • производительность • гранулометрия продукта • модель и номер детали"},
- {id:"c8",img:"pumps",t:"Насосы",s:"Насосы для технологических линий",items:[
-  ["Центробежные и многоступенчатые","Для технологической подачи жидкостей.",""],
-  ["Вертикальные и химические","Под монтажную схему и совместимость с продуктом.",""],
-  ["Шламовые и насосные станции","Для сред с твёрдыми включениями, комплектные узлы.",""]],
-  p:"Расход и напор • характеристики среды • условия всасывания • режим работы • материалы"}
+ {id:"c1",t:"Очистка ленты",page:"konveyer.html#c1"},
+ {id:"c2",t:"Ударные нагрузки в зоне пересыпа",page:"konveyer.html#c2"},
+ {id:"c3",t:"Уплотнения в зоне течки",page:"konveyer.html#c3"},
+ {id:"c4",t:"Ролики, роликоопоры, барабаны",page:"konveyer.html#c4"},
+ {id:"c5",t:"Сход ленты",page:"konveyer.html#c5"},
+ {id:"c6",t:"Ленты и защита конвейера",page:"konveyer.html#c6"},
+ {id:"c7",t:"Дробление и сортировка",page:"droblenie.html"},
+ {id:"c8",t:"Насосы",page:"nasosy.html"}
 ];
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-$('cat').innerHTML=CAT.map((c,i)=>`<details id="${c.id}">
- <summary><img src="img/${c.img}.jpg" alt="" loading="lazy"><span class="no">0${i+1}</span><h3>${esc(c.t)}</h3><span class="pm" aria-hidden="true">+</span><small>${esc(c.s)}</small></summary>
- <div class="body">
-  <img class="wide" src="img/${c.img}.jpg" alt="" loading="lazy">
-  <div class="items">${c.items.map(it=>`<div class="item"><b>${esc(it[0])}</b><span>${esc(it[1])}</span>${it[2]?`<em>${esc(it[2])}</em>`:''}</div>`).join('')}</div>
-  <div class="params"><b>Для подбора</b>${esc(c.p)}</div>
-  ${c.model?`<button class="model-link" data-open="${c.model}">Посмотреть в 3D</button>`:''}
- </div></details>`).join('');
 
 /* ---------- problems ---------- */
 const PROBS=[
@@ -514,10 +532,9 @@ const PROBS=[
  ["Сход ленты","Кромка трётся о став, с края сыплется груз.","c5"],
  ["Порезы и износ ленты","Нужна оценка повреждения и способ восстановления.","c6"]
 ];
-$('probs').innerHTML=PROBS.map(p=>`<button class="prob" data-go="${p[2]}"><b>${esc(p[0])}</b><span>${esc(p[1])}</span><i>Раздел ${'0'+(CAT.findIndex(c=>c.id===p[2])+1)} →</i></button>`).join('');
-function openSec(id){const d=$(id);if(!d)return;d.open=true;d.scrollIntoView({block:'start'});}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)openSec(b.dataset.go);});
-if(/^#c\d$/.test(location.hash))openSec(location.hash.slice(1));
+$('probs').innerHTML=PROBS.map(p=>`<a class="prob" href="konveyer.html#${p[2]}"><b>${esc(p[0])}</b><span>${esc(p[1])}</span><i>Раздел ${'0'+(CAT.findIndex(c=>c.id===p[2])+1)} · решения →</i></a>`).join('');
+/* old links like legacyrk.kz/#c3 go to the new direction pages */
+{const m=/^#(c[1-8])$/.exec(location.hash);if(m){const c=CAT.find(x=>x.id===m[1]);if(c)location.replace(c.page);}}
 
 /* ---------- 3D viewer (lazy) ---------- */
 const MODELS={zona:["Зона загрузки","zona.html"],shod:["Сход ленты","shod.html"],ochistka:["Очистка ленты","ochistka.html"],roliki:["Ролики и барабаны","roliki.html"]};
@@ -540,7 +557,10 @@ function build(){const v=k=>$(k).value.trim();const sec=$('fSec').selectedOption
   const text=lines.join('\n');$('fOut').textContent=text;
   $('fWa').href='https://wa.me/'+WA+'?text='+encodeURIComponent(text);
   $('fMail').href='mailto:'+MAIL+'?subject='+encodeURIComponent('Запрос с сайта: '+sec)+'&body='+encodeURIComponent(text);}
-F.forEach(k=>$(k).addEventListener('input',build));build();
+{const q=new URLSearchParams(location.search),sec=q.get('sec'),item=q.get('item');
+ if(sec&&CAT.some(c=>c.id===sec))$('fSec').value=sec;
+ if(item)$('fT').value='Интересует: '+item.slice(0,120)+'. ';}
+F.forEach(k=>$(k).addEventListener('input',build));$('fSec').addEventListener('change',build);build();
 $('f').addEventListener('submit',e=>e.preventDefault());
 function copy(text,btn,done){(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject())
   .then(()=>{const o=btn.textContent;btn.textContent=done;setTimeout(()=>btn.textContent=o,1600)})
@@ -550,5 +570,20 @@ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',(
 })();
 </script>
 
+<script>
+(function(){
+  var bar=document.getElementById('bar'),dd=document.getElementById('dd'),b=document.getElementById('ddB'),bg=document.getElementById('burger');
+  function setDD(o){dd.classList.toggle('open',o);b.setAttribute('aria-expanded',o)}
+  function setMenu(o){bar.classList.toggle('menu',o);bg.setAttribute('aria-expanded',o)}
+  b.addEventListener('click',function(e){e.stopPropagation();setDD(!dd.classList.contains('open'))});
+  bg.addEventListener('click',function(e){e.stopPropagation();setMenu(!bar.classList.contains('menu'))});
+  var t;if(matchMedia('(hover:hover) and (min-width:901px)').matches){
+    dd.addEventListener('mouseenter',function(){clearTimeout(t);setDD(true)});
+    dd.addEventListener('mouseleave',function(){t=setTimeout(function(){setDD(false)},180)});}
+  document.addEventListener('click',function(e){if(!dd.contains(e.target))setDD(false);if(!bar.contains(e.target))setMenu(false);
+    if(e.target.closest('#nav a'))setMenu(false),setDD(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(dd.classList.contains('open')){setDD(false);b.focus()}if(bar.classList.contains('menu')){setMenu(false);bg.focus()}}});
+})();
+</script>
 </body>
 </html>
