@@ -954,7 +954,7 @@ function info(){
   else{t='+ Плужок';r='Каталог · раздел 01';p='Плужок стоит на внутренней стороне обратной ветви перед хвостовым барабаном и отводит камни и просыпь в стороны. Так материал не попадает между лентой и барабаном.';l=['V-образный плужок — для одного направления движения','Диагональный сбрасывает материал на одну сторону','Место установки — перед натяжным или хвостовым барабаном'];}
   $('iT').textContent=t;$('iR').textContent=r;$('iP').textContent=p;$('iL').innerHTML='';l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});
 }
-function setMode(m){mode=m;target.prim=m>=2?1:0;target.sec=m>=3?1:0;target.plow=m>=4?1:0;const STEPCAM={1:'overview',2:'head',3:'sec',4:'tail'};{const _sm=setMode;setMode=function(m){const prev=mode;_sm(m);if(m!==prev&&STEPCAM[m])goCam(STEPCAM[m]);};}
+function setMode(m){mode=m;target.prim=m>=2?1:0;target.sec=m>=3?1:0;target.plow=m>=4?1:0;const STEPCAM={1:'overview',2:'head',3:'under',4:'tail'};{const _sm=setMode;setMode=function(m){const prev=mode;_sm(m);if(m!==prev&&STEPCAM[m])goCam(STEPCAM[m]);};}
 document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mode===m));info();}
 function choose(kind,id){if(kind==='prim')primType=id;if(kind==='sec')secType=id;if(kind==='plow')plowType=id;
   document.querySelectorAll(`[data-${kind}]`).forEach(b=>b.setAttribute('aria-pressed',b.dataset[kind]===id));place(kind);
