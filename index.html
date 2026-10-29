@@ -111,7 +111,7 @@ section.blk{padding-block:72px 8px}
 /* problems */
 .pgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:stretch}
 .pphoto{position:relative;border-radius:6px;overflow:hidden;min-height:340px;background:#1b1f22}
-.pphoto img,.pphoto video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pphoto figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;color:#fff;font-size:14px;background:linear-gradient(transparent,rgba(12,15,18,.85))}
 .probs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .prob{all:unset;box-sizing:border-box;cursor:pointer;text-decoration:none;color:inherit;background:var(--paper);padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -392,7 +392,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
         <p>Очистка, поддержка ленты и уплотнение работают как единая система. Выберите, что происходит у вас, и откроется нужный раздел каталога с решениями.</p>
       </div>
       <div class="pgrid">
-        <figure class="pphoto" style="margin:0"><video autoplay muted loop playsinline preload="metadata" poster="img/zone-poster.jpg" aria-label="Зона загрузки конвейера: удары, просыпь и налипание"><source src="video/legacy-zone.webm" type="video/webm"><source src="video/legacy-zone.mp4" type="video/mp4"></video><figcaption>Зона разгрузки: здесь налипание, удары и просыпь видны первыми.</figcaption></figure>
+        <figure class="pphoto" style="margin:0"><img src="img/belt.jpg" alt="Разгрузка горной массы с ленточного конвейера" loading="lazy"><figcaption>Зона разгрузки: здесь налипание, удары и просыпь видны первыми.</figcaption></figure>
         <div class="probs" id="probs"></div>
       </div>
     </div>
