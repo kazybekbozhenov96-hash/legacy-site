@@ -236,7 +236,8 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="eqrow"><b>Питатель</b><div class="chips" role="group" aria-label="Питатель">
       <button class="chip" data-fd="grizzly" aria-pressed="true">Колосниковый</button><button class="chip" data-fd="apron" aria-pressed="false">Пластинчатый</button><button class="chip" data-fd="vibro" aria-pressed="false">Вибрационный</button></div></div>
     <div class="eqrow"><b>Дробилка</b><div class="chips" role="group" aria-label="Дробилка">
-      <button class="chip" data-cr="jaw" aria-pressed="true">Щёковая</button><button class="chip" data-cr="gyr" aria-pressed="false">Гирационная</button><button class="chip" data-cr="cone" aria-pressed="false">Конусная</button><button class="chip" data-cr="hsi" aria-pressed="false">Роторная</button><button class="chip" data-cr="vsi" aria-pressed="false">Центробежно-ударная</button></div></div>
+      <button class="chip" data-cr="jaw" aria-pressed="true">Щёковая</button><button class="chip" data-cr="gyr" aria-pressed="false">Гирационная</button><button class="chip" data-cr="cone" aria-pressed="false">Конусная</button><button class="chip" data-cr="hsi" aria-pressed="false">Роторная</button><button class="chip" data-cr="vsi" aria-pressed="false">Центробежно-ударная</button></div>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="bLineCut" aria-pressed="true">Дробилка: в разрезе</button></div></div>
     <div class="eqrow"><b>Грохот</b><div class="chips" role="group" aria-label="Грохот">
       <button class="chip" data-sc="banana" aria-pressed="true">Банановый (многоскатный)</button><button class="chip" data-sc="horiz" aria-pressed="false">Горизонтальный / эллиптический</button></div></div>
     <div class="eqrow"><b>Сито (шаг 4)</b><div class="chips" role="group" aria-label="Сито">
@@ -1275,14 +1276,31 @@ function v2Rotor(){const g=new THREE.Group();
   cylY(0.18,0.3,K.yel,g,0,0.3,0,32);cylY(0.08,0.4,K.steel,g,0,0.3,0,16);
   return{root:g,cam:[[1.5,1.4,1.7],[0,0.35,0]],spin:g,axis:'y',parts:[{t:'Диски ротора',p:[0.5,0.67,0]},{t:'Износостойкие наконечники',p:[0.48,0.4,0.25]},{t:'Распределительный диск',p:[0,0.45,0]}]};}
 const NEWB={apron:v2Apron,grizzly:v2Grizzly,vibro:v2Vibro,jaw:v2Jaw,gyr:v2Gyr,cone:v2Cone,hsi:v2Hsi,vsi:v2Vsi,mob:v2Mob,banana:v2Banana,horiz:v2Horiz,pu:v2Pu,wire:v2Wire,plates:v2Plates,bush:v2Bush,rotor:v2Rotor};
+
+/* V-belt drive: closed belt around a flywheel and a motor pulley in one plane (local z), pulley turns with the belt */
+function beltDrive(g,c1,r1,c2,r2,z,beltMat,pulMat){
+  const dx=c2[0]-c1[0],dy=c2[1]-c1[1],L=Math.hypot(dx,dy),phi=Math.atan2(dy,dx),al=Math.acos(Math.max(-1,Math.min(1,(r1-r2)/L)));
+  const pts=[],arc=(c,r,a0,a1,n)=>{for(let i=0;i<=n;i++){const a=a0+(a1-a0)*i/n;pts.push(new THREE.Vector3(c[0]+Math.cos(a)*r,c[1]+Math.sin(a)*r,z));}};
+  arc(c1,r1+0.012,phi+al,phi+Math.PI*2-al,48);arc(c2,r2+0.012,phi-al,phi+al,20);
+  const belt=mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,true),160,0.013,6,true),beltMat||K.black,g);
+  const pul=new THREE.Group();pul.position.set(c2[0],c2[1],z);g.add(pul);
+  const pg=new THREE.CylinderGeometry(r2,r2,0.07,28);pg.rotateX(Math.PI/2);mesh(pg,pulMat||K.grey,pul);
+  for(let k=0;k<3;k++){const gr=new THREE.TorusGeometry(r2,0.006,6,28);mesh(gr,K.dark,pul,0,0,-0.02+k*0.02);}
+  for(let k=0;k<4;k++){const sp=boxM(0.02,r2*1.7,0.02,K.dark,pul,0,0,0.04);sp.rotation.z=k*Math.PI/4;}
+  return{belt,pul,ratio:r1/r2};}
+function dropTubes(g,mat){const rm=[];g.traverse(n=>{if(n.isMesh&&n.geometry&&n.geometry.type==='TubeGeometry'&&n.material===mat)rm.push(n);});rm.forEach(n=>n.parent.remove(n));}
 /* ===== Crushers v3: closer jaws with an eccentric swing, HP-style cone crusher, PF-style impact crusher ===== */
 /* --- jaw: swing jaw closes to a narrow discharge gap and moves on an eccentric ellipse --- */
 function v3Jaw(){const b=v2Jaw();const P0=b.pit.position.clone(),A0=-0.5;b.pit.rotation.z=A0;let T=0;
+  {const g=b.root,y=0.2;dropTubes(g,K.black);g.traverse(n=>{});
+   const mb=g.children.find(c=>c.isGroup&&Math.abs(c.position.x-1.2)<0.01&&Math.abs(c.position.z-0.82)<0.01);if(mb)mb.position.z=0.45;
+   cylZk(0.03,0.4,K.steel,g,1.2,y+0.6,0.68,12);
+   b.drive=beltDrive(g,[0.05,y+1.05],0.55,[1.2,y+0.6],0.13,0.86,K.black,K.grey);}
   b.jaw={xf:-0.57,top:1.32,bot:0.35};
   /* x of the swing-jaw face at local height y */
   b.faceX=y=>{const p=b.pit.position,th=b.pit.rotation.z,c=Math.cos(th),s=Math.sin(th);const yy=(y-p.y+0.07*s)/c;return p.x+(-0.07*c-yy*s);};
   b.phase=0;
-  b.update=dt=>{T+=dt;const w=T*6.5;b.phase=Math.sin(w);b.pit.rotation.z=(b.A0!==undefined?b.A0:A0)+0.03*Math.sin(w);b.pit.position.set(P0.x+0.012*Math.cos(w),P0.y+0.022*Math.sin(w),0);if(b.pw)b.pw.rotation.z-=dt*6.5;};
+  b.update=dt=>{T+=dt;const w=T*6.5;b.phase=Math.sin(w);if(b.drive)b.drive.pul.rotation.z-=dt*6.5*b.drive.ratio;b.pit.rotation.z=(b.A0!==undefined?b.A0:A0)+0.03*Math.sin(w);b.pit.position.set(P0.x+0.012*Math.cos(w),P0.y+0.022*Math.sin(w),0);if(b.pw)b.pw.rotation.z-=dt*6.5;};
   b.parts.push({t:'Камера дробления',p:[-0.42,0.85,0.2]});return b;}
 
 /* --- cone crusher after an HP-type machine: mainframe, countershaft and sheave, adjustment ring with tramp-release springs,
@@ -1315,9 +1333,9 @@ function v3Cone(){const g=new THREE.Group(),C=m=>kC(m);
   for(let k=0;k<4;k++){const r=boxM(0.02,0.035,0.16,K.yelD,head,Math.cos(k*Math.PI/2)*0.08,1.04,Math.sin(k*Math.PI/2)*0.08);r.rotation.y=-k*Math.PI/2;}
   /* eccentric under the head */
   const ecc=new THREE.Group();ecc.position.y=0.18;g.add(ecc);lath([[0.1,0],[0.24,0],[0.24,0.16],[0.1,0.16]],C(K.yelD),ecc,32,0);cylY(0.06,0.16,K.steel,ecc,0.06,0.08,0,12);
-  boxM(2.0,0.1,1.9,K.creamD,g,0.3,0.05,0);
+  boxM(2.0,0.1,1.9,K.creamD,g,0,0.05,0);
   let T=0;const E=0.028;
-  const b={root:g,head,piv,shv,ecc,cam:[[2.6,2.3,3.0],[0,0.9,0]],
+  const b={ctr:true,root:g,head,piv,shv,ecc,cam:[[2.6,2.3,3.0],[0,0.9,0]],
     parts:[{t:'Загрузочная воронка',p:[0.55,1.8,0]},{t:'Распределительная плита',p:[0,1.38,0]},{t:'Подвижный конус (мантия)',p:[0.25,1.05,0]},{t:'Неподвижная броня (конкав)',p:[0.55,1.05,0]},{t:'Регулировочное кольцо',p:[0.95,0.8,0]},{t:'Пружины защиты от недробимых тел',p:[0.95,0.66,0.3]},{t:'Эксцентрик',p:[0.2,0.25,0]},{t:'Приводной вал и шкив',p:[1.75,0.62,0]}]};
   b.cone={y0:0.78,y1:1.3,rc:y=>0.62-(y-0.78)*0.33,rm:y=>0.58-(y-0.78)*0.83};
   b.ang=0;b.update=dt=>{T+=dt;const w=T*7;b.ang=w;piv.rotation.set(E*Math.sin(w),0,-E*Math.cos(w));head.rotation.y-=dt*0.4;ecc.rotation.y=w;shv.rotation.x-=dt*14;};
@@ -1347,8 +1365,9 @@ function v3Hsi(){const g=new THREE.Group(),D=1.0,C=m=>kC(m);
   for(const [x,y] of[[0.25,1.3],[0.55,1.05]])for(const z of[-0.35,0.35]){cylXk(0.022,0.6,K.steel,g,x+0.25,y+0.1,z,10).rotation.z=0.5;cylY(0.05,0.08,K.dark,g,x+0.5,y+0.25,z,6);}
   /* flywheel, motor and V-belts */
   const fw=wheel(g,-0.05,0.62,D/2+0.18,0.55,0.12,K.green,6);
-  const mb=new THREE.Group();mb.position.set(1.35,0.45,D/2+0.18);g.add(mb);motor(mb,0,0,0,0.2,0.5,K.blue,'z');boxM(0.6,0.05,0.45,K.greenD,mb,0,-0.23,-0.1);
-  for(const s of[1,-1]){const c=new THREE.CatmullRomCurve3([new THREE.Vector3(1.35,0.45+s*0.12,D/2+0.3),new THREE.Vector3(0.6,0.55+s*0.35,D/2+0.3),new THREE.Vector3(-0.05,0.62+s*0.55,D/2+0.3)]);mesh(new THREE.TubeGeometry(c,30,0.012,6,false),K.black,g);}
+  const mb=new THREE.Group();mb.position.set(1.35,0.45,D/2-0.12);g.add(mb);motor(mb,0,0,0,0.2,0.5,K.blue,'z');boxM(0.6,0.05,0.7,K.greenD,mb,0,-0.23,0.1);
+  cylZk(0.03,0.36,K.steel,g,1.35,0.45,D/2+0.12,12);
+  const drv=beltDrive(g,[-0.05,0.62],0.55,[1.35,0.45],0.13,D/2+0.26,K.black,K.grey);
   /* bolted flange between lower and upper housing, rear hinge and hydraulic opening cylinder */
   for(const z of[-D/2-0.035,D/2+0.035])for(let i=0;i<9;i++)cylZk(0.014,0.02,K.steel,g,-0.85+i*0.21,0.95,z,6);
   cylZk(0.05,D+0.1,K.steel,g,0.85,1.05,0,16);
@@ -1369,7 +1388,7 @@ function v3Hsi(){const g=new THREE.Group(),D=1.0,C=m=>kC(m);
   let T=0;const b={root:g,rot,fw,cam:[[2.2,1.8,2.8],[0,0.8,0]],
     parts:[{t:'Загрузочный лоток',p:[-0.62,1.25,0.3]},{t:'Цепная завеса',p:[-0.42,1.45,0]},{t:'Ротор с билами',p:[-0.05,0.62,0.3]},{t:'Отбойные плиты',p:[0.3,1.15,0.3]},{t:'Регулировочные тяги с пружинами',p:[0.85,1.45,0.35]},{t:'Гидроцилиндр открывания корпуса',p:[1.0,0.6,0.55]},{t:'Смотровые люки',p:[0.45,0.55,0.53]},{t:'Подшипниковые узлы',p:[-0.05,0.75,-0.75]},{t:'Маховик',p:[-0.05,1.15,D/2+0.18]},{t:'Электродвигатель',p:[1.35,0.7,D/2+0.18]}]};
   b.hsi={rc:[-0.05,0.62],R:0.36,apR:0.6};
-  b.update=dt=>{T+=dt;rot.rotation.z-=dt*9;fw.rotation.z-=dt*9;};
+  b.update=dt=>{T+=dt;rot.rotation.z-=dt*9;fw.rotation.z-=dt*9;drv.pul.rotation.z-=dt*9*drv.ratio;};
   return b;}
 NEWB.jaw=v3Jaw;NEWB.cone=v3Cone;NEWB.hsi=v3Hsi;
 /* ---------- catalogue machines on the main line ---------- */
@@ -1386,15 +1405,17 @@ function placeFeeder(t){if(LINE.fd[t])return LINE.fd[t];
   hold.visible=false;scene.add(hold);return LINE.fd[t]={g:hold,inner,b};}
 function placeCr(t){if(LINE.cr[t])return LINE.cr[t];
   const b=NEWB[t](),hold=new THREE.Group(),inner=new THREE.Group();hold.add(inner);inner.add(b.root);
-  b.root.traverse(n=>{if(n.isMesh&&n.material&&n.material.clippingPlanes&&n.material.clippingPlanes.length){const m=n.material.clone();m.clippingPlanes=null;m.side=THREE.FrontSide;n.material=m;}});
+  b.root.traverse(n=>{if(n.isMesh&&n.material&&n.material.clippingPlanes&&n.material.clippingPlanes.length){n.userData.mCut=n.material;const m=n.material.clone();m.clippingPlanes=null;m.side=THREE.FrontSide;n.userData.mSolid=m;}});
   if(t!=='hsi'&&t!=='jaw')b.root.rotation.y=Math.PI/2;
-  b.root.updateMatrixWorld(true);const bx=new THREE.Box3().setFromObject(b.root),sz=bx.getSize(new THREE.Vector3()),ce=bx.getCenter(new THREE.Vector3());
+  b.root.updateMatrixWorld(true);const bx=new THREE.Box3().setFromObject(b.root),sz=bx.getSize(new THREE.Vector3()),ce=bx.getCenter(new THREE.Vector3());if(b.ctr){ce.x=0;ce.z=0;}
   const PB=0.62,TOP=t==='jaw'?2.3:2.25,s=Math.min((TOP-PB)/sz.y,(t==='jaw'?1.5:1.3)/sz.x,1.9/sz.z);
   inner.scale.setScalar(s);inner.position.set(-ce.x*s,-bx.min.y*s,-ce.z*s);hold.position.set(CRX,PB,0);
   const hx=sz.x*s/2,hz=Math.max(0.62,sz.z*s/2);
   for(const x of[-hx,hx])for(const z of[-hz,hz])postM(hold,x,-PB,0,z);
   for(const z of[-hz,hz])boxM(2*hx+0.14,0.1,0.12,MAT.paint,hold,0,-0.05,z);for(const x of[-hx,hx])boxM(0.12,0.1,2*hz,MAT.paint,hold,x,-0.05,0);
-  hold.visible=false;scene.add(hold);return LINE.cr[t]={g:hold,b};}
+  hold.visible=false;scene.add(hold);const rec=LINE.cr[t]={g:hold,b};applyLineCut(rec);return rec;}
+let lineCut=true;function applyLineCut(rec){rec.b.root.traverse(n=>{if(n.userData.mCut)n.material=lineCut?n.userData.mCut:n.userData.mSolid;});}
+function setLineCut(v){lineCut=v;for(const k in LINE.cr)applyLineCut(LINE.cr[k]);const bt=document.getElementById('bLineCut');if(bt){bt.setAttribute('aria-pressed',v);bt.textContent=v?'Дробилка: в разрезе':'Дробилка: целиком';}}
 function placeScr(t){if(LINE.sc[t])return LINE.sc[t];
   const b=NEWB[t](),hold=new THREE.Group(),inner=new THREE.Group();hold.add(inner);inner.add(b.root);
   const L=2.6,W=1.1,y=0.55,s=(SX1-SX0)/L,cx=(SX0+SX1)/2;
@@ -1423,6 +1444,7 @@ function lineUpdate(dt,vF){if(!LINE||!newCr)return;const T=simTime;
   if(b.pit){b.pit.rotation.z=-0.3+0.035*Math.sin(T*6);if(b.pw)b.pw.rotation.z-=dt*6;}}
   if(newScr&&newScr.inner)newScr.inner.position.set(0.008*Math.sin(T*45),0.01*Math.sin(T*45+1.2),0);}
 applyLine();lineVis(pres.feed>0.5);
+document.getElementById('bLineCut').addEventListener('click',()=>setLineCut(!lineCut));
 document.querySelectorAll('[data-cr]').forEach(b=>b.addEventListener('click',()=>{crType=b.dataset.cr;pick('cr',crType);applyLine();eqNote('cr');info();goCam('jaw');}));
 document.querySelectorAll('[data-sc]').forEach(b=>b.addEventListener('click',()=>{scType=b.dataset.sc;pick('sc',scType);applyLine();eqNote('sc');goCam('screen');}));
 document.querySelectorAll('[data-sv]').forEach(b=>b.addEventListener('click',()=>{svType=b.dataset.sv;pick('sv',svType);eqNote('sv');if(mode<4)setMode(4,true);else{info();goCam('screen');}}));
