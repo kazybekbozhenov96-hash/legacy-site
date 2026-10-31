@@ -800,20 +800,24 @@ const tailP=new THREE.Group();tailP.position.set(X0,HY,0);scene.add(tailP);
    boxM(0.04,0.14,0.14,MAT.amber,scene,X0+0.56,HY,sg*0.92);}}
 /* head (drive) pulley with lagging */
 const headP=new THREE.Group();headP.position.set(X1,HY,0);scene.add(headP);
-const headShell=mesh(new THREE.CylinderGeometry(0.285,0.285,1.3,48),MAT.cap,headP);headShell.rotation.x=Math.PI/2;
-const headLag=mesh(new THREE.CylinderGeometry(0.299,0.299,1.24,64,1,true),lagMat.worn,headP);headLag.rotation.x=Math.PI/2;
+const headShell=mesh(new THREE.CylinderGeometry(0.285,0.285,1.56,48),MAT.cap,headP);headShell.rotation.x=Math.PI/2;
+/* pulley face is wider than the belt (as on real pulleys), so the lagging stays visible at both sides */
+const headLag=mesh(new THREE.CylinderGeometry(0.299,0.299,1.5,64,1,true),lagMat.worn,headP);headLag.rotation.x=Math.PI/2;
 const lagCer=new THREE.Group(),lagQuick=new THREE.Group();headLag.add(lagCer);headLag.add(lagQuick);
-{const CER=new THREE.MeshStandardMaterial({color:0xe9e5da,roughness:.32,metalness:.05});
- const NA=64,NY=38,tiles=new THREE.InstancedMesh(new THREE.BoxGeometry(0.019,0.024,0.004),CER,NA*NY);const o=new THREE.Object3D();let n=0;
- for(let j=0;j<NY;j++)for(let i=0;i<NA;i++){const a=(i+(j%2)*0.5)/NA*Math.PI*2,y=-0.59+j*(1.18/(NY-1));o.position.set(Math.cos(a)*0.3,y,Math.sin(a)*0.3);o.rotation.set(0,Math.PI/2-a,0);o.updateMatrix();tiles.setMatrixAt(n++,o.matrix);}
- lagCer.add(tiles);
- const RAIL=new THREE.MeshStandardMaterial({color:0xc9ced2,roughness:.25,metalness:.95});
- for(let k=0;k<10;k++){const a=k/10*Math.PI*2;const r=mesh(new THREE.BoxGeometry(0.022,1.22,0.016),RAIL,lagQuick,Math.cos(a)*0.302,0,Math.sin(a)*0.302);r.rotation.y=-a;
-   for(let b=0;b<9;b++){const t=mesh(new THREE.BoxGeometry(0.01,0.02,0.01),RAIL,lagQuick,Math.cos(a)*0.312,-0.56+b*0.14,Math.sin(a)*0.312);t.rotation.y=-a;}}
- const RED=new THREE.MeshStandardMaterial({color:0xb3221c,roughness:.5,metalness:.3});
- for(const sg of[-1,1])mesh(new THREE.CylinderGeometry(0.303,0.303,0.02,64,1,true),RED,lagQuick,0,sg*0.61,0);
+{/* rubber-ceramic: rows of small white tiles in black rubber, axial rubber strips every 5th column (catalogue look) */
+ const CER=new THREE.MeshStandardMaterial({color:0xeeebe3,roughness:.3,metalness:.05});
+ const NA=90,NY=56,tiles=new THREE.InstancedMesh(new THREE.BoxGeometry(0.014,0.018,0.005),CER,NA*NY);const o=new THREE.Object3D();let n=0;
+ for(let j=0;j<NY;j++)for(let i=0;i<NA;i++){if(i%6===5)continue;const a=i/NA*Math.PI*2,y=-0.72+j*(1.44/(NY-1));o.position.set(Math.cos(a)*0.3,y,Math.sin(a)*0.3);o.rotation.set(0,Math.PI/2-a,0);o.updateMatrix();tiles.setMatrixAt(n++,o.matrix);}
+ tiles.count=n;lagCer.add(tiles);
+ const BLK=new THREE.MeshStandardMaterial({color:0x101113,roughness:.85});for(const sg of[-1,1])mesh(new THREE.CylinderGeometry(0.302,0.302,0.03,64,1,true),BLK,lagCer,0,sg*0.75,0);
+ /* quick-change: diamond segments between aluminium retainers with serrated edges, red end discs */
+ const RAIL=new THREE.MeshStandardMaterial({color:0xd3d8dc,roughness:.22,metalness:.95});
+ for(let k=0;k<12;k++){const a=k/12*Math.PI*2;const r=mesh(new THREE.BoxGeometry(0.026,1.48,0.02),RAIL,lagQuick,Math.cos(a)*0.304,0,Math.sin(a)*0.304);r.rotation.y=-a;
+   for(let b=0;b<22;b++)for(const sd of[-1,1]){const aa=a+sd*0.05;const t=mesh(new THREE.BoxGeometry(0.009,0.03,0.012),RAIL,lagQuick,Math.cos(aa)*0.31,-0.71+b*0.0676,Math.sin(aa)*0.31);t.rotation.y=-aa;}}
+ const RED=new THREE.MeshStandardMaterial({color:0xc11d1a,roughness:.5,metalness:.2});
+ for(const sg of[-1,1]){const d=mesh(new THREE.CylinderGeometry(0.31,0.31,0.03,64),RED,lagQuick,0,sg*0.765,0);}
  lagCer.visible=lagQuick.visible=false;}
-for(const sg of[-1,1]){const e=mesh(new THREE.CylinderGeometry(0.27,0.27,0.02,40),MAT.cap,headP,0,0,sg*0.66);e.rotation.x=Math.PI/2;}
+for(const sg of[-1,1]){const e=mesh(new THREE.CylinderGeometry(0.27,0.27,0.02,40),MAT.cap,headP,0,0,sg*0.79);e.rotation.x=Math.PI/2;}
 {const hs=mesh(new THREE.CylinderGeometry(0.06,0.06,2.3,20),MAT.shaft,scene,X1,HY,-0.25);hs.rotation.x=Math.PI/2;}
 for(const sg of[-1,1]){boxM(0.36,0.06,0.16,MAT.hyd,scene,X1,HY-0.09,sg*0.9);const hb=mesh(new THREE.CylinderGeometry(0.1,0.1,0.15,24),MAT.hyd,scene,X1,HY,sg*0.9);hb.rotation.x=Math.PI/2;
   boxM(0.3,HY-0.09,0.12,MAT.paint,scene,X1,(HY-0.12)/2,sg*0.9);}
@@ -827,7 +831,7 @@ for(const sg of[-1,1])boxM(1.0,0.4,0.012,MAT.plate,scene,LOAD_X+0.1,BELT_Y+0.62,
 {const hop=new THREE.CylinderGeometry(0.5,0.3,0.7,4,1,true);hop.rotateY(Math.PI/4);mesh(hop,MAT.plate,scene,LOAD_X,BELT_Y+1.15,0);}
 
 /* discharge chute around the head pulley; the impact wall gets worn or lined */
-const CXa=X1-0.42,CXw=X1+0.62,CZ=0.52,CY0=0.32,CY1=HY+0.62,WALL_H=CY1-CY0;
+const CXa=X1-0.42,CXw=X1+0.62,CZ=0.86,CY0=0.32,CY1=HY+0.62,WALL_H=CY1-CY0;
 boxM(CXw-CXa,0.012,2*CZ,MAT.plate,scene,(CXa+CXw)/2,CY1,0);
 boxM(CXw-CXa,WALL_H,0.012,MAT.plate,scene,(CXa+CXw)/2,(CY0+CY1)/2,-CZ);
 {const fr=boxM(CXw-CXa,WALL_H,0.012,MATR.ghost,scene,(CXa+CXw)/2,(CY0+CY1)/2,CZ);fr.castShadow=false;
