@@ -37,6 +37,33 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 <script>try{if(window.top!==window)document.documentElement.classList.add("framed")}catch(e){}</script><style>.framed .backlink{display:none}</style>
+<style>.cat{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:12px}
+.plist{display:flex;flex-direction:column;gap:6px;min-width:0}
+.plist .grp{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:8px 0 2px}
+.plist .grp:first-child{margin-top:0}
+.pbtn{all:unset;cursor:pointer;display:grid;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:5px;background:var(--panel)}
+.pbtn b{font-weight:600;font-size:13.5px;line-height:1.25}
+.pbtn span{font-size:12px;color:var(--muted)}
+.pbtn:hover{border-color:#3d4a57}
+.pbtn[aria-pressed="true"]{border-color:var(--pu);background:#231d14}
+.pbtn:focus-visible{outline:2px solid var(--pu)}
+.pmain{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px;min-width:0}
+.pcanvas{aspect-ratio:4/3.3;max-width:100%;min-height:300px}
+.ptools{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
+.ptools .chip{background:rgba(27,36,45,.92);font-size:12px;padding:5px 9px}
+.pinfo{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pinfo h2{font-family:var(--display);font-weight:500;font-size:19px;line-height:1.25;margin:0;text-wrap:balance}
+.pinfo .ref{font-family:var(--mono);font-size:12px;color:var(--pu)}
+.pinfo h4{margin:6px 0 0;font-size:11.5px;font-family:var(--mono);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pinfo p{margin:0}
+.pinfo ol{margin:0;padding-left:20px;display:grid;gap:3px}
+.pinfo .act{all:unset;cursor:pointer;align-self:flex-start;margin-top:6px;font-weight:600;font-size:13.5px;padding:9px 14px;border-radius:4px;background:var(--pu);color:var(--pu-ink)}
+.pinfo .act:focus-visible{outline:2px solid var(--fg)}
+.disc{font-size:12px;color:var(--muted);margin:0}
+.pcanvas canvas{display:block;width:100%;height:100%}
+@media (max-width:1100px){.pmain{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.cat{grid-template-columns:minmax(0,1fr)}.plist{flex-direction:row;overflow-x:auto;padding-bottom:4px}.plist .grp{display:none}.pbtn{flex:0 0 200px}}
+</style>
 </head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -242,6 +269,34 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
   <section class="info" id="info" aria-live="polite">
     <div><h2 id="iT"></h2><div class="ref" id="iR"></div></div>
     <div><p id="iP"></p><ul id="iL"></ul></div>
+  </section>
+
+  <div class="sec-head" id="catalog"><h2>Демпферные столы и уплотнения</h2><span>каталог Legacy · разделы 02–03</span></div>
+  <section class="cat" aria-label="Каталог продуктов">
+    <nav class="plist" id="plist" aria-label="Продукты"></nav>
+    <div class="pmain">
+      <div class="pcanvas" id="pview" role="img" aria-label="3D-модель выбранного продукта">
+        <div class="labels" id="plabels"></div>
+        <div class="ptools">
+          <button class="chip" id="pLbl" aria-pressed="true">Подписи</button>
+          <button class="chip" id="pSpin" aria-pressed="true">Вращение</button>
+        </div>
+      </div>
+      <div class="pinfo" aria-live="polite">
+        <h2 id="pName"></h2>
+        <div class="ref" id="pRef"></div>
+        <h4>Конструкция</h4>
+        <ol id="pParts"></ol>
+        <h4>Как работает</h4>
+        <p id="pDesc"></p>
+        <h4>Преимущества</h4>
+        <p id="pAdv"></p>
+        <h4>Для подбора</h4>
+        <div class="tags" id="pSel"></div>
+        <button class="act" id="pUse">Поставить на конвейер</button>
+        <p class="disc">3D-модель условная и построена по описанию каталога. Конструкция конкретного изделия может отличаться.</p>
+      </div>
+    </div>
   </section>
 
   <div class="sec-head"><h2>Как это устроено</h2><span>по каталогу Legacy</span></div>
@@ -826,5 +881,7 @@ function tick(){
 tick();
 })();
 </script>
+<script src="zcat.js"></script>
+<script src="catphoto.js"></script>
 
 </body></html>
