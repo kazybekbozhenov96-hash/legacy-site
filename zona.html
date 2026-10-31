@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded',function(){
 .pbtn:focus-visible{outline:2px solid var(--pu)}
 .pmain{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px;min-width:0}
 .vars{display:grid;gap:8px;margin:12px 0}.vrow{display:grid;gap:5px}.vrow>span{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.pcanvas{position:relative;overflow:hidden;aspect-ratio:4/3.3;max-width:100%;min-height:300px}
+.pcanvas{position:relative;overflow:hidden;touch-action:none;aspect-ratio:4/3.3;max-width:100%;min-height:300px}
 .ptools{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
 .ptools .chip{background:rgba(27,36,45,.92);font-size:12px;padding:5px 9px}
 .pinfo{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
@@ -244,7 +244,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
         <div class="vrow"><span>Демпферный узел</span><div class="chips"><button class="chip" data-var="z_torsion" aria-pressed="true">Стол с торсионами</button><button class="chip" data-var="z_station" aria-pressed="false">Демпферная станция</button><button class="chip" data-var="z_bar" aria-pressed="false">Амортизирующие балки</button><button class="chip" data-var="z_combo" aria-pressed="false">Комбинированные опоры</button></div></div>
         <div class="vrow"><span>Внутреннее уплотнение</span><div class="chips"><button class="chip" data-var="z_pus" aria-pressed="true">Полиуретан на стали</button><button class="chip" data-var="z_puc" aria-pressed="false">Полиуретан с керамикой</button></div></div>
         <div class="vrow"><span>Наружное уплотнение</span><div class="chips"><button class="chip" data-var="z_snap" aria-pressed="true">K-Snap-Loc</button><button class="chip" data-var="z_dual" aria-pressed="false">Двухконтурный профиль</button><button class="chip" data-var="z_rail" aria-pressed="false">На монтажной рейке</button><button class="chip" data-var="z_block" aria-pressed="false">Super Block</button></div></div>
-        <div class="vrow"><span>Пылезащита</span><div class="chips"><button class="chip" data-var="z_cover" aria-pressed="true">Фильтрующее укрытие</button><button class="chip" data-var="z_nc" aria-pressed="false">Бесконтактные уплотнения</button></div></div>
+        <div class="vrow"><span>Пылезащита · можно обе</span><div class="chips"><button class="chip" data-var="z_cover" aria-pressed="true">Фильтрующее укрытие</button><button class="chip" data-var="z_nc" aria-pressed="false">Бесконтактные уплотнения</button></div></div>
       </div>
       <div class="chips" role="group" aria-label="Вид">
         <button class="chip" id="bSec" aria-pressed="false">Разрез</button>
@@ -645,7 +645,7 @@ const supStation=cradles(VM.orange,true),supBar=cradles(VM.galv,false),supCombo=
 {for(let m=1;m<NM;m++){const x=LZ0+ML*m;const r=new THREE.Group();r.position.set(x,BELT_Y-0.06,0);supCombo.add(r);
    for(let k=0;k<7;k++){const d=cylX(0.055,0.03,M.rubber||BEDM.black,0,0,-0.18+k*0.06,r,20);d.rotation.y=Math.PI/2;}
    const ax=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.5,10),VM.grey);ax.rotation.x=Math.PI/2;r.add(ax);}}
-let bedVar='z_torsion',innerVar='z_pus',outerVar='z_snap',dustVar='z_cover';
+let bedVar='z_torsion',innerVar='z_pus',outerVar='z_snap',dustVar='z_cover';const dustOn={z_cover:true,z_nc:false};
 function applyBed(){torsionOnly.forEach(o=>o.visible=bedVar==='z_torsion');supStation.visible=bedVar==='z_station';supBar.visible=bedVar==='z_bar';supCombo.visible=bedVar==='z_combo';}
 /* inner liner: polyurethane with ceramic inserts */
 const linerCer=[];
@@ -684,30 +684,30 @@ for(const[g,sg]of[[sealL,-1],[sealR,1]]){
   dual.visible=rail.visible=blk.visible=false;}
 /* dust: non-contact seals with lit strips instead of the fabric cover */
 const covFab=new THREE.Group(),covNC=new THREE.Group();while(cover.children.length)covFab.add(cover.children[0]);cover.add(covFab,covNC);covNC.visible=false;
-{const BLUE=new THREE.MeshStandardMaterial({color:0x2f8cff,emissive:0x1e7bff,emissiveIntensity:1.0,roughness:.35});
+{const WEAR=new THREE.MeshStandardMaterial({color:0x2a2d30,roughness:.7,metalness:.3});
  for(const sg of[-1,1]){
-  const zc=SK_Z+0.075,sc=sFromZ(zc,1),pc=prof(sc,1),yb=BELT_Y+0.006+pc[1]+0.018;
-  /* inclined holder plate along the belt wing with blue segments just above the belt */
+  /* vertical leg bolted to the inner face of the skirt with long adjusting bolts */
+  box(LZ1-LZ0,0.15,0.012,VM.grey,(LZ0+LZ1)/2,SK_BOT+0.02,sg*(SK_Z-0.03),covNC);
+  for(let x=LZ0+0.2;x<LZ1;x+=0.3){const bl=cylX(0.008,0.1,VM.grey,x,SK_BOT+0.05,sg*(SK_Z-0.01),covNC,8);bl.rotation.set(Math.PI/2,0,Math.PI/2);
+    for(const dz of[-0.034,0.016]){const n=cylX(0.014,0.012,VM.grey,x,SK_BOT+0.05,sg*(SK_Z+dz),covNC,6);n.rotation.set(Math.PI/2,0,Math.PI/2);}}
+  /* lower leg follows the belt wing inward, a few millimetres above the belt */
+  const zc=SK_Z-0.1,sc=sFromZ(zc,1),pc=prof(sc,1),yb=BELT_Y+0.006+pc[1]+0.012;
   const u=new THREE.Group();u.position.set(0,yb,sg*pc[0]);u.rotation.x=-sg*TROUGH;covNC.add(u);
-  box(LZ1-LZ0,0.012,0.17,VM.grey,(LZ0+LZ1)/2,0.03,0,u);
-  for(let x=LZ0+0.06;x<LZ1-0.03;x+=0.12)box(0.11,0.024,0.15,BLUE,x,0.008,0,u);
-  /* vertical flange bolted to the skirt */
-  box(LZ1-LZ0,0.16,0.012,VM.grey,(LZ0+LZ1)/2,SK_BOT+0.02,sg*(SK_Z+0.014),covNC);
-  for(let x=LZ0+0.2;x<LZ1;x+=0.35){const bl=cylX(0.008,0.12,VM.grey,x,SK_BOT+0.04,sg*(SK_Z+0.07),covNC,8);bl.rotation.set(Math.PI/2,0,Math.PI/2);
-    const n=cylX(0.016,0.012,VM.grey,x,SK_BOT+0.04,sg*(SK_Z+0.026),covNC,6);n.rotation.set(Math.PI/2,0,Math.PI/2);}}
- /* tail elements under the back wall */
- for(let z=-SK_Z+0.05;z<SK_Z;z+=0.1){const s0=sFromZ(z,1),p0=prof(s0,1);const b=box(0.05,0.024,0.09,BLUE,LZ0+0.04,BELT_Y+0.006+p0[1]+0.016,p0[0],covNC);
-   const sg=z<0?-1:1;if(Math.abs(z)>0.2)b.rotation.x=-sg*TROUGH;}
- box(0.012,0.06,SK_Z*2,VM.grey,LZ0+0.06,1.05,0,covNC);}
+  box(LZ1-LZ0,0.012,0.17,VM.grey,(LZ0+LZ1)/2,0.014,sg*0.01,u);box(LZ1-LZ0,0.008,0.15,WEAR,(LZ0+LZ1)/2,0.004,sg*0.01,u);
+  /* bend between the legs */
+  const bd=box(LZ1-LZ0,0.012,0.07,VM.grey,(LZ0+LZ1)/2,SK_BOT-0.06,sg*(SK_Z-0.055),covNC);bd.rotation.x=sg*0.9;}
+ /* tail end: same profile under the back wall */
+ box(0.012,0.1,SK_Z*2-0.06,VM.grey,LZ0+0.03,1.07,0,covNC);
+ for(let z=-SK_Z+0.08;z<SK_Z-0.05;z+=0.1){const s0=sFromZ(z,1),p0=prof(s0,1);const b=box(0.08,0.01,0.1,WEAR,LZ0+0.07,BELT_Y+0.006+p0[1]+0.012,p0[0],covNC);if(Math.abs(z)>0.2)b.rotation.x=-(z<0?-1:1)*TROUGH;}}
 function applySeal(){linerCer.forEach(g=>g.visible=innerVar==='z_puc');for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar);}
-function applyDust(){covFab.visible=dustVar==='z_cover';covNC.visible=dustVar==='z_nc';}
+function applyDust(){covFab.visible=dustOn.z_cover;covNC.visible=dustOn.z_nc;}
 const VARS={z_station:'bed',z_torsion:'bed',z_bar:'bed',z_combo:'bed',z_pus:'inner',z_puc:'inner',z_dual:'outer',z_rail:'outer',z_snap:'outer',z_block:'outer',z_nc:'dust',z_cover:'dust'};
 function setVar(id){const k=VARS[id];if(!k)return;
   if(k==='bed'){bedVar=id;applyBed();if(mode<2)setMode(2);}
   else if(k==='inner'){innerVar=id;applySeal();if(mode<3)setMode(3);}
   else if(k==='outer'){outerVar=id;applySeal();if(mode<3)setMode(3);}
-  else{dustVar=id;applyDust();if(mode<4)setMode(4);}
-  document.querySelectorAll('[data-var]').forEach(b=>{if(VARS[b.dataset.var]===k)b.setAttribute('aria-pressed',b.dataset.var===id);});
+  else{if(mode<4){dustOn[id]=true;setMode(4);}else{dustOn[id]=!dustOn[id];if(!dustOn.z_cover&&!dustOn.z_nc)dustOn[id]=true;}dustVar=dustOn.z_nc?'z_nc':'z_cover';applyDust();}
+  document.querySelectorAll('[data-var]').forEach(b=>{if(VARS[b.dataset.var]===k)b.setAttribute('aria-pressed',k==='dust'?!!dustOn[b.dataset.var]:b.dataset.var===id);});
   const cam={bed:'bed',inner:'chute',outer:'seal',dust:'cover'}[k];if(cam)goCam(cam);
   if(typeof info==='function')info();}
 window.ZONA={setVar};
@@ -862,7 +862,7 @@ function updateParts(dt){
     o.position.copy(o.userData.ex).multiplyScalar(e);o.position.y+=lift;
   }
   for(const g of[bedCenter,sideL,sideR]){g.position.copy(g.userData.ex).multiplyScalar(e);}
-  if(typeof outerSets!=='undefined'){const ncOn=dustVar==='z_nc'&&pres.cover>0.5;for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar&&!ncOn);}
+  if(typeof outerSets!=='undefined'){const ncOn=dustOn.z_nc&&pres.cover>0.5;for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar&&!ncOn);}
   for(const m of modules){m.g.position.y=m.y;for(const a of m.arms){a.piv.rotation.x=(-m.y)/a.ez;}}
 }
 
@@ -875,7 +875,7 @@ const labelDefs=[
   {t:'Бортовая стенка течки',o:()=>skirtR,p:[-1.4,SK_TOP+0.02,SK_Z]},
   {t:'Внутреннее уплотнение',tt:()=>innerVar==='z_puc'?'Внутреннее уплотнение: полиуретан с керамикой':'Внутреннее уплотнение: полиуретан на стали',o:()=>linerR,p:[-3.2,SK_BOT+0.18,SK_Z-0.02],pu:true,need:'seal'},
   {t:'Наружное уплотнение K-Snap-Loc',tt:()=>({z_snap:'Наружное уплотнение K-Snap-Loc',z_dual:'Двухконтурный полиуретановый профиль',z_rail:'Профиль на монтажной рейке',z_block:'Уплотнения Super Block'})[outerVar],o:()=>sealR,p:[-2.2,1.38,SK_Z+0.05],pu:true,need:'seal'},
-  {t:'Фильтрующее укрытие',tt:()=>dustVar==='z_nc'?'Бесконтактные уплотнения':'Фильтрующее укрытие',o:()=>cover,p:[-2.0,SK_TOP+SK_Z,0],need:'cover'},
+  {t:'Фильтрующее укрытие',tt:()=>dustOn.z_nc&&dustOn.z_cover?'Укрытие и бесконтактные уплотнения':dustOn.z_nc?'Бесконтактные уплотнения':'Фильтрующее укрытие',o:()=>cover,p:[-2.0,SK_TOP+SK_Z,0],need:'cover'},
   {t:'Роликоопора',o:()=>outIdlers,p:[1.2,BELT_Y-0.2,0.66]},
   {t:'Конвейерная лента',o:null,p:[2.6,BELT_Y+0.15,0]}
 ];

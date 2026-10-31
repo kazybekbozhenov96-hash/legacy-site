@@ -153,25 +153,25 @@ function buildBlock(){const g=new T.Group(),L=1.2,a=0.55,C=Math.cos(a),S=Math.si
    list:['Сменные полиуретановые блоки по нижней кромке стенок','Прижимные пластины на болтах','Боковые и задняя стенки загрузочного узла'],
    desc:'Для самых тяжёлых условий. Сменные элементы для боковых и задней стенок загрузочного узла. Прижимные пластины и опоры под лентой подбирают совместно с уплотнением.',adv:'Закрывают боковые и задние зоны просыпи; отдельные блоки можно заменять по износу.',sel:['Геометрия загрузочного узла','Нагрузка','Крупность материала']};}
 function buildNC(){const g=new T.Group(),Rr=1.0,cy=1.25,a0=0.62,L=1.0;
-  const BLUE=std({color:0x2f8cff,roughness:.35,emissive:0x1e7bff,emissiveIntensity:.9});
   const sh=new T.Shape(),N=24;for(let i=0;i<=N;i++){const t=-Math.PI/2-a0+2*a0*i/N;if(i===0)sh.moveTo(Math.cos(t)*Rr,Math.sin(t)*Rr);else sh.lineTo(Math.cos(t)*Rr,Math.sin(t)*Rr);}
   for(let i=N;i>=0;i--){const t=-Math.PI/2-a0+2*a0*i/N;sh.lineTo(Math.cos(t)*(Rr+0.015),Math.sin(t)*(Rr+0.015));}
   const bg=new T.ExtrudeGeometry(sh,{depth:L,bevelEnabled:false});bg.translate(0,0,-L/2);mesh(bg,std({color:0x2c3035,roughness:.8,side:T.DoubleSide}),g,0,cy,0);
+  const WEAR=std({color:0x2a2d30,roughness:.7,metalness:.3});
   for(const sg of[-1,1]){
-    /* skirt wall of the chute */
-    const ti=-Math.PI/2+sg*(a0-0.34),wx=Math.cos(ti)*Rr,wy=cy+Math.sin(ti)*Rr;
-    box(0.014,0.42,L,GRY,g,wx,wy+0.25,0);
-    /* bent holder: vertical flange bolted to the skirt, inclined plate along the belt wing, blue elements just above the belt */
-    const ts=-Math.PI/2+sg*(a0-0.17),px=Math.cos(ts)*(Rr-0.02),py=cy+Math.sin(ts)*(Rr-0.02);
+    const ts=-Math.PI/2+sg*(a0-0.2),px=Math.cos(ts)*(Rr-0.014),py=cy+Math.sin(ts)*(Rr-0.014);
+    /* lower leg parallel to the belt wing, small gap */
     const u=new T.Group();u.position.set(px,py,0);u.rotation.z=ts+Math.PI/2;g.add(u);
-    box(0.26,0.014,L,GRY,u,0,0.05,0);
-    const nS=8;for(let k=0;k<nS;k++){const zz=-L/2+L/nS*(k+0.5);box(0.22,0.028,L/nS-0.012,BLUE,u,0,0.022,zz);}
-    box(0.012,0.2,L,GRY,g,wx+sg*0.014,wy+0.13,0);
-    for(let k=0;k<5;k++){const zz=-0.4+k*0.2;const bl=cylZ(0.008,0.16,GRY,g,wx+sg*0.08,wy+0.14,zz,10);bl.rotation.set(0,Math.PI/2,0);
-      cylZ(0.016,0.012,GRY,g,wx+sg*0.022,wy+0.14,zz,6).rotation.set(0,Math.PI/2,0);}
-    const leg=box(0.04,0.6,0.04,GRY,g,px+sg*0.22,0.3,0.42);leg.rotation.z=sg*0.25;const leg2=box(0.04,0.6,0.04,GRY,g,px+sg*0.22,0.3,-0.42);leg2.rotation.z=sg*0.25;}
+    box(0.3,0.016,L,GRY,u,0,0.012,0);box(0.28,0.01,L,WEAR,u,0,0.002,0);
+    /* bend + vertical leg (towards the chute wall) with adjusting bolts */
+    const ex=px+sg*Math.cos(ts+Math.PI/2)*0.15*sg,ey=py+Math.sin(ts+Math.PI/2)*0.15;
+    const tip=[px+Math.cos(ts+Math.PI/2)*0.15*-1*sg*-1,0];
+    const vx=px+sg*0.13,vy=py+0.08;
+    box(0.016,0.26,L,GRY,g,vx,vy+0.12,0);
+    for(let k=0;k<5;k++){const zz=-0.4+k*0.2;const bl=cylX(0.008,0.16,GRY,g,vx+sg*0.07,vy+0.18,zz,10);cylX(0.016,0.012,GRY,g,vx+sg*0.012,vy+0.18,zz,6);}
+    /* chute wall plate the profile is bolted to */
+    box(0.014,0.5,L,std({color:0x5a6066,roughness:.7,metalness:.4}),g,vx+sg*0.016,vy+0.28,0);}
   for(const z of[-0.42,0.42]){box(1.5,0.04,0.05,GRY,g,0,0.04,z);box(0.05,0.3,0.05,GRY,g,0,0.15,z);}
-  return{root:g,parts:[{t:'Бесконтактные элементы',p:[0.42,0.48,0.3]},{t:'Гнутый держатель на болтах',p:[0.52,0.72,-0.2]},{t:'Стенка течки',p:[0.36,0.98,0.35]},{t:'Лента',p:[0,0.27,0]}],
+  return{root:g,parts:[{t:'Нижняя полка над лентой',p:[0.42,0.47,0.3]},{t:'Регулировочные болты',p:[0.6,0.66,-0.2]},{t:'Стенка течки',p:[0.55,0.95,0.35]},{t:'Лента',p:[0,0.27,0]}],
    list:['Боковые и хвостовые элементы над кромкой ленты','Не касаются ленты: работают на рабочем зазоре','Положение и зазор настраивают по геометрии загрузочной зоны'],
    desc:'Боковые и хвостовые элементы для ограничения просыпи и выхода пылевоздушного потока. Положение и рабочий зазор согласуют по геометрии загрузочной зоны.',adv:'Рабочий зазор снижает трение о ленту; эффективность зависит от его правильной настройки.',sel:['Геометрия загрузочной зоны','Ширина ленты','Пылевыделение']};}
 function buildCover(){const g=new T.Group(),L=2.6,R=0.5,y=0.45;
