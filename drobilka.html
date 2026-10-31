@@ -1349,9 +1349,25 @@ function v3Hsi(){const g=new THREE.Group(),D=1.0,C=m=>kC(m);
   const fw=wheel(g,-0.05,0.62,D/2+0.18,0.55,0.12,K.green,6);
   const mb=new THREE.Group();mb.position.set(1.35,0.45,D/2+0.18);g.add(mb);motor(mb,0,0,0,0.2,0.5,K.blue,'z');boxM(0.6,0.05,0.45,K.greenD,mb,0,-0.23,-0.1);
   for(const s of[1,-1]){const c=new THREE.CatmullRomCurve3([new THREE.Vector3(1.35,0.45+s*0.12,D/2+0.3),new THREE.Vector3(0.6,0.55+s*0.35,D/2+0.3),new THREE.Vector3(-0.05,0.62+s*0.55,D/2+0.3)]);mesh(new THREE.TubeGeometry(c,30,0.012,6,false),K.black,g);}
+  /* bolted flange between lower and upper housing, rear hinge and hydraulic opening cylinder */
+  for(const z of[-D/2-0.035,D/2+0.035])for(let i=0;i<9;i++)cylZk(0.014,0.02,K.steel,g,-0.85+i*0.21,0.95,z,6);
+  cylZk(0.05,D+0.1,K.steel,g,0.85,1.05,0,16);
+  for(const z of[-D/2-0.05,D/2+0.05]){const cy=new THREE.Group();cy.position.set(0.95,0.35,z);cy.rotation.z=0.35;g.add(cy);cylY(0.045,0.5,K.red,cy,0,0.25,0,16);cylY(0.02,0.4,K.steel,cy,0,0.6,0,10);}
+  /* inspection doors with handles and hinges on the side walls */
+  for(const z of[-D/2-0.025,D/2+0.025]){for(const [x,y,w,h] of[[-0.45,1.25,0.32,0.26],[0.45,0.55,0.3,0.32]]){boxM(w,h,0.02,K.greenD,g,x,y,z);boxM(0.1,0.02,0.03,K.steel,g,x,y,z+(z>0?0.02:-0.02));
+      for(const dy of[-h/2+0.04,h/2-0.04])cylY(0.012,0.05,K.steel,g,x-w/2,y+dy,z,8);}}
+  /* lifting lugs on the cover */
+  for(const [x,z] of[[-0.6,-0.35],[-0.6,0.35],[0.35,-0.35],[0.35,0.35]]){const l=mesh(new THREE.TorusGeometry(0.04,0.012,6,14,Math.PI),K.greenD,g,x,1.66,z);l.rotation.y=Math.PI/2;}
+  /* adjusting rods: springs and nuts outside the housing */
+  for(const [x,y,a] of[[0.82,1.38,0.5],[1.0,1.08,0.3]])for(const z of[-0.35,0.35]){const gr=new THREE.Group();gr.position.set(x,y,z);gr.rotation.z=-a;g.add(gr);cylY(0.018,0.55,K.steel,gr,0,0.1,0,10);coil(gr,0,0.05,0,0.16,0.045,K.yel);cylY(0.05,0.03,K.dark,gr,0,0.24,0,6);cylY(0.055,0.03,K.dark,gr,0,0.02,0,6);}
+  /* bearing housings on the rotor shaft, sheave on the drive side */
+  for(const z of[-D/2-0.22,D/2+0.06]){boxM(0.3,0.08,0.16,K.dark,g,-0.05,0.4,z);cylZk(0.11,0.16,K.dark,g,-0.05,0.62,z,24);for(const dx of[-0.11,0.11])cylY(0.015,0.04,K.steel,g,-0.05+dx,0.45,z,6);}
+  { /* rear discharge opening grate and base frame posts */
+    for(let i=0;i<6;i++)boxM(0.02,0.02,D-0.1,K.steel,g,-0.55+i*0.22,0.18,0);
+    for(const x of[-0.9,0.9])for(const z of[-0.55,0.55])boxM(0.1,0.15,0.1,K.greenD,g,x,0.075,z);}
   boxM(2.0,0.15,1.3,K.greenD,g,0,0.075,0);
   let T=0;const b={root:g,rot,fw,cam:[[2.2,1.8,2.8],[0,0.8,0]],
-    parts:[{t:'Загрузочный лоток',p:[-0.62,1.25,0.3]},{t:'Цепная завеса',p:[-0.42,1.45,0]},{t:'Ротор с билами',p:[-0.05,0.62,0.3]},{t:'Отбойные плиты',p:[0.3,1.15,0.3]},{t:'Регулировочные тяги',p:[0.75,1.3,0.35]},{t:'Маховик',p:[-0.05,1.15,D/2+0.18]},{t:'Электродвигатель',p:[1.35,0.7,D/2+0.18]}]};
+    parts:[{t:'Загрузочный лоток',p:[-0.62,1.25,0.3]},{t:'Цепная завеса',p:[-0.42,1.45,0]},{t:'Ротор с билами',p:[-0.05,0.62,0.3]},{t:'Отбойные плиты',p:[0.3,1.15,0.3]},{t:'Регулировочные тяги с пружинами',p:[0.85,1.45,0.35]},{t:'Гидроцилиндр открывания корпуса',p:[1.0,0.6,0.55]},{t:'Смотровые люки',p:[0.45,0.55,0.53]},{t:'Подшипниковые узлы',p:[-0.05,0.75,-0.75]},{t:'Маховик',p:[-0.05,1.15,D/2+0.18]},{t:'Электродвигатель',p:[1.35,0.7,D/2+0.18]}]};
   b.hsi={rc:[-0.05,0.62],R:0.36,apR:0.6};
   b.update=dt=>{T+=dt;rot.rotation.z-=dt*9;fw.rotation.z-=dt*9;};
   return b;}
@@ -1370,6 +1386,7 @@ function placeFeeder(t){if(LINE.fd[t])return LINE.fd[t];
   hold.visible=false;scene.add(hold);return LINE.fd[t]={g:hold,inner,b};}
 function placeCr(t){if(LINE.cr[t])return LINE.cr[t];
   const b=NEWB[t](),hold=new THREE.Group(),inner=new THREE.Group();hold.add(inner);inner.add(b.root);
+  b.root.traverse(n=>{if(n.isMesh&&n.material&&n.material.clippingPlanes&&n.material.clippingPlanes.length){const m=n.material.clone();m.clippingPlanes=null;m.side=THREE.FrontSide;n.material=m;}});
   if(t!=='hsi'&&t!=='jaw')b.root.rotation.y=Math.PI/2;
   b.root.updateMatrixWorld(true);const bx=new THREE.Box3().setFromObject(b.root),sz=bx.getSize(new THREE.Vector3()),ce=bx.getCenter(new THREE.Vector3());
   const PB=0.62,TOP=t==='jaw'?2.3:2.25,s=Math.min((TOP-PB)/sz.y,(t==='jaw'?1.5:1.3)/sz.x,1.9/sz.z);
