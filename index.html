@@ -358,6 +358,44 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 .mcar::after{content:"";position:absolute;top:0;right:0;bottom:4px;width:60px;background:linear-gradient(90deg,transparent,var(--bg));pointer-events:none;transition:opacity .2s}
 .mcar.end::after{opacity:0}
 @media (max-width:760px){.models .mcard{flex-basis:84%}}
+
+/* ===== redesign: hero + 3D section ===== */
+.btn{border-radius:10px}
+.hero::after{background:linear-gradient(180deg,rgba(10,13,16,.55) 0%,rgba(10,13,16,.35) 35%,rgba(10,13,16,.82) 100%),linear-gradient(90deg,rgba(10,13,16,.75),rgba(10,13,16,.1))!important}
+.hero h1{font-size:clamp(30px,4.6vw,58px);line-height:1.06;letter-spacing:-.015em}
+.hero .lede{font-size:clamp(16px,1.6vw,18px);line-height:1.55}
+.hero .cta{align-items:center;gap:18px}
+.hero .cta .btn{padding:15px 26px;font-size:16px;box-shadow:0 10px 28px rgba(242,163,58,.28)}
+.link3{color:#fff;text-decoration:none;font-weight:600;font-size:15.5px;display:inline-flex;gap:8px;align-items:center;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:2px}
+.link3:hover{border-color:#f2a33a;color:#f2a33a}
+.go3d{margin-top:22px;display:flex;align-items:center;gap:14px;max-width:440px;padding:10px 16px 10px 10px;border-radius:16px;text-decoration:none;color:#fff;
+  background:linear-gradient(135deg,rgba(242,163,58,.22),rgba(15,20,25,.72));border:1px solid rgba(242,163,58,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 12px 32px rgba(0,0,0,.35);transition:transform .2s,box-shadow .2s,border-color .2s;position:relative;overflow:hidden}
+.go3d:hover{transform:translateY(-2px);border-color:#f2a33a;box-shadow:0 16px 40px rgba(242,163,58,.25)}
+.g3pic{flex:none;width:76px;height:56px;border-radius:10px;overflow:hidden;position:relative;background:#0f1419}
+.g3pic img{width:100%;height:100%;object-fit:cover;animation:g3pan 8s ease-in-out infinite alternate}
+.g3pic::after{content:"3D";position:absolute;right:4px;bottom:4px;font-family:var(--mono);font-size:10px;font-weight:600;background:#f2a33a;color:#1a1206;padding:1px 5px;border-radius:4px}
+@keyframes g3pan{from{transform:scale(1.15) translateX(-6%)}to{transform:scale(1.15) translateX(6%)}}
+.g3txt{display:grid;gap:2px;flex:1;min-width:0}.g3txt b{font-size:16px;font-weight:700}.g3txt small{font-size:12.5px;color:#d7dde2}
+.g3arr{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#f2a33a;color:#1a1206;font-weight:700}
+.facts{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:#e6e9ec}
+.facts li{display:inline-flex;align-items:center;gap:8px}.facts li::before{content:"";width:6px;height:6px;border-radius:50%;background:#f2a33a}
+.hero .fields{margin-top:18px;gap:6px}
+.hero .fields span{border-radius:999px;padding:5px 12px;font-size:12.5px;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+@media (prefers-reduced-motion:reduce){.g3pic img{animation:none}}
+/* 3D section cards */
+.mcard{border-radius:16px;border:1px solid #232c35;background:linear-gradient(180deg,#121920,#0d1216)}
+.mcard .pic{aspect-ratio:16/10}
+.models{align-items:flex-start}.mcard{grid-template-rows:auto auto}
+.mcard .pic img{object-fit:cover;transform:scale(1.12)}
+.mcard .pic::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(13,18,22,.95))}
+.mcard .pic span{border-radius:999px;padding:4px 10px;z-index:1}
+.mcard .play{z-index:1;border-radius:999px;background:rgba(242,163,58,.95);color:#1a1206;border:0;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.mcard .play svg{color:#1a1206}
+.mcard .txt{padding:6px 20px 20px;margin-top:-28px;position:relative;z-index:1}
+.mcard .ref{display:inline-block;align-self:flex-start;background:rgba(242,163,58,.14);padding:3px 9px;border-radius:999px;font-size:11px}
+.mcard .btn{border-radius:10px}
+.svc article,.dir,.sdlg{border-radius:14px}
 </style>
 </head>
 <body>
@@ -387,9 +425,14 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       <p class="lede">Подбираем комплектацию по техническому заданию, модели оборудования или параметрам процесса. Для горнодобывающих и перерабатывающих предприятий Казахстана.</p>
       <div class="cta">
         <a class="btn" href="#request">Отправить запрос</a>
-        <a class="btn ghost" href="#catalog">Открыть каталог</a>
-        <a class="btn ghost b3d" href="#models">Подобрать решения в 3D</a>
+        <a class="link3" href="#catalog">Открыть каталог <span aria-hidden="true">→</span></a>
       </div>
+      <a class="go3d" href="#models">
+        <span class="g3pic"><img src="img/3d-ochistka.jpg" alt="" loading="eager"></span>
+        <span class="g3txt"><b>Подобрать решение в 3D</b><small>Интерактивно · 6 моделей узлов</small></span>
+        <span class="g3arr" aria-hidden="true">→</span>
+      </a>
+      <ul class="facts"><li>Центральная Азия</li><li>DDP · DAP</li><li>Свой склад ЗИП</li><li>Шеф-монтаж</li></ul>
       <div class="fields"><span>Горная промышленность</span><span>Переработка сырья</span><span>Нефтегазовый сектор</span><span>Производство и ремонт</span></div>
     </div>
   </section>
@@ -450,8 +493,8 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
   <section class="blk" id="models">
     <div class="in">
       <div class="head">
-        <div><p class="eyebrow">Интерактивно</p><h2>Посмотрите узел в 3D</h2></div>
-        <p>Модели загружаются только по нажатию, поэтому сайт остаётся лёгким. Включайте защиту по шагам и смотрите, как меняется узел.</p>
+        <div><p class="eyebrow">Интерактивно</p><h2>Подберите решение в 3D</h2></div>
+        <p>Выберите проблему узла, ставьте оборудование из каталога по шагам и смотрите результат.</p>
         <div class="mnav"><button id="mPrev" aria-label="Предыдущие модели">←</button><span id="mCnt"></span><button id="mNext" aria-label="Следующие модели">→</button></div>
       </div>
       <div class="mcar" id="mcar"><div class="models" id="mtrack">
