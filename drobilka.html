@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <h3>Линия по шагам</h3>
       <div class="modes">
         <button class="mode" data-mode="1" aria-pressed="true"><span class="n">1</span><span class="t">Изношенная линия</span></button>
-        <button class="mode" data-mode="2" aria-pressed="false"><span class="n">2</span><span class="t">Колосниковый питатель</span></button>
+        <button class="mode" data-mode="2" aria-pressed="false"><span class="n">2</span><span class="t">Новый питатель</span></button>
         <button class="mode" data-mode="3" aria-pressed="false"><span class="n">3</span><span class="t">Новые щёки</span></button>
         <button class="mode" data-mode="4" aria-pressed="false"><span class="n">4</span><span class="t">Полиуретановые сита</span></button>
       </div>
@@ -251,6 +251,11 @@ document.addEventListener('DOMContentLoaded',function(){
         <button class="chip" data-fines="low" aria-pressed="false">Мало</button>
         <button class="chip" data-fines="mid" aria-pressed="true">Средне</button>
         <button class="chip" data-fines="high" aria-pressed="false">Много</button>
+      </div>
+      <h3>Питатель на шаге 2</h3>
+      <div class="chips" role="group" aria-label="Тип питателя">
+        <button class="chip" data-fd="grizzly" aria-pressed="true">Колосниковый</button>
+        <button class="chip" data-fd="apron" aria-pressed="false">Пластинчатый</button>
       </div>
     </div>
     <div class="box">
@@ -726,11 +731,49 @@ scene.add(new THREE.HemisphereLight(0xb9c6d4,0x1a1612,0.3));
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(70,50),MAT.concrete);ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
 const mainSpin=[];spinList=mainSpin;
 
+/* ===== Apron feeder: closed loop of overlapping cast pans on two chains, head drive sprockets, tail take-up, carry/return rollers, skirts ===== */
+function makeApron(L,W,o){o=o||{};const SRa=c=>new THREE.Color(c).convertSRGBToLinear();
+  const A={red:new THREE.MeshStandardMaterial({color:SRa(0xb3301c),roughness:.55,metalness:.3}),redD:new THREE.MeshStandardMaterial({color:SRa(0x7a1d10),roughness:.6,metalness:.3}),
+    yel:new THREE.MeshStandardMaterial({color:SRa(0xe8b21a),roughness:.45,metalness:.3}),grey:new THREE.MeshStandardMaterial({color:SRa(0x9aa1a8),roughness:.4,metalness:.75}),
+    dark:new THREE.MeshStandardMaterial({color:SRa(0x34383c),roughness:.45,metalness:.6}),steel:new THREE.MeshStandardMaterial({color:SRa(0xc9cfd4),roughness:.25,metalness:.95}),
+    blue:new THREE.MeshStandardMaterial({color:SRa(0x2c78c0),roughness:.4,metalness:.4})};
+  const g=new THREE.Group(),Rs=0.17,P=0.13,half=L/2,per=2*L+2*Math.PI*Rs,N=Math.floor(per/P),pitch=per/N,cz=W/2-0.1;
+  /* path: s=0 at tail top, along top to head, around head, back along bottom, around tail */
+  function at(s){s=((s%per)+per)%per;
+    if(s<L)return{x:-half+s,y:Rs,a:0};s-=L;
+    if(s<Math.PI*Rs){const t=s/Rs;return{x:half+Math.sin(t)*Rs,y:Math.cos(t)*Rs,a:-t};}s-=Math.PI*Rs;
+    if(s<L)return{x:half-s,y:-Rs,a:-Math.PI};s-=L;const t=s/Rs;return{x:-half-Math.sin(t)*Rs,y:-Math.cos(t)*Rs,a:-Math.PI-t};}
+  const pans=[];
+  for(let i=0;i<N;i++){const p=new THREE.Group();g.add(p);
+    boxM(pitch*0.98,0.022,W,A.red,p,0,0.011,0);boxM(0.025,0.05,W,A.red,p,pitch*0.42,0.035,0);boxM(0.012,0.03,W-0.04,A.redD,p,-pitch*0.2,0.03,0);
+    for(const s of[-1,1]){boxM(pitch*0.98,0.09,0.02,A.red,p,0,0.055,s*(W/2-0.01));boxM(pitch*0.7,0.025,0.024,A.yel,p,0,0.1,s*(W/2-0.01));
+      boxM(pitch*0.9,0.045,0.05,A.yel,p,0,-0.03,s*cz);mesh(new THREE.CylinderGeometry(0.016,0.016,0.07,10).rotateX(Math.PI/2),A.steel,p,pitch/2,-0.03,s*cz);}
+    pans.push(p);}
+  let off=0;function place(){for(let i=0;i<N;i++){const q=at(off+i*pitch);pans[i].position.set(q.x,q.y,0);pans[i].rotation.z=q.a;}}place();
+  /* sprockets, shafts, rollers */
+  const spr=[];for(const x of[half,-half]){mesh(new THREE.CylinderGeometry(0.05,0.05,W+0.7,16).rotateX(Math.PI/2),A.steel,g,x,0,0);
+    for(const s of[-1,1]){const sp=new THREE.Group();sp.position.set(x,0,s*cz);g.add(sp);mesh(new THREE.CylinderGeometry(Rs-0.04,Rs-0.04,0.05,10).rotateX(Math.PI/2),A.dark,sp);
+      for(let k=0;k<10;k++){const a=k/10*Math.PI*2;const t=boxM(0.05,0.04,0.05,A.dark,sp,Math.cos(a)*(Rs-0.03),Math.sin(a)*(Rs-0.03),0);t.rotation.z=a;}spr.push(sp);}
+    for(const s of[-1,1]){boxM(0.26,0.24,0.14,A.grey,g,x,0,s*(W/2+0.3));boxM(0.34,0.03,0.2,A.grey,g,x,-0.13,s*(W/2+0.3));for(const dx of[-0.1,0.1])bolt(g,x+dx,-0.11,s*(W/2+0.3));}}
+  for(let x=-half+0.2;x<half-0.1;x+=0.22)for(const s of[-1,1]){mesh(new THREE.CylinderGeometry(0.04,0.04,0.07,14).rotateX(Math.PI/2),A.dark,g,x,Rs-0.085,s*cz);}
+  for(let x=-half+0.4;x<half;x+=0.6)for(const s of[-1,1])mesh(new THREE.CylinderGeometry(0.035,0.035,0.06,12).rotateX(Math.PI/2),A.dark,g,x,-Rs+0.075,s*cz);
+  /* frame & skirts */
+  for(const s of[-1,1]){boxM(L+0.2,0.22,0.06,A.grey,g,0,0,s*(W/2+0.15));boxM(L+0.2,0.04,0.2,A.grey,g,0,Rs-0.12,s*(cz+0.02));
+    if(o.skirt!==false){boxM(L*0.85,0.32,0.025,A.grey,g,-L*0.06,Rs+0.27,s*(W/2-0.06));for(let x=-half+0.2;x<half-0.2;x+=0.4)boxM(0.04,0.3,0.05,A.grey,g,x,Rs+0.27,s*(W/2-0.02));}
+    if(o.legs)for(const x of[-half+0.15,0,half-0.15]){boxM(0.12,o.legs,0.12,A.grey,g,x,-o.legs/2-0.1,s*(W/2+0.15));}}
+  /* drive on head shaft */
+  const dr=new THREE.Group();dr.position.set(half,0,W/2+0.6);g.add(dr);boxM(0.42,0.42,0.3,A.grey,dr,0,0,0);mesh(new THREE.CylinderGeometry(0.17,0.17,0.12,24).rotateX(Math.PI/2),A.grey,dr,0,0,-0.2);
+  const mo=mesh(new THREE.CylinderGeometry(0.14,0.14,0.42,24).rotateZ(Math.PI/2),A.blue,dr,-0.45,0.05,0);boxM(0.42,0.04,0.24,A.blue,dr,-0.45,-0.12,0);
+  if(o.hopper){const hp=new THREE.CylinderGeometry(0.75,0.4,0.6,4,1,true);hp.rotateY(Math.PI/4);const h=mesh(hp,new THREE.MeshStandardMaterial({color:SRa(0x8d9397),roughness:.5,metalness:.5,side:THREE.DoubleSide}),g,-half+0.45,Rs+0.75,0);h.scale.z=W/1.1;}
+  function update(dt,v){off+=v*dt;place();for(const sp of spr)sp.rotation.z-=v/Rs*dt;}
+  return{g,update,top:Rs+0.03,half,Rs};}
+
 /* --- feeder: hopper + vibrating pan, grizzly section appears on step 2 --- */
 const FX0=-5.3,FX1=-2.75,FY=2.45,FSL=0.04;const panY=x=>FY-(x-FX0)*FSL;const GX=-3.55;
 {const hop=new THREE.CylinderGeometry(1.0,0.5,1.1,4,1,true);hop.rotateY(Math.PI/4);mesh(hop,MAT.plate,scene,-4.9,FY+0.85,0);
  for(const x of[-5.55,-4.25])for(const s of[-1,1])boxM(0.12,FY+0.3,0.12,MAT.paint,scene,x,(FY+0.3)/2,s*0.75);}
-const feeder=new THREE.Group();scene.add(feeder);
+const feeder=new THREE.Group();scene.add(feeder);const fSup=new THREE.Group();scene.add(fSup);
+const apronMain=makeApron(FX1-FX0+0.05,0.9,{legs:panY(FX1)-0.62});apronMain.g.position.set((FX0+FX1)/2,panY((FX0+FX1)/2)-apronMain.top,0);apronMain.g.rotation.z=-Math.atan(FSL);apronMain.g.visible=false;scene.add(apronMain.g);let fdType='grizzly';
 const panFull=new THREE.Group(),panShort=new THREE.Group(),grizzly=new THREE.Group();feeder.add(panFull);feeder.add(panShort);feeder.add(grizzly);
 {const len=FX1-FX0,ang=Math.atan(FSL);
  const pf=boxM(len,0.03,0.9,MATR.mn,panFull,(FX0+FX1)/2,panY((FX0+FX1)/2)-0.015,0);pf.rotation.z=-ang;
@@ -738,7 +781,7 @@ const panFull=new THREE.Group(),panShort=new THREE.Group(),grizzly=new THREE.Gro
  for(let k=0;k<9;k++){const z=-0.4+k*0.1;const b=boxM(FX1-GX,0.06,0.035,MATR.mn,grizzly,(GX+FX1)/2,panY((GX+FX1)/2)-0.02,z);b.rotation.z=-ang;}
  for(const s of[-1,1]){const w=boxM(len,0.35,0.03,MATR.yel,feeder,(FX0+FX1)/2,panY((FX0+FX1)/2)+0.16,s*0.47);w.rotation.z=-ang;
    boxM(0.3,0.25,0.22,MATR.dark,feeder,-4.0,panY(-4)+0.1,s*0.62);}
- for(const x of[FX0+0.25,FX1-0.25])for(const s of[-1,1]){spring(scene,x,panY(x)-0.45,s*0.42,0.38,0.06);boxM(0.14,panY(x)-0.45,0.14,MAT.paint,scene,x,(panY(x)-0.45)/2,s*0.42);}
+ for(const x of[FX0+0.25,FX1-0.25])for(const s of[-1,1]){spring(fSup,x,panY(x)-0.45,s*0.42,0.38,0.06);boxM(0.14,panY(x)-0.45,0.14,MAT.paint,fSup,x,(panY(x)-0.45)/2,s*0.42);}
  const ch=boxM(0.8,0.03,0.7,MAT.plate,scene,-3.15,1.55,0);ch.rotation.z=-0.55;}
 /* --- jaw crusher --- */
 const JX=-2.3,JY0=0.95,JY1=2.15,FIXX=-2.62;
@@ -806,11 +849,12 @@ function step(dt){
   const rate=even?16:16*(0.25+1.6*Math.max(0,Math.sin(simTime*1.1))**2);
   acc+=dt*rate;while(acc>=1){spawn();acc--;}
   const vF=even?0.42:0.42*(0.35+1.3*Math.max(0,Math.sin(simTime*1.1+0.6)));
+  if(apronMain.g.visible)apronMain.update(dt,vF);
   const gap=pres.jaw>0.5?'new':'worn';
   for(let i=0;i<NO;i++){const st=O.st[i];if(!st)continue;const r=O.r[i];
     if(st===1){if(O.vy[i]!==0){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;if(O.y[i]<=panY(O.x[i])+r){O.y[i]=panY(O.x[i])+r;O.vy[i]=0;}continue;}
       O.x[i]+=vF*dt;O.y[i]=panY(O.x[i])+r+0.008*Math.sin(simTime*60+i);
-      if(even&&O.x[i]>GX&&r<0.04&&Math.random()<dt*6){O.st[i]=7;O.vx[i]=0.2;O.vy[i]=0;}
+      if(even&&fdType!=='apron'&&O.x[i]>GX&&r<0.04&&Math.random()<dt*6){O.st[i]=7;O.vx[i]=0.2;O.vy[i]=0;}
       else if(O.x[i]>=FX1){O.st[i]=2;O.s[i]=0;O.r1[i]=r;O.vx[i]=0;}}
     else if(st===2){O.s[i]+=dt*(0.55+0.2*Math.sin(i));const s=Math.min(1,O.s[i]);
       const xin=FIXX+0.32*(1-s)+0.06,xout=FIXX+(gap==='new'?0.05:0.11);
@@ -843,7 +887,7 @@ function writeInstances(){
 }
 function updateParts(dt){
   const kk=Math.min(1,dt*3);for(const k in pres)pres[k]+=(target[k]-pres[k])*kk;
-  const g=pres.feed>0.5;panFull.visible=!g;panShort.visible=g;grizzly.visible=g;
+  const g=pres.feed>0.5,ap=g&&fdType==='apron';feeder.visible=!ap;fSup.visible=!ap;apronMain.g.visible=ap;panFull.visible=!g;panShort.visible=g&&!ap;grizzly.visible=g&&!ap;
   const j=pres.jaw>0.5;fixedNew.visible=j;movNew.visible=j;fixedOld.visible=!j;movOld.visible=!j;
   for(const m of deckMeshes)m.material=pres.deck>0.5?deckMat.pu:deckMat.clog;
 }
@@ -879,6 +923,7 @@ function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:contr
 function info(){
   let t,r,p,l;
   if(mode===1){t='Изношенная линия';r='Исходное состояние';p='Материал из бункера идёт рывками: дробилка то простаивает, то завалена. Щёки стёрлись, разгрузочная щель выросла, и в продукт уходит кусок крупнее нормы. Сито грохота забито, мелочь не проходит и уходит в крупную фракцию.';l=['Камера «В дробилку» — щёки видны сквозь прозрачную боковину','Камера «Грохот» — что происходит на деках','Камера «Фракции» — куда уходит материал'];}
+  else if(mode===2&&fdType==='apron'){t='Пластинчатый питатель';r='Каталог · раздел 07.1 · питатели';p='Под бункером стоит пластинчатый питатель: замкнутое полотно из литых пластин на двух тяговых цепях. Приводные звёздочки на головном валу тянут полотно, пластины вытягивают кусковой материал из бункера ровным слоем и ссыпают его в дробилку. Борта удерживают материал, опорные катки принимают удар кусков.';l=['Для крупнокускового и тяжёлого материала под бункером первичной дробилки','Производительность задаёт скорость полотна и высота слоя','Ширину, скорость и привод подбирают по крупности питания и нагрузке'];}
   else if(mode===2){t='Колосниковый питатель';r='Каталог · раздел 07.1 · питатели';p='Вибрационный питатель подаёт материал ровным слоем, а колосниковый участок в конце отделяет мелкий класс: мелочь идёт мимо дробилки сразу на конвейер, дробилка работает только с тем, что нужно дробить.';l=['Ширину, скорость и привод подбирают по крупности питания и нагрузке','Пластинчатые питатели — для кускового материала','Монтаж согласуют с компоновкой бункера'];}
   else if(mode===3){t='Новые щёки';r='Каталог · раздел 07.6 · дробящие элементы';p='Изношенные щёки заменены, разгрузочная щель восстановлена. Продукт выходит по норме, нагрузка на грохот и следующие стадии становится предсказуемой.';l=['Щёки, брони, била — по модели машины, номеру детали или чертежу','Материал и геометрию согласуют под конкретную машину','Втулки, валы, эксцентрики — по каталожному номеру и посадочным размерам'];}
   else{t='Полиуретановые сита';r='Каталог · раздел 07.5 · сита и просеивающие поверхности';p='Забитая сетка заменена модульными полиуретановыми панелями. Мелочь проходит через ячейки, фракции получаются чистыми, изношенную панель меняют отдельно.';l=['Размер ячейки и тип фиксации — по посадочному месту','Для влажного материала и тонкого рассева — специальные исполнения','Резиновые и комбинированные поверхности — для ударных нагрузок'];}
@@ -888,6 +933,7 @@ function setMode(m,user){const prev=mode;mode=m;if(user&&m!==prev&&STEPCAM[m])go
 function pick(attr,id){document.querySelectorAll('[data-'+attr+']').forEach(b=>b.setAttribute('aria-pressed',b.dataset[attr]===id));}
 document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode,true)));
 document.querySelectorAll('[data-feed]').forEach(b=>b.addEventListener('click',()=>{feedType=b.dataset.feed;pick('feed',feedType);}));
+document.querySelectorAll('[data-fd]').forEach(b=>b.addEventListener('click',()=>{fdType=b.dataset.fd;pick('fd',fdType);if(mode<2)setMode(2,true);else{info();goCam('feeder');}}));
 document.querySelectorAll('[data-fines]').forEach(b=>b.addEventListener('click',()=>{finesLevel=b.dataset.fines;pick('fines',finesLevel);}));
 document.querySelectorAll('[data-cam]').forEach(b=>b.addEventListener('click',()=>goCam(b.dataset.cam)));
 function setLabels(v){labelsOn=v;$('bLbl').setAttribute('aria-pressed',v);}
@@ -918,7 +964,7 @@ const SEL_S=['Гранулометрия питания','Влажность','�
 const SEL_P=['Марка грохота','Чертёж панели','Размер и форма ячейки','Открытая площадь','Крепление'];
 const SEL_Z=['Модель оборудования','Серийный номер','Номер детали','Чертёж или фото с размерами','Количество'];
 const PRODUCTS=[
- {id:'apron',grp:'Питатели',name:'Пластинчатые питатели',short:'Для кускового материала',cut:false,build:()=>({root:buildFeeder('apron'),parts:[{t:'Пластины полотна',p:[0,0.66,0.2]},{t:'Звёздочка цепи',p:[0.9,0.55,0.4]},{t:'Борта',p:[-0.4,0.85,0.45]}]}),
+ {id:'apron',grp:'Питатели',name:'Пластинчатые питатели',short:'Для кускового материала',cut:false,act:2,build:()=>({root:buildFeeder('apron'),parts:[{t:'Пластины полотна',p:[0,0.66,0.2]},{t:'Звёздочка цепи',p:[0.9,0.55,0.4]},{t:'Борта',p:[-0.4,0.85,0.45]}]}),
   list:['Полотно из стальных пластин на цепях','Приводные и натяжные звёздочки','Борта и опорная рама'],desc:'Для подачи кускового материала. Подбор ширины, скорости и привода по крупности питания и нагрузке на рабочий орган.',sel:SEL_F},
  {id:'grizzly',grp:'Питатели',name:'Колосниковые питатели',short:'С отделением мелкого класса',cut:false,act:2,build:()=>({root:buildFeeder('grizzly'),parts:[{t:'Колосники',p:[0.55,0.7,0.2]},{t:'Лоток',p:[-0.5,0.7,0]},{t:'Вибратор',p:[0,0.85,0.55]},{t:'Пружины',p:[-0.75,0.4,0.4]}]}),
   list:['Вибрирующий лоток','Колосниковый участок в конце','Вибраторы на бортах','Пружинные опоры'],desc:'Подача с предварительным отделением мелкого класса на колосниковом участке.',sel:SEL_F},
@@ -973,18 +1019,19 @@ function texGrid(bg,fg,cols,rows,hw,hh,slot){return canvasTex(256,256,(g,w,h)=>{
   for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){const cx=(i+0.5)*w/cols,cy=(j+0.5)*h/rows;if(slot)g.fillRect(cx-hw/2,cy-hh/2,hw,hh);else g.fillRect(cx-hw/2,cy-hh/2,hw,hw);}},true);}
 
 /* ---- feeders ---- */
-function v2Apron(){const g=new THREE.Group(),L=2.2,W=0.95,y=0.55;
-  for(let i=0;i<20;i++){const x=-L/2+0.06+i*0.112,p=new THREE.Group();p.position.set(x,y,0);p.rotation.z=-0.04;g.add(p);
-    boxM(0.12,0.03,W,K.red,p,0,0,0);boxM(0.03,0.07,W,K.red,p,-0.035,0.04,0);boxM(0.012,0.06,W,K.redD,p,0.04,0.02,0);
-    for(const s of[-1,1]){boxM(0.12,0.14,0.02,K.red,p,0,0.06,s*(W/2-0.01));boxM(0.09,0.03,0.022,K.yel,p,0,0.14,s*(W/2-0.01));}}
-  for(const s of[-1,1]){for(let i=0;i<20;i++){const x=-L/2+0.06+i*0.112;boxM(0.1,0.04,0.035,K.dark,g,x,y-0.06,s*0.33);cylZk(0.018,0.05,K.steel,g,x+0.056,y-0.06,s*0.33,10);}
-    for(let i=0;i<9;i++){const x=-L/2+0.12+i*0.25;cylZk(0.045,0.05,K.dark,g,x,y-0.11,s*0.33,16);}
-    boxM(L+0.2,0.16,0.05,K.grey,g,0,y-0.2,s*0.55);boxM(L+0.2,0.03,0.15,K.grey,g,0,y-0.11,s*0.6);
-    for(const x of[-L/2+0.1,0,L/2-0.1]){boxM(0.12,y-0.28,0.12,K.grey,g,x,(y-0.28)/2,s*0.55);boxM(0.22,0.02,0.2,K.grey,g,x,0.01,s*0.55);}}
-  for(const x of[L/2+0.06,-L/2-0.06]){cylZk(0.05,1.5,K.steel,g,x,y-0.03,0,16);for(const s of[-1,1]){const sp=cylZk(0.15,0.05,K.dark,g,x,y-0.03,s*0.33,12);boxM(0.22,0.24,0.14,K.grey,g,x,y-0.08,s*0.68);boltRow(g,x-0.08,x+0.08,y+0.04,s*0.752,3,'z');}}
-  const gb=new THREE.Group();gb.position.set(L/2+0.06,y-0.03,1.0);g.add(gb);boxM(0.42,0.42,0.32,K.grey,gb,0,0,0);boxM(0.46,0.04,0.36,K.grey,gb,0,0.21,0);cylZk(0.08,0.18,K.grey,gb,0,0,-0.24,20);
-  motor(gb,-0.55,-0.05,0.05,0.14,0.42,K.blue,'x');
-  return{root:g,cam:[[2.4,1.8,2.4],[0,0.45,0]],parts:[{t:'Пластины полотна',p:[-0.4,y+0.08,0]},{t:'Тяговые цепи',p:[0.3,y-0.06,0.33]},{t:'Приводной вал со звёздочками',p:[L/2+0.06,y,0.5]},{t:'Редуктор и двигатель',p:[L/2,y,1.0]},{t:'Опорная рама',p:[-0.6,y-0.2,0.55]}]};}
+function v2Apron(){const root=new THREE.Group(),inc=0.12;const ap=makeApron(2.2,0.95,{hopper:true,legs:0.32});ap.g.position.set(0,0.62,0);ap.g.rotation.z=inc;root.add(ap.g);
+  const NR=70,rk=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),new THREE.MeshStandardMaterial({color:0x8a7d6c,roughness:.95,flatShading:true}),NR);rk.castShadow=true;ap.g.add(rk);
+  const R={x:new Float32Array(NR),y:new Float32Array(NR),z:new Float32Array(NR),vx:new Float32Array(NR),vy:new Float32Array(NR),r:new Float32Array(NR),st:new Uint8Array(NR)};const d=new THREE.Object3D();let acc=0;
+  const ch=boxM(0.5,0.03,0.9,new THREE.MeshStandardMaterial({color:0x6a7178,roughness:.5,metalness:.6}),root,1.45,0.55,0);ch.rotation.z=-0.7;
+  function update(dt){const v=0.35;ap.update(dt,v);acc+=dt*14;
+    while(acc>=1){acc--;for(let i=0;i<NR;i++)if(!R.st[i]){R.st[i]=1;R.r[i]=0.03+Math.random()*0.05;R.x[i]=-0.95+Math.random()*0.3;R.z[i]=(Math.random()-0.5)*0.6;R.y[i]=ap.top+0.55;R.vy[i]=0;break;}}
+    for(let i=0;i<NR;i++){if(!R.st[i])continue;const r=R.r[i];
+      if(R.st[i]===1){const fl=ap.top+r;if(R.y[i]>fl){R.vy[i]-=9.8*dt;R.y[i]=Math.max(fl,R.y[i]+R.vy[i]*dt);}else{R.y[i]=fl;R.x[i]+=v*dt;}
+        if(R.x[i]>ap.half+0.02){R.st[i]=2;R.vx[i]=v;R.vy[i]=0;}}
+      else{R.vy[i]-=9.8*dt;R.x[i]+=R.vx[i]*dt;R.y[i]+=R.vy[i]*dt;if(R.y[i]<-0.9)R.st[i]=0;}
+      d.position.set(R.x[i],R.y[i],R.z[i]);d.rotation.set(i,i*1.3,i*0.7);d.scale.set(r,r*0.8,r);d.updateMatrix();rk.setMatrixAt(i,d.matrix);}
+    for(let i=0;i<NR;i++)if(!R.st[i]){d.scale.set(0,0,0);d.updateMatrix();rk.setMatrixAt(i,d.matrix);}rk.instanceMatrix.needsUpdate=true;}
+  return{root,update,cam:[[2.6,2.1,2.8],[0.1,0.7,0]],parts:[{t:'Полотно из литых пластин',p:[-0.3,0.85,0]},{t:'Тяговые цепи',p:[0.4,0.55,0.38]},{t:'Приводные звёздочки',p:[1.1,0.75,0.38]},{t:'Опорные катки',p:[-0.2,0.7,0.45]},{t:'Приёмный бункер',p:[-0.65,1.6,0]},{t:'Редуктор и двигатель',p:[1.1,0.75,1.1]},{t:'Борта',p:[0,1.1,0.45]}]};}
 function v2Grizzly(){const g=new THREE.Group(),L=2.3,W=1.0,y=0.5;
   const body=new THREE.Group();body.position.y=y;g.add(body);
   for(const s of[-1,1]){boxM(L,0.3,0.04,K.cream,body,0,0,s*W/2);for(const x of[-0.6,0,0.6]){boxM(0.32,0.08,0.01,K.creamD,body,x,-0.02,s*(W/2+0.02));}
@@ -1206,11 +1253,12 @@ $('pCut').onclick=()=>{pCut=!pCut;$('pCut').setAttribute('aria-pressed',pCut);if
 $('pLbl').onclick=()=>{pLblOn=!pLblOn;$('pLbl').setAttribute('aria-pressed',pLblOn);};
 $('pSpin').onclick=()=>{pSpinOn=!pSpinOn;$('pSpin').setAttribute('aria-pressed',pSpinOn);if(pctl)pctl.autoRotate=pSpinOn;};
 $('pSpin').setAttribute('aria-pressed',pSpinOn);$('pCut').setAttribute('aria-pressed',pCut);
-$('pUse').onclick=()=>{const P0=PRODUCTS.find(p=>p.id===pid);if(!P0||!P0.act)return;if(mode<P0.act)setMode(P0.act,true);else goCam(STEPCAM[P0.act]);
+$('pUse').onclick=()=>{const P0=PRODUCTS.find(p=>p.id===pid);if(!P0||!P0.act)return;if(pid==='apron'||pid==='grizzly'){fdType=pid;pick('fd',fdType);}if(mode<P0.act)setMode(P0.act,true);else goCam(STEPCAM[P0.act]);
   if(view.scrollIntoView)view.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'center'});};
 let pVisible=true;
 if(window.IntersectionObserver)new IntersectionObserver(es=>{pVisible=es[0].isIntersecting;}).observe(pview);
 function viewerFrame(dt){
+  if(cur&&cur.b&&cur.b.update&&pVisible)cur.b.update(Math.min(dt,0.05));
   if(!pr||!cur||!pVisible)return;
   const sp=cur.b.root.userData.spin;if(sp){if(cur.b.root.userData.axis==='z')sp.rotation.z+=dt*6;else sp.rotation.y+=dt*6;}
   pctl.update();pr.render(pscene,pcam);
