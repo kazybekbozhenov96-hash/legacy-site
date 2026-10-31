@@ -219,7 +219,7 @@ function show(id){pid=id;const P=PRODUCTS.find(p=>p.id===id);
   const bb=document.createElement('b');bb.textContent=p.name;const sp=document.createElement('span');sp.textContent=p.short;b.append(bb,sp);b.addEventListener('click',()=>show(p.id));nav.appendChild(b);}}
 $('pLbl').onclick=()=>{lblOn=!lblOn;$('pLbl').setAttribute('aria-pressed',lblOn);};
 $('pSpin').onclick=()=>{spin=!spin;$('pSpin').setAttribute('aria-pressed',spin);ctl.autoRotate=spin;};$('pSpin').setAttribute('aria-pressed',spin);
-$('pUse').onclick=()=>{const P=PRODUCTS.find(p=>p.id===pid);const b=document.querySelector('.mode[data-mode="'+P.step+'"]');if(b)b.click();const v=$('view');if(v&&v.scrollIntoView)v.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});};
+$('pUse').onclick=()=>{const P=PRODUCTS.find(p=>p.id===pid);if(window.ZONA&&ZONA.setVar)ZONA.setVar(pid);else{const b=document.querySelector('.mode[data-mode="'+P.step+'"]');if(b)b.click();}const v=$('view');if(v&&v.scrollIntoView)v.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});};
 if(window.IntersectionObserver)new IntersectionObserver(es=>{vis=es[0].isIntersecting;}).observe(pview);
 function resize(){const w=pview.clientWidth,h=pview.clientHeight;pr.setSize(w,h,false);cam.aspect=w/(h||1);cam.updateProjectionMatrix();}
 addEventListener('resize',resize);if(window.ResizeObserver)new ResizeObserver(resize).observe(pview);
