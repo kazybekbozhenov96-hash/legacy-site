@@ -933,6 +933,81 @@ const PRODUCTS=[
   desc:'Компактный привод: электродвигатель и редуктор размещены внутри вращающейся обечайки. Для конвейеров с ограниченным местом под внешний привод. Диаметр, длину, мощность, скорость поверхности и покрытие согласуют по расчёту конвейера; тормоз, стопор обратного хода и датчик скорости — по комплектации.',
   adv:'Освобождает место под внешний двигатель и редуктор; приводные узлы размещены внутри оболочки.',sel:SEL_M}
 ];
+/* ===== Catalogue v2 (section 04): after the Legacy catalogue pictures ===== */
+const SR4=c=>new THREE.Color(c).convertSRGBToLinear();
+const m4=(c,r,mt,o)=>new THREE.MeshStandardMaterial(Object.assign({color:SR4(c),roughness:r,metalness:mt,envMapIntensity:.6},o||{}));
+const Q={yel:m4(0xf0b400,.45,.1),black:m4(0x1c1d1f,.55,.3),tubeIn:m4(0x2a2c2e,.6,.3),steel:m4(0xd5dade,.18,1),grey:m4(0x9aa0a6,.35,.85),dark:m4(0x3a3e42,.45,.6),
+  white:m4(0xeeeeec,.4,.05),brass:m4(0xc9a03a,.3,.9),chrome:m4(0xd2d7db,.22,.9,{envMapIntensity:1.4}),rubber:m4(0x151617,.85,0)};
+/* quarter cut-away like the catalogue drawing: removes the region z>0 & y>yc only */
+function cq(mat,yc){const c=mat.clone();c.side=THREE.DoubleSide;c.clipIntersection=true;c.userData.cut=true;c.userData.cp=[new THREE.Plane(new THREE.Vector3(-1,0,0),0),new THREE.Plane(new THREE.Vector3(0,-1,0),yc)];c.clippingPlanes=c.userData.cp;return c;}
+function lz(pts,mat,par,z,flip,seg){const g=new THREE.LatheGeometry(pts.map(p=>new THREE.Vector2(p[0],p[1])),seg||56);g.rotateX(flip?-Math.PI/2:Math.PI/2);const m=mesh(g,mat,par);m.position.z=z;return m;}
+function cz(r,l,mat,par,x,y,z,s,open){const g=new THREE.CylinderGeometry(r,r,l,s||40,1,!!open);g.rotateX(Math.PI/2);return mesh(g,mat,par,x,y,z);}
+function bearing(par,z){cz(0.042,0.022,Q.steel,par,0,0,z,40,true);cz(0.036,0.022,Q.steel,par,0,0,z,40,true);cz(0.027,0.022,Q.steel,par,0,0,z,40,true);cz(0.021,0.022,Q.steel,par,0,0,z,40,true);
+  for(const s of[-1,1])lz([[0.021,0],[0.042,0]],Q.steel,par,z+s*0.011,false,40);
+  for(let k=0;k<11;k++){const a=k/11*Math.PI*2;mesh(new THREE.SphereGeometry(0.0055,12,10),Q.steel,par,Math.cos(a)*0.0315,Math.sin(a)*0.0315,z);}}
+function labyrinth(par,z,s){for(let k=0;k<3;k++){cz(0.044-k*0.004,0.006,Q.grey,par,0,0,z+s*(k*0.008),40,true);cz(0.03+k*0.004,0.006,Q.dark,par,0,0,z+s*(k*0.008+0.004),40,true);}
+  lz([[0.021,0],[0.046,0]],Q.dark,par,z+s*0.026,s<0,40);}
+function shaftEnd(par,z,s,mat,r){const L=0.07;const e=cz(r,L,mat,par,0,0,z+s*L/2,24);for(const sx of[-1,1])boxM(0.004,r*1.6,L*0.8,Q.dark,par,sx*(r-0.0015),0,z+s*L*0.55);}
+function v4Steel(){const g=new THREE.Group(),L=0.9,R=0.095,t=0.006,yc=0.45;
+  cz(R,L,cq(Q.black,yc),g,0,0,0,56,true);cz(R-t,L,cq(Q.tubeIn,yc),g,0,0,0,56,true);
+  for(const s of[-1,1]){const ze=s*L/2;
+    lz([[R-t,0],[R,0]],cq(Q.black,yc),g,ze,s<0,56);
+    const hp=[[0.043,0],[0.043,0.05],[0.06,0.058],[R-t-0.001,0.066],[R-t-0.001,0.0],[R-t-0.007,0.0],[R-t-0.007,0.058],[0.064,0.052],[0.049,0.046],[0.049,0.0]];
+    const h=lz(hp,cq(Q.yel,yc),g,ze,s>0,56);
+    bearing(g,ze-s*0.036);labyrinth(g,ze-s*0.006,s);
+    lz([[0.046,0],[R-t-0.007,0]],cq(Q.yel,yc),g,ze-s*0.001,s<0,56);
+    shaftEnd(g,ze,s,Q.steel,0.02);}
+  cz(0.02,L,Q.steel,g,0,0,0,24);
+  return{root:g,parts:[{t:'Труба ролика',p:[0,0.06,-0.1]},{t:'Корпус подшипника',p:[0,0.07,0.43]},{t:'Подшипник качения',p:[0,0.03,0.41]},{t:'Лабиринтное уплотнение',p:[0,0.045,0.445]},{t:'Вал',p:[0,0,0.52]}]};}
+function v4Poly(){const g=new THREE.Group(),L=0.9,R=0.1,yc=0.45;
+  const sm=m4(0x2e3033,.55,.1);cz(R,L,cq(sm,yc),g,0,0,0,56,true);cz(R-0.012,L,cq(sm,yc),g,0,0,0,56,true);
+  for(const s of[-1,1]){const ze=s*L/2;
+    lz([[0.062,0],[R-0.004,0]],cq(Q.white,yc),g,ze-s*0.004,s<0,56);
+    for(let k=0;k<16;k++){const a=k/16*Math.PI*2;const b=boxM(0.006,0.014,0.004,Q.dark,g,Math.cos(a)*(R-0.016),Math.sin(a)*(R-0.016),ze-s*0.002);b.rotation.z=a;}
+    lz([[0.02,0],[0.062,0]],Q.black,g,ze-s*0.01,s<0,56);for(let k=0;k<3;k++)cz(0.03+k*0.01,0.004,Q.dark,g,0,0,ze-s*0.008,40,true);
+    bearing(g,ze-s*0.045);shaftEnd(g,ze,s,Q.brass,0.02);}
+  cz(0.02,L,Q.steel,g,0,0,0,24);
+  return{root:g,parts:[{t:'Полимерная обечайка',p:[0,0.1,-0.1]},{t:'Торцевая крышка',p:[0,0.08,0.45]},{t:'Уплотнение',p:[0,0.04,0.45]},{t:'Ось',p:[0,0,0.52]}]};}
+function v4Idler(){const g=new THREE.Group(),A=35*Math.PI/180,C=Math.cos(A),S=Math.sin(A),yc=0.3;
+  boxM(0.1,0.07,1.6,Q.yel,g,0,0.05,0);boxM(0.012,0.12,1.6,Q.yel,g,-0.045,0.1,0);
+  for(const s of[-1,1]){boxM(0.22,0.012,0.16,Q.yel,g,0,0.006,s*0.83);bolt(g,0.07,0.015,s*0.83);bolt(g,-0.07,0.015,s*0.83);
+    const sh=new THREE.Shape();sh.moveTo(-0.06,0);sh.lineTo(0.06,0);sh.lineTo(0.03,0.5);sh.lineTo(-0.03,0.5);sh.closePath();const geo=new THREE.ExtrudeGeometry(sh,{depth:0.012,bevelEnabled:false});geo.translate(0,0,-0.006);mesh(geo,Q.yel,g,0,0.08,s*0.76).rotation.x=-s*0.12;
+    const sh2=new THREE.Shape();sh2.moveTo(-0.05,0);sh2.lineTo(0.05,0);sh2.lineTo(0.035,0.17);sh2.lineTo(-0.035,0.17);sh2.closePath();const g2=new THREE.ExtrudeGeometry(sh2,{depth:0.01,bevelEnabled:false});g2.translate(0,0,-0.005);mesh(g2,Q.yel,g,0,0.08,s*0.235);}
+  const rr=(len,par)=>{const r=new THREE.Group();par.add(r);cz(0.035,len,Q.black,r,0,0,0,20);const n=Math.floor(len/0.042);for(let k=0;k<n;k++){const z=-len/2+0.021+k*len/n;lz([[0.035,0],[0.085,0.004],[0.088,0.014],[0.085,0.024],[0.035,0.028]],Q.rubber,r,z-0.014,false,32);}
+    for(const s of[-1,1])cz(0.012,0.03,Q.steel,r,0,0,s*(len/2+0.01),10);return r;};
+  const y0=0.33;const c=rr(0.44,g);c.position.y=y0;
+  for(const s of[-1,1]){const w=rr(0.46,g);w.rotation.x=-s*A;w.position.set(0,y0+0.25*S,s*(0.235+0.25*C));}
+  return{root:g,parts:[{t:'Амортизирующие ролики',p:[0,0.42,0]},{t:'Боковой ролик',p:[0,0.55,0.48]},{t:'Концевые стойки',p:[0,0.45,0.78]},{t:'Опорная балка',p:[0,0.08,-0.5]}]};}
+function v4Pulley(kind){const g=new THREE.Group(),yc=0.62,R=kind==='tail'?0.2:0.28,L=kind==='tail'?1.3:1.0;
+  let shellM;
+  if(kind==='drive')shellM=lagMat.diamond;
+  else if(kind==='motor'){const t=canvasTex(512,256,(c,w,h)=>{c.fillStyle='#141516';c.fillRect(0,0,w,h);c.fillStyle='#e9e6dc';for(let i=0;i<64;i++)for(let j=0;j<24;j++)c.fillRect(i*8+2,j*10.6+2,4,6);},true);t.repeat.set(2,1);shellM=new THREE.MeshStandardMaterial({map:t,roughness:.6});}
+  else shellM=Q.chrome;
+  cz(R,L,cq(shellM,yc),g,0,0,0,64,true);cz(R-0.012,L,cq(Q.dark,yc),g,0,0,0,64,true);
+  for(const s of[-1,1]){const ze=s*L/2;lz([[0.07,0],[R-0.012,0]],cq(Q.yel,yc),g,ze-s*0.015,s<0,64);lz([[R-0.012,0],[R,0]],cq(shellM===Q.chrome?Q.chrome:Q.dark,yc),g,ze,s<0,64);
+    lz([[0.05,0],[0.1,0],[0.1,0.05],[0.05,0.05]],cq(Q.yel,yc),g,ze-s*0.015,s>0,40);}
+  if(kind==='drive'||kind==='tail'){const sr=kind==='tail'?0.04:0.06;cz(sr,L+0.02,Q.steel,g,0,0,0,24);
+    for(const s of[-1,1]){const ze=s*(L/2+0.02);
+      if(kind==='tail'){const hx=cz(0.05,0.08,Q.steel,g,0,0,s*(L/2+0.02),6);}
+      else{cz(sr,0.55,Q.steel,g,0,0,s*(L/2+0.27),24);boxM(0.02,0.012,0.18,Q.dark,g,0,sr,s*(L/2+0.42));
+        const pb=new THREE.Group();pb.position.z=s*(L/2+0.16);g.add(pb);
+        cz(0.13,0.14,Q.grey,pb,0,0,0,32);lz([[0.13,0],[0.15,0],[0.15,0.02],[0.13,0.02]],Q.grey,pb,0.07,false,32);
+        boxM(0.42,0.05,0.16,Q.grey,pb,0,-0.2,0);boxM(0.12,0.16,0.14,Q.grey,pb,0,-0.12,0);for(const dx of[-0.16,0.16])bolt(pb,dx,-0.17,0);cz(0.08,0.03,Q.steel,pb,0,0,s*0.085,32);}}}
+  if(kind==='motor'){cz(0.07,L,Q.steel,g,0,0,0,24);const cp=new THREE.MeshStandardMaterial({color:0xb87333,roughness:.35,metalness:.85});
+    cz(0.2,0.5,cq(Q.dark,yc),g,0,0,0.12,40);for(let k=0;k<20;k++){const a=k/20*Math.PI*2;const b=boxM(0.025,0.025,0.54,cq(cp,yc),g,Math.cos(a)*0.17,Math.sin(a)*0.17,0.12);}
+    cz(0.17,0.06,cq(Q.grey,yc),g,0,0,-0.3,24);cz(0.1,0.06,cq(Q.grey,yc),g,0,0,-0.38,16);
+    for(const s of[-1,1]){cz(0.07,0.25,Q.steel,g,0,0,s*(L/2+0.12),24);boxM(0.06,0.18,0.12,Q.grey,g,0,-0.12,s*(L/2+0.14));boxM(0.2,0.03,0.14,Q.grey,g,0,-0.22,s*(L/2+0.14));}
+    const tb=cz(0.13,0.18,Q.yel,g,0,0,L/2+0.33,32);cz(0.11,0.02,Q.yel,g,0,0,L/2+0.43,32);
+    mesh(new THREE.TorusGeometry(0.035,0.01,8,20),Q.steel,g,0,0.21,L/2+0.1);cz(0.012,0.06,Q.steel,g,0,0.16,L/2+0.1,8).rotation.x=0;
+    const gl=cz(0.02,0.05,Q.brass,g,0,-0.15,L/2+0.33,12);gl.rotation.set(Math.PI/2,0,0);}
+  const parts={drive:[{t:'Футеровка «ромб»',p:[0,0.29,-0.2]},{t:'Торцевой диск',p:[0,0.15,0.49]},{t:'Подшипниковая опора',p:[0,0.15,0.66]},{t:'Вал со шпонкой',p:[0,0.06,0.85]}],
+    tail:[{t:'Обечайка',p:[0,0.2,-0.2]},{t:'Торцевой диск',p:[0,0.12,0.64]},{t:'Ось',p:[0,0.05,0.72]}],
+    motor:[{t:'Керамическая футеровка',p:[0,0.3,-0.2]},{t:'Электродвигатель внутри',p:[0,0.15,0.2]},{t:'Редуктор',p:[0,0.1,-0.35]},{t:'Клеммная коробка',p:[0,0.13,0.83]},{t:'Рым-болт',p:[0,0.25,0.6]}]}[kind];
+  return{root:g,parts};}
+const NEW4={steel:v4Steel,poly:v4Poly,idler:v4Idler,drive:()=>v4Pulley('drive'),tail:()=>v4Pulley('tail'),motor:()=>v4Pulley('motor')};
+for(const p of PRODUCTS)if(NEW4[p.id])p.build=NEW4[p.id];
+
+
 const pview=$('pview');let pr=null,pscene,pcam,pctl,cur=null,pid='steel',pLblOn=true,pSpinOn=!reduceMotion,pCut=true;
 const plabels=$('plabels');
 function initViewer(){
@@ -946,7 +1021,7 @@ function initViewer(){
   const fl=mesh(new THREE.CircleGeometry(2.4,64),MAT.concrete,pscene);fl.rotation.x=-Math.PI/2;fl.castShadow=false;
   pctl.addEventListener('start',()=>{pctl.autoRotate=false;});
 }
-function applyCut(root,on){root.traverse(n=>{if(n.material&&n.material.userData&&n.material.userData.cut)n.material.clippingPlanes=on?[CUT]:[];});}
+function applyCut(root,on){root.traverse(n=>{if(n.material&&n.material.userData&&n.material.userData.cut)n.material.clippingPlanes=on?(n.material.userData.cp||[CUT]):[];});}
 function showProduct(id){
   pid=id;const P0=PRODUCTS.find(p=>p.id===id);
   document.querySelectorAll('.pbtn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===id));
@@ -954,12 +1029,12 @@ function showProduct(id){
     if(cur){pscene.remove(cur.wrap);cur.wrap.traverse(n=>{if(n.geometry&&n.geometry!==HEX)n.geometry.dispose();});}
     spinList=[];const b=P0.build();spinList=mainSpin;
     const wrap=new THREE.Group();wrap.add(b.root);
-    if(id==='steel'||id==='poly'){b.root.position.y=0.45;b.root.rotation.y=Math.PI/2;}
-    else if(id!=='idler'){b.root.position.y=0.62;b.root.rotation.y=Math.PI/2;}
+    if(id==='steel'||id==='poly'){b.root.position.y=0.45;}
+    else if(id!=='idler'){b.root.position.y=0.62;}
     pscene.add(wrap);cur={wrap,b};applyCut(b.root,pCut&&P0.cut);
     plabels.innerHTML='';cur.lbls=(b.parts||[]).map(pp=>{const el=document.createElement('div');el.className='lbl pu';el.textContent=pp.t;plabels.appendChild(el);return{el,p:pp.p};});
     const near=id==='steel'||id==='poly';
-    pcam.position.set(near?1.05:1.9,near?0.72:1.4,near?0.62:2.1);pctl.target.set(near?0.6:0,near?0.45:0.55,0);pctl.autoRotate=pSpinOn;
+    if(near){pcam.position.set(0.42,0.66,0.95);pctl.target.set(0,0.45,0.36);}else if(id==='idler'){pcam.position.set(1.6,1.2,1.8);pctl.target.set(0,0.3,0);}else{pcam.position.set(1.9,1.3,1.7);pctl.target.set(0,0.62,0.1);}pctl.autoRotate=pSpinOn;
   }
   $('pCut').hidden=!P0.cut;
   $('pName').textContent=P0.name;$('pRef').textContent='Каталог · раздел 04 · '+P0.grp.toLowerCase();
