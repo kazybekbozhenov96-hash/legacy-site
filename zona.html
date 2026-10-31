@@ -424,8 +424,8 @@ const M={
   roller:new THREE.MeshStandardMaterial({color:0x7a848e,metalness:.75,roughness:.35}),
   steel:new THREE.MeshStandardMaterial({color:0x5b6670,metalness:.55,roughness:.45,side:THREE.DoubleSide}),
   spout:new THREE.MeshStandardMaterial({color:0x5b6670,metalness:.5,roughness:.5,side:THREE.DoubleSide,transparent:true,opacity:.42,depthWrite:false}),
-  pu:new THREE.MeshStandardMaterial({color:0xf2a33a,roughness:.55,metalness:0}),
-  puSoft:new THREE.MeshStandardMaterial({color:0xe8913a,roughness:.6,side:THREE.DoubleSide}),
+  pu:new THREE.MeshStandardMaterial({color:new THREE.Color(0xb81a14).convertSRGBToLinear(),roughness:.55,metalness:0}),
+  puSoft:new THREE.MeshStandardMaterial({color:new THREE.Color(0xc8261c).convertSRGBToLinear(),roughness:.6,side:THREE.DoubleSide}),
   rail:new THREE.MeshStandardMaterial({color:0x2a3138,metalness:.6,roughness:.4}),
   uhmw:new THREE.MeshStandardMaterial({color:0xd6e1d3,roughness:.45}),
   rubber:new THREE.MeshStandardMaterial({color:0x17191c,roughness:.95}),
@@ -518,28 +518,29 @@ function surf(x,z){const k=kAt(x),s=clamp(sFromZ(z,k),-0.6,0.6),p=prof(s,k);retu
 const parts=[];
 function part(obj,ex,pres){obj.userData.ex=ex||new THREE.Vector3();obj.userData.pres=pres||null;parts.push(obj);scene.add(obj);return obj;}
 
+const BEDM={red:new THREE.MeshStandardMaterial({color:new THREE.Color(0xb81a14).convertSRGBToLinear(),roughness:.55}),black:new THREE.MeshStandardMaterial({color:0x151617,roughness:.85}),galv:new THREE.MeshStandardMaterial({color:new THREE.Color(0x9aa1a8).convertSRGBToLinear(),roughness:.4,metalness:.8}),blue:new THREE.MeshStandardMaterial({color:new THREE.Color(0x2c78c0).convertSRGBToLinear(),roughness:.45,metalness:.3})};
 /* impact bed */
 const bed=new THREE.Group();scene.add(bed);
 const bedCenter=new THREE.Group(),sideL=new THREE.Group(),sideR=new THREE.Group();
 bed.add(bedCenter,sideL,sideR);
 [bedCenter,sideL,sideR].forEach((g,i)=>{g.userData.ex=[new THREE.Vector3(0,-0.75,0),new THREE.Vector3(0,-0.25,-0.75),new THREE.Vector3(0,-0.25,0.75)][i];});
 const NM=5,ML=(LZ1-LZ0)/NM,modules=[];
-for(const z of[-0.62,0.62]){box(LZ1-LZ0+0.1,0.1,0.08,M.frame,(LZ0+LZ1)/2,BELT_Y-0.31,z,bedCenter);}
+for(const z of[-0.62,0.62]){box(LZ1-LZ0+0.1,0.1,0.08,BEDM.galv,(LZ0+LZ1)/2,BELT_Y-0.31,z,bedCenter);}
 for(let m=0;m<NM;m++){
   const cx=LZ0+ML*(m+0.5);
   const g=new THREE.Group();bedCenter.add(g);
-  for(const z of[-0.13,0,0.13])box(ML-0.04,0.05,0.1,M.uhmw,cx,BELT_Y-0.03,z,g);
-  box(0.09,0.06,0.5,M.frame,cx-ML*0.25,BELT_Y-0.085,0,g);box(0.09,0.06,0.5,M.frame,cx+ML*0.25,BELT_Y-0.085,0,g);
-  box(ML-0.06,0.05,0.08,M.frame,cx,BELT_Y-0.135,0,g);
+  for(const z of[-0.13,0,0.13]){box(ML-0.04,0.022,0.11,BEDM.red,cx,BELT_Y-0.016,z,g);box(ML-0.04,0.03,0.11,BEDM.black,cx,BELT_Y-0.042,z,g);}
+  box(0.09,0.06,0.5,BEDM.galv,cx-ML*0.25,BELT_Y-0.085,0,g);box(0.09,0.06,0.5,BEDM.galv,cx+ML*0.25,BELT_Y-0.085,0,g);
+  box(ML-0.06,0.05,0.08,BEDM.galv,cx,BELT_Y-0.135,0,g);
   const arms=[];
   for(const sg of[-1,1]){
     const piv=new THREE.Group();piv.position.set(cx,BELT_Y-0.31,sg*0.62);bedCenter.add(piv);
     const ez=sg*0.25-sg*0.62,ey=(BELT_Y-0.11)-(BELT_Y-0.31);
     const len=Math.hypot(ez,ey);
-    const arm=box(0.06,0.04,len,M.frame,0,ey/2,ez/2,piv);arm.rotation.x=-Math.atan2(ey,ez)+(ez<0?Math.PI:0);
-    const tors=cylX(0.075,0.22,M.rubber,0,0,0,piv,24);
+    const arm=box(0.06,0.04,len,BEDM.galv,0,ey/2,ez/2,piv);arm.rotation.x=-Math.atan2(ey,ez)+(ez<0?Math.PI:0);
+    const tors=cylX(0.075,0.22,BEDM.blue,0,0,0,piv,24);
     const mark=box(0.23,0.02,0.04,M.pu,0,0.07,0,piv);
-    cylX(0.1,0.04,M.frame,0.13,0,0,bedCenter===piv.parent?piv:piv,16);
+    cylX(0.1,0.04,BEDM.galv,0.13,0,0,bedCenter===piv.parent?piv:piv,16);
     arms.push({piv,ez,base:0});
   }
   modules.push({g,cx,y:0,v:0,arms});
@@ -547,10 +548,10 @@ for(let m=0;m<NM;m++){
 for(const [grp,sg] of[[sideL,-1],[sideR,1]]){
   for(const s of[0.34,0.52]){
     const p=prof(sg*s,1);
-    const b=box(LZ1-LZ0,0.045,0.1,M.uhmw,(LZ0+LZ1)/2,BELT_Y+p[1]-0.03*Math.cos(TROUGH),p[0]+sg*0.03*Math.sin(TROUGH),grp);
-    b.rotation.x=-sg*TROUGH;
+    const b=box(LZ1-LZ0,0.022,0.11,BEDM.red,(LZ0+LZ1)/2,BELT_Y+p[1]-0.016*Math.cos(TROUGH),p[0]+sg*0.016*Math.sin(TROUGH),grp);b.rotation.x=-sg*TROUGH;
+    const b2=box(LZ1-LZ0,0.03,0.11,BEDM.black,(LZ0+LZ1)/2,BELT_Y+p[1]-0.042*Math.cos(TROUGH),p[0]+sg*0.042*Math.sin(TROUGH),grp);b2.rotation.x=-sg*TROUGH;
   }
-  for(let m=0;m<=NM;m++){const x=LZ0+ML*m;box(0.06,0.3,0.06,M.frame,x,BELT_Y-0.06,sg*0.56,grp);}
+  for(let m=0;m<=NM;m++){const x=LZ0+ML*m;box(0.06,0.3,0.06,BEDM.galv,x,BELT_Y-0.06,sg*0.56,grp);}
 }
 part(bed,null,'bed');
 const lzPart=part(lzIdlers,null,'lz');
