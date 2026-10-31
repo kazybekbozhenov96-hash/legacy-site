@@ -108,7 +108,26 @@ section.blk{padding-block:72px 8px}
 .svc p{color:var(--muted);font-size:15px}
 @media (max-width:820px){.svc{grid-template-columns:minmax(0,1fr)}.svc img{aspect-ratio:16/9}}
 .svc article.lnk{position:relative}
-.svc .more{font-size:14px;font-weight:600;color:var(--pu);text-decoration:none;margin-top:4px}
+.svc .more{all:unset;cursor:pointer;justify-self:start;font-size:14px;font-weight:600;color:var(--pu);margin-top:4px}
+/* service popups */
+.sdlg{border:0;padding:0;width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);border-radius:8px;background:var(--paper);color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.4);overflow:auto}
+.sdlg::backdrop{background:rgba(10,13,16,.62)}
+.sdlg[open]{animation:sdIn .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes sdIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.sdlg .ph{position:relative;aspect-ratio:16/7;background:#1b1f22}
+.sdlg .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sdlg .x{all:unset;cursor:pointer;position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(12,15,18,.7);color:#fff;font-size:20px;line-height:1}
+.sdlg .x:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+.sdlg .b{padding:22px 24px 24px;display:grid;gap:14px}
+.sdlg .eyebrow{color:var(--pu)}
+.sdlg h3{font-family:var(--display);font-weight:700;font-size:24px;line-height:1.15}
+.sdlg .b>p{color:var(--muted);font-size:15.5px}
+.sdlg ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.sdlg li{display:flex;gap:12px;font-size:15px;line-height:1.45}
+.sdlg li::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--pu)}
+.sdlg .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.sdlg .btn.wa{background:#25d366;color:#0b2414}
+@media (prefers-reduced-motion:reduce){.sdlg[open]{animation:none}}
 .svc .more::after{content:"";position:absolute;inset:0}
 .svc .more:focus-visible{outline:none}.svc article.lnk:has(.more:focus-visible){outline:2px solid var(--pu);outline-offset:2px}
 
@@ -382,9 +401,9 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
         <p>Поставляем оборудование для транспортировки и переработки материалов, перекачки жидкостей, производственных и ремонтных участков.</p>
       </div>
       <div class="svc">
-        <article class="lnk"><img src="img/stackers.jpg" alt="Ленточные конвейеры-штабелеукладчики над отвалами песка" loading="lazy"><div class="t"><b>Поставка</b><p>Оборудование, запасные части и расходные материалы по Центральной Азии на условиях DDP и DAP. Свой склад запчастей.</p><a class="more" href="postavka.html">Подробнее о поставке →</a></div></article>
-        <article class="lnk"><img src="img/team.jpg" alt="Инженеры в касках обсуждают оборудование на объекте" loading="lazy"><div class="t"><b>Сервис</b><p>Сервисное обслуживание конвейерного парка: консигнационные склады, шеф-монтаж каждой поставки, обучение персонала.</p><a class="more" href="servis.html">Подробнее о сервисе →</a></div></article>
-        <article class="lnk"><img src="img/bridge.jpg" alt="Конвейерный мост на открытых горных работах" loading="lazy"><div class="t"><b>Инжиниринг</b><p>Полный расчёт оборудования и комплексов под ключ — от проекта до шеф-монтажа и пусконаладки.</p><a class="more" href="inzhiniring.html">Подробнее об инжиниринге →</a></div></article>
+        <article class="lnk"><img src="img/stackers.jpg" alt="Ленточные конвейеры-штабелеукладчики над отвалами песка" loading="lazy"><div class="t"><b>Поставка</b><p>Оборудование, запасные части и расходные материалы по Центральной Азии на условиях DDP и DAP. Свой склад запчастей.</p><button type="button" class="more" data-svc="postavka" aria-haspopup="dialog">Подробнее о поставке →</button></div></article>
+        <article class="lnk"><img src="img/team.jpg" alt="Инженеры в касках обсуждают оборудование на объекте" loading="lazy"><div class="t"><b>Сервис</b><p>Сервисное обслуживание конвейерного парка: консигнационные склады, шеф-монтаж каждой поставки, обучение персонала.</p><button type="button" class="more" data-svc="servis" aria-haspopup="dialog">Подробнее о сервисе →</button></div></article>
+        <article class="lnk"><img src="img/bridge.jpg" alt="Конвейерный мост на открытых горных работах" loading="lazy"><div class="t"><b>Инжиниринг</b><p>Полный расчёт оборудования и комплексов под ключ — от проекта до шеф-монтажа и пусконаладки.</p><button type="button" class="more" data-svc="inzhiniring" aria-haspopup="dialog">Подробнее об инжиниринге →</button></div></article>
       </div>
     </div>
   </section>
@@ -665,6 +684,48 @@ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',(
  addEventListener('pointermove',function(e){if(!down)return;var d=e.clientX-sx;if(Math.abs(d)>5)moved=true;t.scrollLeft=sl-d;});
  addEventListener('pointerup',function(){if(!down)return;down=false;t.style.scrollSnapType='';});
  t.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+})();
+</script>
+
+<!-- service popups -->
+<dialog class="sdlg" id="dlg-postavka" aria-labelledby="dlg-postavka-t">
+  <div class="ph"><img src="img/postavka.jpg" alt="" loading="lazy"><button type="button" class="x" aria-label="Закрыть">×</button></div>
+  <div class="b">
+    <p class="eyebrow">Что мы делаем</p>
+    <h3 id="dlg-postavka-t">Поставка</h3>
+    <p>Поставляем оборудование, запасные части и расходные материалы на предприятия Центральной Азии.</p>
+    <ul><li>География поставок: Казахстан, Узбекистан, Кыргызстан</li><li>Условия поставки DDP и DAP</li><li>Собственный склад запасных частей</li><li>Ответственное хранение оборудования предприятий</li><li>Консигнационные склады под предприятие</li></ul>
+    <div class="row"><a class="btn" href="./?item=%D0%9F%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0%20%D0%BE%D0%B1%D0%BE%D1%80%D1%83%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F%20/%20%D0%B7%D0%B0%D0%BF%D1%87%D0%B0%D1%81%D1%82%D0%B5%D0%B9#request">Оставить заявку ↗</a><a class="btn wa" href="https://wa.me/77776872785?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%98%D0%BD%D1%82%D0%B5%D1%80%D0%B5%D1%81%D1%83%D0%B5%D1%82%3A%20%D0%9F%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0%20%D0%BE%D0%B1%D0%BE%D1%80%D1%83%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F%20/%20%D0%B7%D0%B0%D0%BF%D1%87%D0%B0%D1%81%D1%82%D0%B5%D0%B9" target="_blank" rel="noopener">WhatsApp</a></div>
+  </div>
+</dialog>
+<dialog class="sdlg" id="dlg-servis" aria-labelledby="dlg-servis-t">
+  <div class="ph"><img src="img/team.jpg" alt="" loading="lazy"><button type="button" class="x" aria-label="Закрыть">×</button></div>
+  <div class="b">
+    <p class="eyebrow">Что мы делаем</p>
+    <h3 id="dlg-servis-t">Сервис</h3>
+    <p>Выполняем сервисное обслуживание конвейерного парка с организацией консигнационных складов под предприятие.</p>
+    <ul><li>Шеф-монтажные работы при каждой новой поставке оборудования</li><li>Обучение и мастер-классы для сотрудников предприятий</li><li>Выдача сертификатов на эксплуатацию продукции каталога</li></ul>
+    <div class="row"><a class="btn" href="./?item=%D0%A1%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BD%D0%BE%D0%B5%20%D0%BE%D0%B1%D1%81%D0%BB%D1%83%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%BA%D0%BE%D0%BD%D0%B2%D0%B5%D0%B9%D0%B5%D1%80%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BF%D0%B0%D1%80%D0%BA%D0%B0#request">Оставить заявку ↗</a><a class="btn wa" href="https://wa.me/77776872785?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%98%D0%BD%D1%82%D0%B5%D1%80%D0%B5%D1%81%D1%83%D0%B5%D1%82%3A%20%D0%A1%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BD%D0%BE%D0%B5%20%D0%BE%D0%B1%D1%81%D0%BB%D1%83%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%BA%D0%BE%D0%BD%D0%B2%D0%B5%D0%B9%D0%B5%D1%80%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BF%D0%B0%D1%80%D0%BA%D0%B0" target="_blank" rel="noopener">WhatsApp</a></div>
+  </div>
+</dialog>
+<dialog class="sdlg" id="dlg-inzhiniring" aria-labelledby="dlg-inzhiniring-t">
+  <div class="ph"><img src="img/inzhiniring.jpg" alt="" loading="lazy"><button type="button" class="x" aria-label="Закрыть">×</button></div>
+  <div class="b">
+    <p class="eyebrow">Что мы делаем</p>
+    <h3 id="dlg-inzhiniring-t">Инжиниринг</h3>
+    <p>Выполняем полный комплекс расчётов необходимого оборудования и комплексов оборудования с учётом всех факторов эксплуатации.</p>
+    <ul><li>Расчёт и подбор отдельных единиц и комплексов оборудования</li><li>Конвейерные линии и дробильно-сортировочные комплексы</li><li>Работа под ключ — от проекта до шеф-монтажа и пусконаладки</li></ul>
+    <div class="row"><a class="btn" href="./?item=%D0%98%D0%BD%D0%B6%D0%B8%D0%BD%D0%B8%D1%80%D0%B8%D0%BD%D0%B3%20%D0%BF%D0%BE%D0%B4%20%D0%BA%D0%BB%D1%8E%D1%87#request">Оставить заявку ↗</a><a class="btn wa" href="https://wa.me/77776872785?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%98%D0%BD%D1%82%D0%B5%D1%80%D0%B5%D1%81%D1%83%D0%B5%D1%82%3A%20%D0%98%D0%BD%D0%B6%D0%B8%D0%BD%D0%B8%D1%80%D0%B8%D0%BD%D0%B3%20%D0%BF%D0%BE%D0%B4%20%D0%BA%D0%BB%D1%8E%D1%87" target="_blank" rel="noopener">WhatsApp</a></div>
+  </div>
+</dialog>
+<script>
+(function(){
+  function openD(k){var d=document.getElementById('dlg-'+k);if(!d)return;if(d.showModal)d.showModal();else d.setAttribute('open','');}
+  document.querySelectorAll('.svc .more[data-svc]').forEach(function(b){b.addEventListener('click',function(){openD(b.dataset.svc)})});
+  document.querySelectorAll('.sdlg').forEach(function(d){
+    d.querySelector('.x').addEventListener('click',function(){d.close?d.close():d.removeAttribute('open')});
+    d.addEventListener('click',function(e){if(e.target===d)d.close()});
+  });
 })();
 </script>
 </body>
