@@ -816,7 +816,7 @@ for(const sg of[-1,1])boxM(1.0,0.4,0.012,MAT.plate,scene,LOAD_X+0.1,BELT_Y+0.62,
 {const hop=new THREE.CylinderGeometry(0.5,0.3,0.7,4,1,true);hop.rotateY(Math.PI/4);mesh(hop,MAT.plate,scene,LOAD_X,BELT_Y+1.15,0);}
 
 /* discharge chute around the head pulley; the impact wall gets worn or lined */
-const CXa=X1-0.42,CXw=X1+1.05,CZ=0.52,CY0=0.32,CY1=HY+0.62,WALL_H=CY1-CY0;
+const CXa=X1-0.42,CXw=X1+0.62,CZ=0.52,CY0=0.32,CY1=HY+0.62,WALL_H=CY1-CY0;
 boxM(CXw-CXa,0.012,2*CZ,MAT.plate,scene,(CXa+CXw)/2,CY1,0);
 boxM(CXw-CXa,WALL_H,0.012,MAT.plate,scene,(CXa+CXw)/2,(CY0+CY1)/2,-CZ);
 {const fr=boxM(CXw-CXa,WALL_H,0.012,MATR.ghost,scene,(CXa+CXw)/2,(CY0+CY1)/2,CZ);fr.castShadow=false;
@@ -824,6 +824,10 @@ boxM(CXw-CXa,WALL_H,0.012,MAT.plate,scene,(CXa+CXw)/2,(CY0+CY1)/2,-CZ);
  const hop=new THREE.CylinderGeometry(0.62,0.28,CY0-0.04,4,1,true);hop.rotateY(Math.PI/4);mesh(hop,MAT.plate,scene,(CXa+CXw)/2+0.15,(CY0+0.04)/2,0).scale.set(1.05,1,1.2);}
 const wallMat=new THREE.MeshStandardMaterial({map:DTX.wallWorn,roughness:.6,metalness:.55,side:THREE.DoubleSide});
 const wall=boxM(0.014,WALL_H,2*CZ,wallMat,scene,CXw,(CY0+CY1)/2,0);
+/* impact dents/scratches accumulate on the bare steel wall where the stream strikes */
+const NDENT=140,dentMesh=new THREE.InstancedMesh(new THREE.CircleGeometry(1,10),new THREE.MeshStandardMaterial({color:0x3b2a1e,roughness:.9,metalness:.4,polygonOffset:true,polygonOffsetFactor:-2}),NDENT);
+dentMesh.frustumCulled=false;scene.add(dentMesh);let dentN=0,hitAcc=0;{const z=new THREE.Matrix4().makeScale(0,0,0);for(let i=0;i<NDENT;i++)dentMesh.setMatrixAt(i,z);}
+function addDent(y,z){if(Math.random()>0.25)return;const o=new THREE.Object3D();o.position.set(CXw-0.009,y,z);o.rotation.y=-Math.PI/2;o.scale.setScalar(rnd(.01,.028));o.updateMatrix();dentMesh.setMatrixAt(dentN%NDENT,o.matrix);dentN++;dentMesh.instanceMatrix.needsUpdate=true;}
 const liners={rcer:new THREE.Group(),cer:new THREE.Group()};
 for(const k in liners){const g=liners[k];scene.add(g);g.visible=false;
   const nz=k==='cer'?10:8,ny=k==='cer'?9:7,sz=2*CZ-0.06,sy=WALL_H-0.06,ts=k==='cer'?sz/nz-0.006:sz/nz*0.7;
@@ -903,9 +907,12 @@ function step(dt){
   const wallX=CXw-(lined()?0.045:0.009);
   for(let i=0;i<NO;i++){const st=O.st[i];if(!st)continue;
     if(st===1){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;const sy=surfTop(O.x[i],O.z[i])+O.r[i]*0.8;if(O.y[i]<=sy){O.y[i]=sy;O.st[i]=2;}}
-    else if(st===2){O.x[i]+=beltV*dt;O.y[i]=surfTop(O.x[i],O.z[i])+O.r[i]*0.8;if(O.x[i]>=X1){O.st[i]=3;O.vx[i]=beltV;O.vy[i]=0.05;O.y[i]=HY+0.32;}}
+    else if(st===2){O.x[i]+=beltV*dt;O.y[i]=surfTop(O.x[i],O.z[i])+O.r[i]*0.8;if(O.x[i]>=X1){O.st[i]=3;O.vx[i]=beltV*1.12;O.vy[i]=0.15;O.y[i]=HY+0.32;}}
     else{O.vy[i]-=9.81*dt;O.x[i]+=O.vx[i]*dt;O.y[i]+=O.vy[i]*dt;
-      if(O.x[i]+O.r[i]>wallX&&O.vx[i]>0){O.x[i]=wallX-O.r[i];O.vx[i]=-O.vx[i]*0.18;O.vy[i]*=0.5;if(!lined()&&Math.random()<0.25)spark(wallX,O.y[i],O.z[i],-1);}
+      if(O.x[i]+O.r[i]>wallX&&O.vx[i]>0){O.x[i]=wallX-O.r[i];hitAcc++;
+        if(!lined()){O.vx[i]=-O.vx[i]*0.38;O.vy[i]=O.vy[i]*0.5+0.4;if(Math.random()<0.7){spark(wallX,O.y[i],O.z[i],-1);spark(wallX,O.y[i],O.z[i],-1);}addDent(O.y[i],O.z[i]);}
+        else if(linerType==='rcer'){O.vx[i]=-O.vx[i]*0.06;O.vy[i]*=0.2;}
+        else{O.vx[i]=-O.vx[i]*0.22;O.vy[i]*=0.45;}}
       if(O.y[i]<CY0-0.12)O.st[i]=0;}}
   if(pres.lag<0.5&&Math.random()<dt*10){const a=rnd(-1.2,1.2);spark(X1+0.31*Math.cos(a),HY+0.31*Math.sin(a),rnd(-.5,.5),1);}
   for(let i=0;i<NSP;i++){if(SP.l[i]<=0)continue;SP.vy[i]-=9.81*dt;SP.x[i]+=SP.vx[i]*dt;SP.y[i]+=SP.vy[i]*dt;SP.z[i]+=SP.vz[i]*dt;SP.l[i]-=dt;}
@@ -927,6 +934,7 @@ function updateParts(dt){
   cutP=placeRider(cutIt,fixed?cutFix:'bad');jointP=placeRider(jointIt,fixed?jointFix:'bad');
   headLag.material=pres.lag>0.5?lagMat[lagType]:lagMat.worn;
   const L=lined();wall.material=wallMat;for(const k in liners)liners[k].visible=L&&k===linerType;
+  dentMesh.visible=!L;
 }
 
 /* ---------- labels ---------- */
@@ -1077,6 +1085,198 @@ const PRODUCTS=[
   desc:'Комбинация керамических элементов и упругой основы, а также керамические плитки и панели для зон интенсивного абразивного воздействия. Геометрию панели и схему крепления подбирают под защищаемый узел. Для грохотов — резиновые покрытия балок и сменные износостойкие детали.',
   adv:'Защищает металл от абразивного потока; набор элементов позволяет облицовывать сложные поверхности.',sel:SEL_W}
 ];
+/* =====================================================================
+   CATALOGUE-ACCURATE MODELS (section 06 pictures)
+   ===================================================================== */
+const CM={
+  cover:new THREE.MeshStandardMaterial({color:0x1b1e20,roughness:.85}),
+  coverEdge:new THREE.MeshStandardMaterial({color:0x34433b,roughness:.8}),
+  skim:new THREE.MeshStandardMaterial({color:0x141618,roughness:.9}),
+  redPly:new THREE.MeshStandardMaterial({map:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#5a1a22';g.fillRect(0,0,w,h);
+    for(let y=0;y<h;y+=8)for(let x=(y/8%2)*4;x<w;x+=8){const gr=g.createRadialGradient(x+4,y+4,0,x+4,y+4,5);gr.addColorStop(0,'#e26a7a');gr.addColorStop(.6,'#a33244');gr.addColorStop(1,'rgba(60,15,22,0)');g.fillStyle=gr;g.fillRect(x,y,8,8);}},true),roughness:.7}),
+  tanPly:new THREE.MeshStandardMaterial({map:canvasTex(128,128,(g,w,h)=>{g.fillStyle='#b48c62';g.fillRect(0,0,w,h);g.strokeStyle='rgba(90,62,35,.55)';g.lineWidth=1.5;
+    for(let i=0;i<w;i+=4){g.beginPath();g.moveTo(i,0);g.lineTo(i,h);g.stroke();}g.strokeStyle='rgba(235,210,170,.35)';for(let j=0;j<h;j+=4){g.beginPath();g.moveTo(0,j);g.lineTo(w,j);g.stroke();}},true),roughness:.85}),
+  greyPly:new THREE.MeshStandardMaterial({map:canvasTex(128,128,(g,w,h)=>{g.fillStyle='#8e9397';g.fillRect(0,0,w,h);g.strokeStyle='rgba(30,32,34,.6)';g.lineWidth=1.2;for(let i=0;i<w;i+=3){g.beginPath();g.moveTo(i,0);g.lineTo(i,h);g.stroke();}},true),roughness:.6}),
+  orange:new THREE.MeshStandardMaterial({color:0xf0a21e,roughness:.6}),
+  steel:new THREE.MeshStandardMaterial({color:0xc9ced2,roughness:.3,metalness:.95}),
+  alu:new THREE.MeshStandardMaterial({color:0xc4c9cd,roughness:.35,metalness:.85}),
+  blueBelt:new THREE.MeshStandardMaterial({color:0x22449a,roughness:.6,side:THREE.DoubleSide}),
+  blueBox:new THREE.MeshStandardMaterial({color:0x2a3f9e,roughness:.45,metalness:.2}),
+  redEnd:new THREE.MeshStandardMaterial({color:0xc11d1a,roughness:.5,metalness:.2}),
+  yellow:new THREE.MeshStandardMaterial({color:0xf2c200,roughness:.5,metalness:.2}),
+  brownBreaker:new THREE.MeshStandardMaterial({color:0x8a5a34,roughness:.7}),
+  film:(c)=>new THREE.MeshStandardMaterial({color:c,roughness:.25,metalness:.05,transparent:true,opacity:.92})
+};
+/* wire rope along z: six helical strands around a core */
+class HelixZ extends THREE.Curve{constructor(R,L,p,ph){super();this.R=R;this.L=L;this.p=p;this.ph=ph;}getPoint(u,t){t=t||new THREE.Vector3();const z=-this.L/2+u*this.L,a=this.ph+z/this.p*Math.PI*2;return t.set(Math.cos(a)*this.R,Math.sin(a)*this.R,z);}}
+function wireRope(par,x,y,z,L,r){const g=new THREE.Group();g.position.set(x,y,z);par.add(g);
+  const c=new THREE.CylinderGeometry(r*0.45,r*0.45,L,8);c.rotateX(Math.PI/2);mesh(c,CM.steel,g);
+  for(let k=0;k<6;k++)mesh(new THREE.TubeGeometry(new HelixZ(r*0.62,L,r*9,k/6*Math.PI*2),Math.max(40,Math.round(L/r*2.2)),r*0.38,5,false),CM.steel,g);
+  return g;}
+/* stepped belt: list of layers bottom->top, each shorter at the front (+z) to show the build-up */
+function stepped(par,W,L,layers,y0){let y=y0||0;const out=[];
+  layers.forEach((ly,i)=>{const len=L-ly.step;const m=boxM(W,ly.h,len,ly.m,par,0,y+ly.h/2,-ly.step/2);if(ly.rep&&ly.m.map){ly.m.map.repeat.set(ly.rep[0],ly.rep[1]);}out.push({y:y+ly.h/2,z:L/2-ly.step});y+=ly.h;});
+  return{top:y,out};}
+
+function cEP(){const g=new THREE.Group(),W=1.0,L=1.6;
+  const r=stepped(g,W,L,[{h:0.03,m:CM.cover,step:0},{h:0.016,m:CM.redPly,step:0.2,rep:[6,8]},{h:0.01,m:CM.skim,step:0.28},{h:0.016,m:CM.redPly,step:0.48,rep:[6,8]},{h:0.01,m:CM.skim,step:0.56},{h:0.016,m:CM.redPly,step:0.76,rep:[6,8]},{h:0.01,m:CM.skim,step:0.84},{h:0.045,m:CM.cover,step:1.02}]);
+  /* green-grey top edge of the top cover */
+  boxM(0.012,0.045,L-1.02,CM.coverEdge,g,W/2+0.001,r.top-0.0225,-0.51);
+  /* wavy ply lines on the side edge */
+  for(let k=0;k<3;k++){const pts=[];for(let i=0;i<=60;i++){const z=-L/2+i*(L-0.2-k*0.28)/60;pts.push(new THREE.Vector3(-W/2-0.002,0.038+k*0.026+Math.sin(z*40)*0.003,z));}
+    mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),120,0.003,4,false),CM.redPly,g);}
+  g.position.y=0.25;return g;}
+
+function cST(){const g=new THREE.Group(),W=1.0,L=1.6,cy=0.045,N=12;
+  boxM(W,0.03,L,CM.cover,g,0,0.015,0);
+  /* core rubber between the cords: full length on the back, removed at the front right to bare the cords */
+  const xs=[];for(let i=0;i<N;i++)xs.push(-W/2+0.05+i*(W-0.1)/(N-1));
+  for(let i=0;i<N-1;i++){const xm=(xs[i]+xs[i+1])/2,bare=i>=N/2;boxM(xs[i+1]-xs[i]-0.026,0.03,bare?L-0.7:L-0.15,CM.skim,g,xm,cy,bare?-0.35:-0.075);}
+  for(const x of xs){wireRope(g,x,cy,0.02,L-0.04,0.012);}
+  /* top cover with an open window over the cords */
+  const tc=0.04;
+  boxM(W*0.42,tc,L-0.5,CM.cover,g,-W/2+W*0.21,0.06+tc/2,-0.25);
+  boxM(W*0.58,tc,0.45,CM.cover,g,W/2-W*0.29,0.06+tc/2,-L/2+0.225);
+  boxM(0.36,0.01,0.6,CM.skim,g,0.06,0.065,-0.05);
+  g.position.y=0.25;return g;}
+
+function cChevron(){const g=new THREE.Group(),W=1.0,L=1.6;
+  stepped(g,W,L,[{h:0.02,m:CM.cover,step:0},{h:0.008,m:CM.tanPly,step:0.12,rep:[5,8]},{h:0.006,m:CM.skim,step:0.18},{h:0.008,m:CM.tanPly,step:0.3,rep:[5,8]},{h:0.006,m:CM.skim,step:0.36},{h:0.008,m:CM.tanPly,step:0.48,rep:[5,8]},{h:0.03,m:CM.cover,step:0.62}]);
+  const top=0.086,h=0.022,t=0.016,bar=(x0,z0,x1,z1)=>{const dx=x1-x0,dz=z1-z0,l=Math.hypot(dx,dz);const b=boxM(t,h,l+t,CM.cover,g,(x0+x1)/2,top+h/2,(z0+z1)/2);b.rotation.y=Math.atan2(dx,dz);};
+  /* branched chevron (Y-pattern) like the catalogue picture */
+  for(let z=-0.75;z<0.12;z+=0.27){
+    bar(0,z,0.2,z+0.12);bar(0,z,-0.2,z+0.12);
+    bar(0.2,z+0.12,0.33,z+0.12);bar(-0.2,z+0.12,-0.33,z+0.12);
+    bar(0.33,z+0.12,0.43,z+0.2);bar(-0.33,z+0.12,-0.43,z+0.2);
+    bar(0.1,z+0.06,0.1,z+0.02);bar(-0.1,z+0.06,-0.1,z+0.02);}
+  g.position.y=0.25;return g;}
+
+function cSidewall(){const g=new THREE.Group(),W=1.0,L=1.5;
+  /* cross-rigid base: covers, grey breaker and orange plies stepped at the front */
+  const r=stepped(g,W,L,[{h:0.018,m:CM.cover,step:0},{h:0.006,m:CM.greyPly,step:0.1,rep:[6,1]},{h:0.008,m:CM.cover,step:0.16},{h:0.006,m:CM.orange,step:0.2},{h:0.006,m:CM.cover,step:0.25},{h:0.006,m:CM.orange,step:0.3},{h:0.006,m:CM.greyPly,step:0.36,rep:[6,1]},{h:0.02,m:CM.cover,step:0.44}]);
+  const yb=r.top,Lw=L-0.44,z0=-L/2;
+  /* corrugated sidewall: stadium-shaped pockets */
+  const pocket=()=>{const s=new THREE.Shape(),a=0.03,b=0.012;s.absarc(0,a-b,b,0,Math.PI,false);s.absarc(0,-a+b,b,Math.PI,Math.PI*2,false);s.closePath();
+    const hole=new THREE.Path();const ai=a-0.005,bi=b-0.005;hole.absarc(0,ai-bi,bi,0,Math.PI,false);hole.absarc(0,-ai+bi,bi,Math.PI,Math.PI*2,false);hole.closePath();s.holes.push(hole);
+    const geo=new THREE.ExtrudeGeometry(s,{depth:0.2,bevelEnabled:false,curveSegments:8});geo.rotateX(-Math.PI/2);return geo;};
+  const PG=pocket();
+  for(const sx of[-1,1]){boxM(0.06,0.012,Lw,CM.cover,g,sx*0.42,yb+0.006,z0+Lw/2);
+    for(let z=z0+0.03;z<z0+Lw-0.02;z+=0.056){mesh(PG,CM.cover,g,sx*0.42,yb+0.012,z);bolt(g,sx*0.455,yb+0.016,z);}}
+  /* T-cleats with fillet */
+  for(const cz of[z0+0.32,z0+0.78]){boxM(0.74,0.2,0.02,CM.cover,g,0,yb+0.1,cz);boxM(0.74,0.02,0.07,CM.cover,g,0,yb+0.2,cz+0.025);
+    const f=new THREE.Shape();f.moveTo(0,0);f.lineTo(0.06,0);f.quadraticCurveTo(0,0,0,0.06);f.closePath();const fg=new THREE.ExtrudeGeometry(f,{depth:0.74,bevelEnabled:false});fg.rotateY(Math.PI/2);fg.translate(-0.37,0,0);
+    mesh(fg,CM.cover,g,0,yb,cz-0.01).rotation.y=Math.PI;mesh(fg,CM.cover,g,0,yb,cz+0.01);}
+  g.position.y=0.2;return g;}
+
+function cPipe(){const g=new THREE.Group(),R=0.3,L=1.5,t=0.035;
+  /* belt rolled into a tube with overlapping edges */
+  const ring=(a0,a1,r0,r1,len,z)=>{const s=new THREE.Shape();s.absarc(0,0,r1,a0,a1,false);s.absarc(0,0,r0,a1,a0,true);s.closePath();const geo=new THREE.ExtrudeGeometry(s,{depth:len,bevelEnabled:false,curveSegments:48});geo.translate(0,0,z);return geo;};
+  mesh(ring(Math.PI*0.62,Math.PI*2+Math.PI*0.42,R,R+t,L,-L/2),CM.blueBelt,g);
+  mesh(ring(Math.PI*0.36,Math.PI*0.72,R+t+0.003,R+2*t,L,-L/2),CM.blueBelt,g);
+  /* steel cords seen in the front cross-section */
+  for(let k=0;k<40;k++){const a=Math.PI*0.62+k/40*(Math.PI*1.8);const c=new THREE.CylinderGeometry(0.0055,0.0055,0.01,8);c.rotateX(Math.PI/2);mesh(c,CM.steel,g,Math.cos(a)*(R+t/2),Math.sin(a)*(R+t/2),L/2+0.003);}
+  for(let k=0;k<7;k++){const a=Math.PI*0.4+k/7*(Math.PI*0.3);const c=new THREE.CylinderGeometry(0.0055,0.0055,0.01,8);c.rotateX(Math.PI/2);mesh(c,CM.steel,g,Math.cos(a)*(R+1.5*t),Math.sin(a)*(R+1.5*t),L/2+0.003);}
+  /* cut-away window on the top showing cords and the spiral breaker */
+  const win=new THREE.Group();g.add(win);
+  for(let k=0;k<6;k++){const a=Math.PI*0.08+k*0.07;const w=wireRope(win,0,0,0,0.6,0.008);w.position.set(Math.cos(a)*(R+t+0.01),Math.sin(a)*(R+t+0.01),0.1);}
+  for(let k=0;k<8;k++){const tor=new THREE.Mesh(new THREE.TorusGeometry(R+t+0.024,0.006,6,30,0.6),CM.brownBreaker);tor.position.z=0.45+k*0.035;tor.rotation.z=-0.03;win.add(tor);}
+  g.position.y=0.55;g.rotation.y=-0.5;return g;}
+
+function cCold(){const g=new THREE.Group();
+  /* rolls of repair strip: coloured liner film + black rubber strip unrolled */
+  const roll=(x,z,col)=>{const r=new THREE.Group();r.position.set(x,0.22,z);g.add(r);
+    const c=new THREE.CylinderGeometry(0.2,0.2,0.36,48);c.rotateZ(Math.PI/2);mesh(c,CM.film(col),r);
+    const core=new THREE.CylinderGeometry(0.07,0.07,0.37,24);core.rotateZ(Math.PI/2);mesh(core,new THREE.MeshStandardMaterial({color:0xe8e4da,roughness:.8}),r);
+    boxM(0.34,0.012,0.6,CM.skim,g,x,0.03,z+0.42);boxM(0.36,0.006,0.6,CM.film(col),g,x,0.02,z+0.42);
+    const lip=new THREE.CylinderGeometry(0.2,0.2,0.34,24,1,true,Math.PI*0.95,0.6);lip.rotateZ(Math.PI/2);mesh(lip,CM.skim,r);};
+  roll(-0.25,-0.35,0x2ec94a);roll(0.18,-0.1,0x1f8fe8);
+  g.position.y=0.05;return g;}
+
+function cMech(){const g=new THREE.Group(),t=0.035;
+  /* belt ends butted together and joined by bolted solid plates on both faces */
+  for(const s of[-1,1])boxM(1.2,t,0.7,CM.cover,g,0,t/2,s*0.352);
+  boxM(1.2,t+0.002,0.004,new THREE.MeshStandardMaterial({color:0x050505}),g,0,t/2,0);
+  for(let x=-0.54;x<=0.541;x+=0.09){for(const yy of[t+0.004,-0.004]){boxM(0.06,0.008,0.17,CM.steel,g,x,yy,0);
+      for(const z of[-0.055,0.055]){bolt(g,x,yy+(yy>0?0.007:-0.007),z);}}}
+  /* rows of rivet heads further out, as on the catalogue photo */
+  for(const z of[-0.3,0.3])for(let x=-0.54;x<=0.541;x+=0.09)bolt(g,x,t+0.005,z);
+  g.position.y=0.3;return g;}
+
+function iBeam(len,h,b,mat){const s=new THREE.Shape(),tw=0.012,tf=0.014;
+  s.moveTo(-b/2,0);s.lineTo(b/2,0);s.lineTo(b/2,tf);s.lineTo(tw/2,tf);s.lineTo(tw/2,h-tf);s.lineTo(b/2,h-tf);s.lineTo(b/2,h);s.lineTo(-b/2,h);s.lineTo(-b/2,h-tf);s.lineTo(-tw/2,h-tf);s.lineTo(-tw/2,tf);s.lineTo(-b/2,tf);s.closePath();
+  const geo=new THREE.ExtrudeGeometry(s,{depth:len,bevelEnabled:false});geo.translate(0,0,-len/2);geo.rotateY(Math.PI/2);return new THREE.Mesh(geo,mat);}
+function cPress(){const g=new THREE.Group(),L=1.6;
+  const add=(m,x,y,z)=>{m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;g.add(m);return m;};
+  /* bottom crossbeams, heating platens with silicone pad, top crossbeams */
+  for(let i=0;i<5;i++){const z=-0.4+i*0.2;add(iBeam(L,0.12,0.1,CM.alu),0,0,z);add(iBeam(L,0.12,0.1,CM.alu),0,0.27,z);
+    for(const x of[-0.72,0.72]){mesh(new THREE.CylinderGeometry(0.012,0.012,0.42,10),CM.steel,g,x,0.2,z);for(const y of[0.0,0.4])mesh(new THREE.CylinderGeometry(0.022,0.022,0.02,6),CM.steel,g,x,y,z);}}
+  boxM(1.3,0.03,1.0,CM.alu,g,0,0.135,0);boxM(1.3,0.008,1.0,new THREE.MeshStandardMaterial({color:0xd8b04a,roughness:.6}),g,0,0.152,0);
+  boxM(2.1,0.03,0.7,CM.cover,g,0,0.171,0);
+  boxM(1.3,0.008,1.0,new THREE.MeshStandardMaterial({color:0xd8b04a,roughness:.6}),g,0,0.19,0);boxM(1.3,0.03,1.0,CM.alu,g,0,0.208,0);
+  /* control box, cooling pump, hoses and compressor */
+  boxM(0.34,0.32,0.28,CM.blueBox,g,0.3,0.55,-0.25);boxM(0.2,0.05,0.02,new THREE.MeshStandardMaterial({color:0x111111}),g,0.3,0.6,-0.11);
+  const pump=new THREE.Group();pump.position.set(0.0,0.45,0.05);g.add(pump);
+  const pc=new THREE.CylinderGeometry(0.07,0.07,0.2,20);pc.rotateZ(Math.PI/2);mesh(pc,new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.5}),pump);
+  boxM(0.14,0.1,0.12,new THREE.MeshStandardMaterial({color:0xe2401a,roughness:.45}),pump,0.14,0.02,0);
+  for(const [x,z,c] of[[-0.4,-0.2,0x111214],[-0.2,0.0,0x111214],[0.05,0.25,0xe2401a]]){const tor=new THREE.Mesh(new THREE.TorusGeometry(0.1,0.012,8,30),new THREE.MeshStandardMaterial({color:c,roughness:.6}));tor.rotation.x=Math.PI/2;tor.position.set(x,0.355,z);g.add(tor);
+    const tor2=tor.clone();tor2.position.y=0.375;tor2.scale.setScalar(0.85);g.add(tor2);}
+  const cmp=new THREE.Group();cmp.position.set(0.55,0.1,0.55);g.add(cmp);
+  const tank=new THREE.CylinderGeometry(0.11,0.11,0.42,24);tank.rotateZ(Math.PI/2);mesh(tank,new THREE.MeshStandardMaterial({color:0x101112,roughness:.35,metalness:.3}),cmp,0,0.05,0);
+  boxM(0.2,0.1,0.14,new THREE.MeshStandardMaterial({color:0x2a2c2e,roughness:.5}),cmp,0,0.2,0);
+  for(const s of[-1,1]){const w=new THREE.CylinderGeometry(0.04,0.04,0.025,16);w.rotateX(Math.PI/2);mesh(w,CM.skim,cmp,0.15,-0.05,s*0.1);}
+  g.scale.setScalar(0.85);return g;}
+
+function cCatcher(){const g=new THREE.Group();
+  /* inclined belt with a catcher on the carrying run: yellow frame with mesh guard, clamping bar and wedge roller */
+  const belt=boxM(1.6,0.02,1.0,CM.cover,g,0,0.32,0);belt.rotation.z=0.18;
+  for(const s of[-1,1]){boxM(0.08,0.9,0.08,CM.yellow,g,0.1,0.45,s*0.62);boxM(0.3,0.06,0.12,CM.yellow,g,0.1,0.02,s*0.62);}
+  boxM(0.1,0.08,1.32,CM.yellow,g,0.1,0.9,0);
+  const mesh2=new THREE.MeshStandardMaterial({map:canvasTex(64,64,(c,w,h)=>{c.clearRect(0,0,w,h);c.strokeStyle='#e9c21a';c.lineWidth=4;for(let i=-w;i<w*2;i+=12){c.beginPath();c.moveTo(i,0);c.lineTo(i+h,h);c.stroke();c.beginPath();c.moveTo(i+h,0);c.lineTo(i,h);c.stroke();}},true),transparent:true,alphaTest:.3,side:THREE.DoubleSide});
+  mesh2.map.repeat.set(3,3);const mp=boxM(0.01,0.5,0.5,mesh2,g,0.14,0.6,0.62);
+  /* support roller under the belt */
+  const r=roller(1.1,0.07);aim(r,new THREE.Vector3(0,0,1));r.position.set(0.1,0.24,0);g.add(r);
+  /* clamping bar on swing arms, wedge above the belt */
+  const arm=new THREE.Group();arm.position.set(0.1,0.82,0);arm.rotation.z=-0.35;g.add(arm);
+  for(const s of[-1,1])boxM(0.05,0.36,0.04,CM.yellow,arm,0,-0.18,s*0.55);
+  const bar=new THREE.CylinderGeometry(0.05,0.05,1.14,24);bar.rotateX(Math.PI/2);mesh(bar,CM.steel,arm,0,-0.36,0);
+  const wedge=new THREE.CylinderGeometry(0.075,0.075,0.9,24);wedge.rotateX(Math.PI/2);mesh(wedge,new THREE.MeshStandardMaterial({color:0x214d8a,roughness:.5}),arm,0.02,-0.4,0);
+  for(const s of[-1,1]){const h=new THREE.CylinderGeometry(0.035,0.035,0.06,16);h.rotateX(Math.PI/2);mesh(h,CM.steel,g,0.1,0.82,s*0.6);}
+  return g;}
+
+/* quick-change lagging: diamond rubber segments between aluminium retainers with serrated edges, red end discs */
+function cQuickPulley(){const g=new THREE.Group(),R=0.28,L=1.2,N=12;
+  const shell=new THREE.CylinderGeometry(R,R,L,64,1,true);shell.rotateX(Math.PI/2);mesh(shell,MAT.cap,g);
+  const segA=Math.PI*2/N;
+  for(let k=0;k<N;k++){const a0=k*segA+0.03,a1=(k+1)*segA-0.03;
+    const sg=new THREE.CylinderGeometry(R+0.02,R+0.02,L-0.06,16,1,true,a0,a1-a0);sg.rotateX(Math.PI/2);mesh(sg,lagMat.diamond,g);
+    for(const e of[a0,a1]){const ca=Math.PI/2-e;}
+    const am=k*segA;const rail=boxM(0.03,0.026,L-0.04,CM.alu,g,Math.sin(am)*(R+0.014),Math.cos(am)*(R+0.014),0);rail.rotation.z=-am;
+    for(let t=0;t<16;t++){const tz=-L/2+0.06+t*(L-0.12)/15;for(const sd of[-1,1]){const tooth=boxM(0.008,0.012,0.03,CM.alu,g,Math.sin(am+sd*0.06)*(R+0.026),Math.cos(am+sd*0.06)*(R+0.026),tz);tooth.rotation.z=-(am+sd*0.06);}}}
+  for(const s of[-1,1]){const d=new THREE.CylinderGeometry(R+0.012,R+0.012,0.03,64);d.rotateX(Math.PI/2);mesh(d,CM.redEnd,g,0,0,s*(L/2-0.01));
+    const hub=new THREE.CylinderGeometry(0.1,0.1,0.08,32);hub.rotateX(Math.PI/2);mesh(hub,CM.redEnd,g,0,0,s*(L/2+0.03));}
+  const sh=new THREE.CylinderGeometry(0.055,0.055,L+0.5,24);sh.rotateX(Math.PI/2);mesh(sh,MAT.shaft,g);
+  return g;}
+/* rubber-ceramic lagging with dimpled ceramic tiles */
+function cCerPulley(){const g=detailPulley('cer');const R=0.28+0.016,L=1.12,NA=70,NZ=34;
+  const tiles=new THREE.InstancedMesh(new THREE.BoxGeometry(0.016,0.008,0.02),MATR.ceramic,NA*NZ);const o=new THREE.Object3D();let n=0;
+  for(let j=0;j<NZ;j++)for(let i=0;i<NA;i++){const a=(i+(j%2)*0.5)/NA*Math.PI*2,z=-L/2+j*L/(NZ-1);o.position.set(Math.cos(a)*R,Math.sin(a)*R,z);o.rotation.set(0,0,a-Math.PI/2);o.updateMatrix();tiles.setMatrixAt(n++,o.matrix);}
+  g.add(tiles);return g;}
+
+const NEW6={
+  ep:()=>({root:cEP(),parts:[{t:'Верхняя обкладка',p:[0.2,0.13,-0.5]},{t:'Тканевые прокладки EP',p:[0.2,0.05,0.4]},{t:'Резиновые прослойки',p:[-0.2,0.065,0.25]},{t:'Нижняя обкладка',p:[-0.3,0.015,0.72]}]}),
+  st:()=>({root:cST(),parts:[{t:'Стальные тросы',p:[0.3,0.06,0.5]},{t:'Резина сердцевины',p:[-0.3,0.06,0.3]},{t:'Верхняя обкладка',p:[-0.3,0.1,-0.4]},{t:'Нижняя обкладка',p:[0.4,0.015,0.7]}]}),
+  chev:()=>({root:cChevron(),parts:[{t:'Шевронный рельеф',p:[0.2,0.11,-0.5]},{t:'Тканевые прокладки',p:[0.3,0.05,0.5]},{t:'Обкладки',p:[-0.3,0.09,0.1]}]}),
+  side:()=>({root:cSidewall(),parts:[{t:'Гофроборт',p:[0.42,0.24,-0.4]},{t:'Поперечная перегородка',p:[0,0.22,-0.2]},{t:'Поперечно-жёсткая основа',p:[0.2,0.05,0.6]}]}),
+  pipe:()=>({root:cPipe(),parts:[{t:'Лента, свёрнутая в трубу',p:[0,0.0,0.5]},{t:'Нахлёст кромок',p:[-0.1,0.36,0]},{t:'Стальные тросы',p:[0.15,0.32,0.3]},{t:'Брекер',p:[0.1,0.33,0.6]}]}),
+  cold:()=>({root:cCold(),parts:[{t:'Ремонтная полоса',p:[-0.25,0.07,0.15]},{t:'Защитная плёнка',p:[0.18,0.3,-0.1]},{t:'Рулон',p:[-0.25,0.3,-0.35]}]}),
+  mech:()=>({root:cMech(),parts:[{t:'Соединительные пластины',p:[0.3,0.05,0]},{t:'Болты',p:[-0.3,0.05,0.06]},{t:'Концы ленты',p:[0,0.04,-0.45]}]}),
+  press:()=>({root:cPress(),parts:[{t:'Алюминиевые траверсы',p:[0,0.33,0.4]},{t:'Нагревательные плиты',p:[0.5,0.16,0.4]},{t:'Блок управления',p:[0.25,0.55,-0.25]},{t:'Насос охлаждения',p:[0,0.42,0.05]},{t:'Компрессор',p:[0.47,0.2,0.47]}]}),
+  catch:()=>({root:cCatcher(),parts:[{t:'Прижимная балка',p:[0.0,0.48,0.3]},{t:'Опорный ролик',p:[0.1,0.24,0.5]},{t:'Рама с ограждением',p:[0.1,0.9,-0.5]}]}),
+  lq:()=>({root:cQuickPulley(),parts:[{t:'Сменный элемент «ромб»',p:[0.15,0.3,0.3]},{t:'Алюминиевые направляющие',p:[0,0.31,-0.3]},{t:'Торцевой диск',p:[0.2,0,0.6]}]}),
+  lc:()=>({root:cCerPulley(),parts:[{t:'Керамические вставки',p:[0,0.3,0.2]},{t:'Резиновая основа',p:[0.27,0.12,0.4]}]})
+};
+for(const p of PRODUCTS)if(NEW6[p.id])p.build=NEW6[p.id];
+
 const pview=$('pview');let pr=null,pscene,pcam,pctl,cur=null,pid='ep',pLblOn=true,pSpinOn=!reduceMotion,pCut=true;
 const plabels=$('plabels');
 function initViewer(){
