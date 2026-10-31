@@ -846,6 +846,7 @@ const NO=1100,NSP=200;
 const oreMesh=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),MAT.ore,NO);oreMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);oreMesh.castShadow=true;oreMesh.frustumCulled=false;scene.add(oreMesh);
 const oreCol=new THREE.Color();
 const O={x:new Float32Array(NO),y:new Float32Array(NO),z:new Float32Array(NO),vx:new Float32Array(NO),vy:new Float32Array(NO),r:new Float32Array(NO),r1:new Float32Array(NO),s:new Float32Array(NO),st:new Uint8Array(NO),t:new Float32Array(NO),q:[]};
+const LY=new Float32Array(NO),LZ=new Float32Array(NO),LX=new Float32Array(NO),LA=new Float32Array(NO),LC=new Float32Array(NO);
 for(let i=0;i<NO;i++)O.q.push(new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd(0,6),rnd(0,6),rnd(0,6))));
 function setTone(i,wet){oreCol.setHSL(rnd(.06,.1),rnd(.08,.2),wet?rnd(.2,.3):rnd(.32,.48));oreMesh.setColorAt(i,oreCol);}
 
@@ -858,6 +859,53 @@ function sieveMat(){return svType==='pu'?deckMat.pu:svType==='rub'?(deckMat.rub|
 function passP(){const base=pres.deck>0.5?0.95:0.28;return feedType==='wet'&&pres.deck<0.5?base*0.6:base;}
 const stat={out:0,big:0,fineInA:0,toA:0};
 function spawn(){for(let i=0;i<NO;i++)if(!O.st[i]){const fine=Math.random()<FINES[finesLevel];O.r[i]=fine?rnd(.015,.03):rnd(.05,.1);O.x[i]=FX0+rnd(.1,.4);O.z[i]=rnd(-.3,.3);O.y[i]=panY(O.x[i])+0.6;O.vy[i]=-0.5;O.st[i]=1;setTone(i,feedType==='wet');oreMesh.instanceColor.needsUpdate=true;return;}}
+
+/* ---------- feeder -> crusher transfer and crushing inside the chamber ---------- */
+const _v=new THREE.Vector3();
+function crMouthLocal(){const b=newCr&&newCr.b;if(!b)return null;
+  if(b.jaw)return new THREE.Vector3((b.jaw.xf+b.faceX(b.jaw.top))/2,b.jaw.top+0.04,0);
+  if(b.cone)return new THREE.Vector3(0,1.42,0);
+  if(b.hsi)return new THREE.Vector3(-0.86,1.42,0);return null;}
+function launchToCrusher(i,vF){const m=crMouthLocal();O.r1[i]=O.r[i];
+  if(!m){O.st[i]=2;O.s[i]=0;O.vx[i]=0;return;}
+  newCr.b.root.updateMatrixWorld();_v.copy(m).applyMatrix4(newCr.b.root.matrixWorld);
+  const vy0=0.2,h=O.y[i]-_v.y,t=Math.max(0.12,(vy0+Math.sqrt(vy0*vy0+2*9.81*Math.max(0.02,h)))/9.81);
+  O.vx[i]=(_v.x-O.x[i])/t;O.vy[i]=vy0;LY[i]=_v.y;LZ[i]=clamp(O.z[i],-0.3,0.3);O.st[i]=10;}
+function crScale(){return newCr.g.children[0].scale.x;}
+function enterCrusher(i){const b=newCr.b,sc=crScale();
+  if(b.jaw){O.st[i]=11;LY[i]=b.jaw.top;LZ[i]=clamp(O.z[i]/sc,-0.33,0.33);}
+  else if(b.cone){O.st[i]=12;LY[i]=1.32;LA[i]=Math.random()*Math.PI*2;}
+  else if(b.hsi){O.st[i]=13;O.s[i]=0;LX[i]=-0.86;LY[i]=1.42;LZ[i]=clamp(O.z[i]/sc,-0.38,0.38);}
+  else{O.st[i]=2;O.s[i]=0;O.vx[i]=0;}
+  LC[i]=0;}
+function toWorld(i,x,y,z){_v.set(x,y,z).applyMatrix4(newCr.b.root.matrixWorld);O.x[i]=_v.x;O.y[i]=_v.y;O.z[i]=_v.z;}
+function frag(i,n,k,st){for(let c=0;c<n;c++)for(let j=0;j<NO;j++)if(!O.st[j]){O.st[j]=st;O.r[j]=O.r[i]*k*rnd(.8,1.1);O.r1[j]=O.r[j];O.x[j]=O.x[i];O.y[j]=O.y[i];O.z[j]=O.z[i];
+  LY[j]=LY[i]+rnd(-.03,.03);LZ[j]=clamp(LZ[i]+rnd(-.12,.12),-0.38,0.38);LX[j]=LX[i];LA[j]=LA[i]+rnd(-.4,.4);LC[j]=simTime;O.s[j]=O.s[i];O.vx[j]=O.vx[i]*rnd(.7,1.2);O.vy[j]=O.vy[i]+rnd(-.3,.3);setTone(j,feedType==='wet');break;}
+  oreMesh.instanceColor.needsUpdate=true;}
+function exitCrusher(i){O.st[i]=7;O.vx[i]=0;O.vy[i]=-0.3;stat.out++;if(O.r[i]>0.04)stat.big++;}
+function crushStep(i,st,dt){const b=newCr.b,sc=crScale();let rl=O.r[i]/sc;
+  if((st===11&&!b.jaw)||(st===12&&!b.cone)||(st===13&&!b.hsi)){exitCrusher(i);return;}
+  if(st===11){const J=b.jaw;const xf=J.xf+0.03,xm=b.faceX(LY[i])-0.03,gap=xm-xf;
+    if(gap>2*rl*0.95)LY[i]-=dt*(0.55+0.6*(gap-2*rl));
+    else if(b.phase>0.85&&simTime-LC[i]>0.25){LC[i]=simTime;const k=0.6;O.r[i]*=k;rl*=k;if(O.r[i]>0.03)frag(i,Math.random()<0.5?2:1,0.7,11);}
+    toWorld(i,(xf+xm)/2,LY[i]+rl*0.4,LZ[i]);
+    if(LY[i]<J.bot)exitCrusher(i);return;}
+  if(st===12){const Cn=b.cone,y=LY[i],rc=Cn.rc(Math.max(Cn.y0,Math.min(Cn.y1,y))),rm=Cn.rm(Math.max(Cn.y0,Math.min(Cn.y1,y)));
+    const off=0.028*(y-0.35)*Math.cos(LA[i]-b.ang+Math.PI/2),gap=rc-rm-0.02+off;
+    if(y>Cn.y1){LY[i]-=dt*1.4;}
+    else if(gap>2*rl*0.95)LY[i]-=dt*(0.35+0.8*(gap-2*rl));
+    else if(off<-0.006&&simTime-LC[i]>0.2){LC[i]=simTime;O.r[i]*=0.62;rl*=0.62;if(O.r[i]>0.03)frag(i,1,0.75,12);}
+    LA[i]+=dt*0.25;const rr=y>Cn.y1?0.22:(rc+rm)/2+off*0.5;toWorld(i,Math.cos(LA[i])*rr,y,Math.sin(LA[i])*rr);
+    if(LY[i]<Cn.y0-0.05)exitCrusher(i);return;}
+  if(st===13){const H=b.hsi,cx=H.rc[0],cy=H.rc[1],G=6.5;
+    if(O.s[i]===0){LX[i]+=dt*0.7;LY[i]=1.42-(LX[i]+0.86)*0.72;if(LX[i]>-0.36){O.s[i]=1;O.vx[i]=2.4;O.vy[i]=2.0;LC[i]=simTime;}}
+    else{O.vy[i]-=G*dt;LX[i]+=O.vx[i]*dt;LY[i]+=O.vy[i]*dt;const dx=LX[i]-cx,dy=LY[i]-cy,d=Math.hypot(dx,dy);
+      if(d>H.apR-rl&&dy>-0.05){const nx=dx/d,ny=dy/d;LX[i]=cx+nx*(H.apR-rl);LY[i]=cy+ny*(H.apR-rl);
+        if(simTime-LC[i]>0.08){LC[i]=simTime;if(O.r[i]>0.03){O.r[i]*=0.62;rl*=0.62;frag(i,Math.random()<0.6?2:1,0.75,13);}}
+        const vn=O.vx[i]*nx+O.vy[i]*ny;O.vx[i]-=1.5*vn*nx;O.vy[i]-=1.5*vn*ny;}
+      if(d<H.R+rl&&O.s[i]<3&&dy>-0.2){O.s[i]++;const a=Math.atan2(dy,dx)-0.6;O.vx[i]=-Math.sin(a)*2.2+1.0;O.vy[i]=Math.cos(a)*2.2;}
+      if(LY[i]<0.3)exitCrusher(i);}
+    toWorld(i,LX[i],LY[i],LZ[i]);return;}}
 function fall(i,dt){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;O.x[i]+=O.vx[i]*dt;}
 function step(dt){
   simTime+=dt;
@@ -871,12 +919,14 @@ function step(dt){
     if(st===1){if(O.vy[i]!==0){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;if(O.y[i]<=panY(O.x[i])+r){O.y[i]=panY(O.x[i])+r;O.vy[i]=0;}continue;}
       O.x[i]+=vF*dt;O.y[i]=panY(O.x[i])+r+0.008*Math.sin(simTime*60+i);
       if(even&&fdType==='grizzly'&&O.x[i]>GXV&&r<0.04&&Math.random()<dt*6){O.st[i]=7;O.vx[i]=0.2;O.vy[i]=0;}
-      else if(O.x[i]>=FX1){O.st[i]=2;O.s[i]=0;O.r1[i]=r;O.vx[i]=0;}}
+      else if(O.x[i]>=FX1){launchToCrusher(i,vF);}}
     else if(st===2){O.s[i]+=dt*(0.55+0.2*Math.sin(i));const s=Math.min(1,O.s[i]);
       if(crType==='jaw'){const xin=FIXX+0.32*(1-s)+0.06,xout=FIXX+(gap==='new'?0.05:0.11);O.x[i]=xin*(1-s)+xout*s;}else{const q=1-s;O.x[i]=CRX+(FX1+0.05-CRX)*q*q*q;}O.y[i]=JY1-(JY1-JY0)*s;
       const out=O.r1[i]<0.035?O.r1[i]:(gap==='new'?rnd(.016,.032):(Math.random()<0.5?rnd(.045,.075):rnd(.02,.04)));
       if(!O.t[i])O.t[i]=out;O.r[i]=O.r1[i]+(O.t[i]-O.r1[i])*s;
       if(s>=1){O.st[i]=3;O.s[i]=0.04;stat.out++;if(O.r[i]>0.04)stat.big++;O.t[i]=0;}}
+    else if(st===10){fall(i,dt);if(O.y[i]<=LY[i]){enterCrusher(i);}}
+    else if(st>=11&&st<=13){crushStep(i,st,dt);}
     else if(st===7){fall(i,dt);if(O.y[i]<CA.y+0.35){O.st[i]=3;O.s[i]=0.12;}}
     else if(st===3){O.s[i]+=dt*1.0/CLEN;const u=O.s[i]*CLEN;O.x[i]=CA.x+Math.cos(CANG)*u-Math.sin(CANG)*r;O.y[i]=CA.y+Math.sin(CANG)*u+Math.cos(CANG)*(r+0.01);O.z[i]=clamp(O.z[i],-0.28,0.28);
       if(O.s[i]>=1){O.st[i]=4;O.x[i]=SX0+0.1;O.vy[i]=0;}}
@@ -1225,6 +1275,87 @@ function v2Rotor(){const g=new THREE.Group();
   cylY(0.18,0.3,K.yel,g,0,0.3,0,32);cylY(0.08,0.4,K.steel,g,0,0.3,0,16);
   return{root:g,cam:[[1.5,1.4,1.7],[0,0.35,0]],spin:g,axis:'y',parts:[{t:'Диски ротора',p:[0.5,0.67,0]},{t:'Износостойкие наконечники',p:[0.48,0.4,0.25]},{t:'Распределительный диск',p:[0,0.45,0]}]};}
 const NEWB={apron:v2Apron,grizzly:v2Grizzly,vibro:v2Vibro,jaw:v2Jaw,gyr:v2Gyr,cone:v2Cone,hsi:v2Hsi,vsi:v2Vsi,mob:v2Mob,banana:v2Banana,horiz:v2Horiz,pu:v2Pu,wire:v2Wire,plates:v2Plates,bush:v2Bush,rotor:v2Rotor};
+/* ===== Crushers v3: closer jaws with an eccentric swing, HP-style cone crusher, PF-style impact crusher ===== */
+/* --- jaw: swing jaw closes to a narrow discharge gap and moves on an eccentric ellipse --- */
+function v3Jaw(){const b=v2Jaw();const P0=b.pit.position.clone(),A0=-0.5;b.pit.rotation.z=A0;let T=0;
+  b.jaw={xf:-0.57,top:1.32,bot:0.35};
+  /* x of the swing-jaw face at local height y */
+  b.faceX=y=>{const p=b.pit.position,th=b.pit.rotation.z,c=Math.cos(th),s=Math.sin(th);const yy=(y-p.y+0.07*s)/c;return p.x+(-0.07*c-yy*s);};
+  b.phase=0;
+  b.update=dt=>{T+=dt;const w=T*6.5;b.phase=Math.sin(w);b.pit.rotation.z=(b.A0!==undefined?b.A0:A0)+0.03*Math.sin(w);b.pit.position.set(P0.x+0.012*Math.cos(w),P0.y+0.022*Math.sin(w),0);if(b.pw)b.pw.rotation.z-=dt*6.5;};
+  b.parts.push({t:'Камера дробления',p:[-0.42,0.85,0.2]});return b;}
+
+/* --- cone crusher after an HP-type machine: mainframe, countershaft and sheave, adjustment ring with tramp-release springs,
+       bowl with concave, gyrating head with mantle, feed hopper and distribution plate --- */
+function v3Cone(){const g=new THREE.Group(),C=m=>kC(m);
+  /* mainframe */
+  lath([[0.2,0],[0.78,0],[0.78,0.08],[0.72,0.1],[0.72,0.5],[0.86,0.52],[0.86,0.6],[0.2,0.6]],C(K.cream),g,56,0.1);
+  for(let k=0;k<8;k++){const a=k/8*Math.PI*2;const r=boxM(0.06,0.38,0.14,C(K.creamD),g,Math.cos(a)*0.76,0.32,Math.sin(a)*0.76);r.rotation.y=-a;}
+  /* countershaft box, shaft and V-belt sheave */
+  boxM(0.7,0.22,0.3,C(K.cream),g,0.95,0.35,0);cylXk(0.05,1.2,K.steel,g,1.25,0.35,0,16);
+  const shv=new THREE.Group();shv.position.set(1.75,0.35,0);g.add(shv);const sv=new THREE.CylinderGeometry(0.28,0.28,0.12,40);sv.rotateZ(Math.PI/2);mesh(sv,K.grey,shv);
+  for(let k=0;k<4;k++){const t=new THREE.TorusGeometry(0.28,0.008,6,40);t.rotateY(Math.PI/2);mesh(t,K.dark,shv,-0.045+k*0.03,0,0);}
+  for(let k=0;k<5;k++){const sp=boxM(0.03,0.5,0.04,K.dark,shv,0,0,0);sp.rotation.x=k/5*Math.PI;}
+  /* adjustment ring + tramp-release springs around */
+  lath([[0.74,0],[1.02,0],[1.02,0.12],[0.74,0.12]],C(K.cream),g,56,0.72);
+  for(let k=0;k<12;k++){const a=k/12*Math.PI*2+0.13,x=Math.cos(a)*0.95,z=Math.sin(a)*0.95;coil(g,x,0.6,z,0.12,0.04,K.red);cylY(0.012,0.32,K.steel,g,x,0.74,z,8);cylY(0.035,0.03,K.dark,g,x,0.88,z,6);}
+  for(let k=0;k<4;k++){const a=k/4*Math.PI*2+0.4;cylY(0.05,0.2,K.yel,g,Math.cos(a)*1.08,0.74,Math.sin(a)*1.08,16);}
+  /* bowl with threaded outer and concave liner (inner radius 0.62 at y=0.78 down to 0.45 at y=1.3) */
+  lath([[0.62,0],[0.92,0],[0.9,0.12],[0.8,0.2],[0.74,0.62],[0.8,0.66],[0.8,0.72],[0.47,0.72],[0.45,0.55]],C(K.cream),g,56,0.78);
+  lath([[0.62,0],[0.66,0],[0.5,0.55],[0.45,0.55]],C(K.grey),g,56,0.78);
+  /* feed hopper and lid */
+  lath([[0.25,0],[0.3,0],[0.62,0.35],[0.66,0.42],[0.6,0.42],[0.27,0.06]],C(K.cream),g,48,1.42);
+  /* gyrating head: main shaft, head, mantle (r 0.58 at y=0.78 -> 0.15 at y=1.3), feed plate */
+  const piv=new THREE.Group();piv.position.y=0.35;g.add(piv);
+  const head=new THREE.Group();piv.add(head);
+  cylY(0.09,1.15,C(K.steel),head,0,0.45,0,20);
+  lath([[0.08,0],[0.5,0],[0.52,0.06],[0.1,0.95],[0.08,0.95]],C(K.dark),head,48,0.38);
+  lath([[0.08,0],[0.58,0],[0.6,0.04],[0.19,0.52],[0.15,0.58],[0.08,0.6]],C(K.grey),head,48,0.43);
+  const fp=lath([[0,0],[0.17,0],[0.17,0.03],[0,0.03]],C(K.yelD),head,32,1.0);
+  for(let k=0;k<4;k++){const r=boxM(0.02,0.035,0.16,K.yelD,head,Math.cos(k*Math.PI/2)*0.08,1.04,Math.sin(k*Math.PI/2)*0.08);r.rotation.y=-k*Math.PI/2;}
+  /* eccentric under the head */
+  const ecc=new THREE.Group();ecc.position.y=0.18;g.add(ecc);lath([[0.1,0],[0.24,0],[0.24,0.16],[0.1,0.16]],C(K.yelD),ecc,32,0);cylY(0.06,0.16,K.steel,ecc,0.06,0.08,0,12);
+  boxM(2.0,0.1,1.9,K.creamD,g,0.3,0.05,0);
+  let T=0;const E=0.028;
+  const b={root:g,head,piv,shv,ecc,cam:[[2.6,2.3,3.0],[0,0.9,0]],
+    parts:[{t:'Загрузочная воронка',p:[0.55,1.8,0]},{t:'Распределительная плита',p:[0,1.38,0]},{t:'Подвижный конус (мантия)',p:[0.25,1.05,0]},{t:'Неподвижная броня (конкав)',p:[0.55,1.05,0]},{t:'Регулировочное кольцо',p:[0.95,0.8,0]},{t:'Пружины защиты от недробимых тел',p:[0.95,0.66,0.3]},{t:'Эксцентрик',p:[0.2,0.25,0]},{t:'Приводной вал и шкив',p:[1.75,0.62,0]}]};
+  b.cone={y0:0.78,y1:1.3,rc:y=>0.62-(y-0.78)*0.33,rm:y=>0.58-(y-0.78)*0.83};
+  b.ang=0;b.update=dt=>{T+=dt;const w=T*7;b.ang=w;piv.rotation.set(E*Math.sin(w),0,-E*Math.cos(w));head.rotation.y-=dt*0.4;ecc.rotation.y=w;shv.rotation.x-=dt*14;};
+  return b;}
+
+/* --- impact crusher (PF): housing with hinged upper cover, inlet chute with chain curtain, rotor with blow bars,
+       two suspended impact aprons with adjusting rods, flywheel and motor drive --- */
+function v3Hsi(){const g=new THREE.Group(),D=1.0,C=m=>kC(m);
+  const side=(z,cut)=>{const s=new THREE.Shape();s.moveTo(-0.95,0.15);s.lineTo(0.85,0.15);s.lineTo(0.85,1.05);s.lineTo(0.55,1.45);s.lineTo(-0.2,1.6);s.lineTo(-0.75,1.6);s.lineTo(-0.95,1.25);s.closePath();
+    const geo=new THREE.ExtrudeGeometry(s,{depth:0.04,bevelEnabled:false});geo.translate(0,0,-0.02);mesh(geo,cut?C(K.green):K.green,g,0,0,z);
+    for(let i=0;i<7;i++)bolt(g,-0.8+i*0.26,0.95,z+(z>0?0.025:-0.025),'z');
+    const fl=boxM(1.85,0.05,0.06,K.greenD,g,-0.05,0.95,z);};
+  side(-D/2,false);side(D/2,true);
+  boxM(0.04,0.9,D,C(K.green),g,0.85,0.6,0);
+  const lid=boxM(0.76,0.04,D,C(K.green),g,0.17,1.53,0);lid.rotation.z=0.25;boxM(0.6,0.04,D,C(K.green),g,-0.47,1.6,0);
+  /* inlet chute (top left) and chain curtain */
+  const ch=boxM(0.75,0.03,D-0.1,C(K.greenD),g,-0.62,1.18,0);ch.rotation.z=-0.62;
+  for(let k=0;k<9;k++){const z=-0.4+k*0.1;for(let j=0;j<5;j++){const l=mesh(new THREE.TorusGeometry(0.018,0.005,6,10),K.dark,g,-0.42,1.5-j*0.045,z);l.rotation.y=j%2?Math.PI/2:0;}}
+  /* rotor with four blow bars */
+  const rot=new THREE.Group();rot.position.set(-0.05,0.62,0);g.add(rot);
+  cylZk(0.3,D-0.12,C(K.red),rot,0,0,0,40);
+  for(let k=0;k<4;k++){const a=k/4*Math.PI*2;const bb=boxM(0.08,0.17,D-0.14,C(K.dark),rot,Math.cos(a)*0.33,Math.sin(a)*0.33,0);bb.rotation.z=a;}
+  cylZk(0.06,D+0.9,K.steel,g,-0.05,0.62,0,16);
+  /* impact aprons: curved liners hanging from pivots, adjusting rods out through the cover */
+  const apron=(x0,y0,a0,a1,R,cx,cy)=>{const ap=new THREE.Group();g.add(ap);for(let k=0;k<6;k++){const a=a0+(a1-a0)*k/5;const p=boxM(0.08,0.05,D-0.12,C(K.lime),ap,cx+Math.cos(a)*R,cy+Math.sin(a)*R,0);p.rotation.z=a+Math.PI/2;}return ap;};
+  apron(0,0,0.95,1.75,0.62,-0.05,0.62);apron(0,0,0.05,0.8,0.62,-0.05,0.62);
+  for(const [x,y] of[[0.25,1.3],[0.55,1.05]])for(const z of[-0.35,0.35]){cylXk(0.022,0.6,K.steel,g,x+0.25,y+0.1,z,10).rotation.z=0.5;cylY(0.05,0.08,K.dark,g,x+0.5,y+0.25,z,6);}
+  /* flywheel, motor and V-belts */
+  const fw=wheel(g,-0.05,0.62,D/2+0.18,0.55,0.12,K.green,6);
+  const mb=new THREE.Group();mb.position.set(1.35,0.45,D/2+0.18);g.add(mb);motor(mb,0,0,0,0.2,0.5,K.blue,'z');boxM(0.6,0.05,0.45,K.greenD,mb,0,-0.23,-0.1);
+  for(const s of[1,-1]){const c=new THREE.CatmullRomCurve3([new THREE.Vector3(1.35,0.45+s*0.12,D/2+0.3),new THREE.Vector3(0.6,0.55+s*0.35,D/2+0.3),new THREE.Vector3(-0.05,0.62+s*0.55,D/2+0.3)]);mesh(new THREE.TubeGeometry(c,30,0.012,6,false),K.black,g);}
+  boxM(2.0,0.15,1.3,K.greenD,g,0,0.075,0);
+  let T=0;const b={root:g,rot,fw,cam:[[2.2,1.8,2.8],[0,0.8,0]],
+    parts:[{t:'Загрузочный лоток',p:[-0.62,1.25,0.3]},{t:'Цепная завеса',p:[-0.42,1.45,0]},{t:'Ротор с билами',p:[-0.05,0.62,0.3]},{t:'Отбойные плиты',p:[0.3,1.15,0.3]},{t:'Регулировочные тяги',p:[0.75,1.3,0.35]},{t:'Маховик',p:[-0.05,1.15,D/2+0.18]},{t:'Электродвигатель',p:[1.35,0.7,D/2+0.18]}]};
+  b.hsi={rc:[-0.05,0.62],R:0.36,apR:0.6};
+  b.update=dt=>{T+=dt;rot.rotation.z-=dt*9;fw.rotation.z-=dt*9;};
+  return b;}
+NEWB.jaw=v3Jaw;NEWB.cone=v3Cone;NEWB.hsi=v3Hsi;
 /* ---------- catalogue machines on the main line ---------- */
 var LINE={fd:{},cr:{},sc:{}};
 for(const p of PRODUCTS){const a={vibro:2,gyr:3,cone:3,hsi:3,vsi:3,wire:4}[p.id];if(a)p.act=a;}
@@ -1271,8 +1402,8 @@ function applyLine(){
 function lineVis(even){const t=even?fdType:'vibro';for(const k in LINE.fd)LINE.fd[k].g.visible=(k===t&&!(even&&fdType==='apron'));curFd=LINE.fd[t]||null;}
 function lineUpdate(dt,vF){if(!LINE||!newCr)return;const T=simTime;
   if(curFd&&curFd.g.visible)curFd.inner.position.set(0.006*Math.sin(T*50),0.006*Math.sin(T*50+1),0);
-  const b=newCr.b;if(b.spin)b.spin.rotation[b.axis||'y']-=dt*9;
-  if(b.pit){b.pit.rotation.z=-0.3+0.035*Math.sin(T*6);if(b.pw)b.pw.rotation.z-=dt*6;}
+  const b=newCr.b;if(b.jaw)b.A0=pres.jaw>0.5?-0.5:-0.43;if(b.update)b.update(dt);else{if(b.spin)b.spin.rotation[b.axis||'y']-=dt*9;
+  if(b.pit){b.pit.rotation.z=-0.3+0.035*Math.sin(T*6);if(b.pw)b.pw.rotation.z-=dt*6;}}
   if(newScr&&newScr.inner)newScr.inner.position.set(0.008*Math.sin(T*45),0.01*Math.sin(T*45+1.2),0);}
 applyLine();lineVis(pres.feed>0.5);
 document.querySelectorAll('[data-cr]').forEach(b=>b.addEventListener('click',()=>{crType=b.dataset.cr;pick('cr',crType);applyLine();eqNote('cr');info();goCam('jaw');}));
@@ -1286,7 +1417,7 @@ function eqNote(k){const id=k==='fd'?fdType:k==='cr'?crType:k==='sc'?scType:svTy
 PRODUCTS.push(
  {id:'bush',grp:'Запасные и износостойкие части',name:'Механические узлы',short:'Втулки, эксцентрики, валы',cut:false,build:null,list:['Втулки эксцентрика и корпусные элементы','Валы и детали приводов','Подбор по каталожному номеру и посадочным размерам'],desc:'Втулки, эксцентриковые и корпусные элементы, валы и детали приводов. Подбор по каталожному номеру и посадочным размерам.',sel:SEL_Z},
  {id:'rotor',grp:'Запасные и износостойкие части',name:'Роторы и футеровки',short:'Для ударных и центробежных дробилок',cut:false,build:null,list:['Роторы центробежных дробилок','Износостойкие наконечники и футеровки','Защитные плиты и крепёж'],desc:'Элементы ударных и центробежных дробилок; защитные плиты и крепёж. Комплектование по требуемому объёму ремонта.',sel:SEL_Z});
-for(const p of PRODUCTS){const f=NEWB[p.id];if(!f)continue;p.build=()=>{const b=f();if(b.spin){b.root.userData.spin=b.spin;b.root.userData.axis=b.axis;}return b;};}
+for(const p of PRODUCTS){const f=NEWB[p.id];if(!f)continue;p.build=()=>{const b=f();if(b.spin&&!b.update){b.root.userData.spin=b.spin;b.root.userData.axis=b.axis;}return b;};}
 {const p=PRODUCTS.find(x=>x.id==='plates');if(p){p.list=['Броня конуса (мантия) и броня чаши','Щёки, била и другие сменные рабочие детали','Материал и геометрия — под конкретную машину'];}}
 {const lst={apron:['Полотно из стальных пластин с бортами','Тяговые цепи на катках','Приводной вал со звёздочками, редуктор и двигатель','Натяжной вал и опорная рама'],grizzly:['Вибрирующий короб с лотком','Колосники в две ступени — мелочь проваливается до дробилки','Вибровозбудители','Пружинные опоры'],vibro:['Лоток с разгрузочной кромкой','Два вибродвигателя','Подвеска на пружинных тягах или установка на опоры'],jaw:['Сварная станина с боковыми щеками','Неподвижная и подвижная щёки со сменными плитами','Шатун на эксцентриковом валу, два маховика','Распорная плита и тяга с пружиной','Электродвигатель с клиноремённой передачей'],gyr:['Корпус из нижней, средней и верхней частей','Броня чаши и подвижный конус','Траверса с верхней опорой главного вала','Эксцентриковый привод от горизонтального вала'],cone:['Чаша с бронёй и загрузочным кольцом','Подвижный конус на главном валу','Гидроцилиндры регулировки щели и защиты от недробимых','Горизонтальный приводной вал со шкивом'],hsi:['Корпус с открываемой верхней частью','Ротор с билами','Отбойные плиты с регулировочными тягами','Маховик привода'],vsi:['Опорная рама','Камера дробления с каменной полкой','Ротор с износостойкими наконечниками','Загрузочная воронка; двигатели и ремённый привод'],mob:['Гусеничное шасси','Приёмный бункер с питателем','Щёковая дробилка','Силовой модуль','Конвейер продукта и боковой конвейер'],banana:['Короб с многоскатными деками','Полиуретановые панели','Вибровозбудитель с приводом','Пружинные опоры'],horiz:['Короб с двумя деками','Полиуретановые панели на поперечных трубах','Вибровозбудитель и приводные двигатели','Пружинные опоры'],pu:['Модульные панели разных цветов и ячеек','Квадратные и щелевые ячейки','Фиксация на несущих профилях'],wire:['Резиновые панели с квадратной ячейкой','Металлические сетки','Натяжные и комбинированные исполнения']};
  for(const p of PRODUCTS)if(lst[p.id])p.list=lst[p.id];}
