@@ -246,8 +246,8 @@ document.addEventListener('DOMContentLoaded',function(){
       <h3>Решение на конвейере</h3>
       <div class="sub">Первичный — на барабане</div>
       <div class="chips" role="group" aria-label="Первичный очиститель">
-        <button class="chip" data-prim="prim_seg" aria-pressed="true">Сегменты PU</button>
-        <button class="chip" data-prim="prim_one" aria-pressed="false">Цельное PU</button>
+        <button class="chip" data-prim="prim_seg" aria-pressed="false">Сегменты PU</button>
+        <button class="chip" data-prim="prim_one" aria-pressed="true">Цельное PU</button>
         <button class="chip" data-prim="prim_cer" aria-pressed="false">Керамика</button>
         <button class="chip" data-prim="prim_carb" aria-pressed="false">Твёрдый сплав</button>
       </div>
@@ -643,41 +643,53 @@ function tensioner(par,z,sgn){
   bolt(g,0.05,-0.352,sgn*0.04);bolt(g,-0.05,-0.352,sgn*0.04);
   return g;
 }
+const QC_OR=new THREE.MeshStandardMaterial({color:0xa02800,roughness:.55,metalness:.15,envMapIntensity:.5});
+const QC_PU=new THREE.MeshStandardMaterial({color:0xb02c00,roughness:.45,metalness:0,envMapIntensity:.5});
 function primaryBase(root,W,blades){
-  /* blade holder, arms, cross shaft through chute walls, tensioners outside */
-  boxM(W+0.04,0.035,0.05,MAT.paint,root,0,-0.16,0);
-  for(const z of[-W/2+0.08,W/2-0.08]){boxM(0.03,0.13,0.05,MAT.paint,root,0,-0.215,z);}
-  cylZ(0.03,1.78,MAT.galv,root,0,-0.25,0,20);
-  tensioner(root,0.86,1);tensioner(root,-0.86,-1);
+  /* QC1-style: square mainframe parallel to the pulley axis right under the blade, rotary tensioner on one end, bracket on the other */
+  boxM(0.05,0.03,W+0.06,MAT.galv,root,0,-0.215,0);
+  boxM(0.085,0.085,1.86,QC_OR,root,0,-0.265,0);
+  for(const z of[-0.35,0,0.35])boxM(0.03,0.07,0.05,MAT.galv,root,0,-0.18,z);
+  for(const sg of[-1,1]){const z=sg*0.93;
+    boxM(0.16,0.2,0.014,QC_OR,root,0.02,-0.3,z);boxM(0.05,0.06,0.03,QC_OR,root,0.09,-0.38,z+sg*0.01);
+    for(const y of[-0.22,-0.36])bolt(root,0.07,y,z+sg*0.009,'z');}
+  const th=cylZ(0.085,0.1,QC_OR,root,0,-0.265,1.0,28);cylZ(0.03,0.05,MAT.shaft,root,0,-0.265,1.07,16);cylZ(0.05,0.012,MAT.cap,root,0,-0.265,1.055,20);
+  cylZ(0.03,0.05,MAT.cap,root,0,-0.265,-0.97,14);
 }
+function bladeProfile(h,t0,t1,bend){const s=new THREE.Shape(),N=10,L=[],R=[];
+  for(let k=0;k<=N;k++){const f=k/N,y=-h+h*f,off=bend*(1-f*f),t=t0+(t1-t0)*f;L.push([off-t/2,y]);R.push([off+t/2,y]);}
+  s.moveTo(...L[0]);for(const p of L.slice(1))s.lineTo(...p);s.lineTo(R[N][0]-0.006,0.004);for(let k=N;k>=0;k--)s.lineTo(...R[k]);s.closePath();return s;}
 function buildPrimSeg(){const root=new THREE.Group(),W=1.0,N=6,w=W/N;
   for(let i=0;i<N;i++){const z=-W/2+w*(i+.5);
-    const b=boxM(w-0.012,0.13,0.034,MAT.pu,root,0,-0.07,z);
-    boxM(w-0.012,0.03,0.04,MAT.paint,root,0,-0.145,z);bolt(root,0.024,-0.145,z,'x');}
+    const b=boxM(0.034,0.13,w-0.012,MAT.pu,root,0,-0.07,z);
+    boxM(0.04,0.03,w-0.012,MAT.paint,root,0,-0.145,z);bolt(root,0.024,-0.145,z,'x');}
   primaryBase(root,W);
   return{root,parts:[{t:'Полиуретановые сегменты',p:[0,-0.03,0.3]},{t:'Держатель лезвия',p:[0,-0.16,-0.35]},{t:'Пружинный натяжитель',p:[0,-0.48,0.89]},{t:'Вал',p:[0,-0.25,-0.75]}],
    list:['Отдельные полиуретановые сегменты, каждый меняется по отдельности','Держатель лезвия на рычагах','Поперечный вал через стенки разгрузочной течки','Двусторонний пружинный натяжитель для регулировки прижима']};}
-function buildPrimOne(){const root=new THREE.Group(),W=1.0;
-  boxM(W,0.13,0.034,MAT.pu,root,0,-0.07,0);boxM(W,0.03,0.04,MAT.paint,root,0,-0.145,0);
-  for(let i=0;i<5;i++)bolt(root,0.024,-0.145,-0.4+i*0.2,'x');
+function buildPrimOne(){const root=new THREE.Group(),W=1.04;
+  /* one continuous curved urethane blade, contact edge parallel to the pulley face (as Martin QC1 / Flexco EZP1) */
+  const g=new THREE.ExtrudeGeometry(bladeProfile(0.2,0.075,0.03,0.035),{depth:W,bevelEnabled:true,bevelThickness:0.006,bevelSize:0.004,bevelSegments:2,curveSegments:4});g.translate(0,0,-W/2);
+  const bl=mesh(g,QC_PU,root);
+  boxM(0.09,0.022,W+0.02,MAT.galv,root,0,-0.205,0);
+  for(let i=0;i<5;i++)bolt(root,0.05,-0.205,-0.4+i*0.2,'x');
   primaryBase(root,W);
-  return{root,parts:[{t:'Цельное полиуретановое лезвие',p:[0,-0.03,0.2]},{t:'Съёмное крепление',p:[0,-0.15,-0.4]},{t:'Пружинный узел',p:[0,-0.48,0.89]}],
-   list:['Цельное полиуретановое лезвие с общей рабочей кромкой','Съёмное крепление к держателю','Поперечный вал','Пружинный узел для регулировки прижима к ленте']};}
+  return{root,parts:[{t:'Цельное полиуретановое лезвие',p:[0,-0.05,0.25]},{t:'Съёмное крепление лезвия',p:[0,-0.21,-0.42]},{t:'Несущая рама',p:[0,-0.27,-0.75]},{t:'Натяжитель',p:[0,-0.27,1.02]}],
+   list:['Цельное изогнутое полиуретановое лезвие с общей рабочей кромкой по всей ширине','Кромка лезвия прилегает к барабану параллельно его оси','Съёмное крепление лезвия на несущей раме','Рама под барабаном, параллельно его оси; натяжитель на конце рамы за стенкой течки']};}
 function buildPrimCer(){const root=new THREE.Group(),W=1.0,N=8,w=W/N;
   for(let i=0;i<N;i++){const z=-W/2+w*(i+.5);
-    boxM(w-0.01,0.1,0.03,MATX.base,root,0,-0.085,z);
-    for(let r=0;r<2;r++)for(let c=0;c<2;c++)boxM((w-0.022)/2,0.024,0.034,MATX.ceramic,root,0,-0.012-r*0.027,z-(w-0.022)/4+c*(w-0.022)/2);
+    boxM(0.03,0.1,w-0.01,MATX.base,root,0,-0.085,z);
+    for(let r=0;r<2;r++)for(let c=0;c<2;c++)boxM(0.034,0.024,(w-0.022)/2,MATX.ceramic,root,0,-0.012-r*0.027,z-(w-0.022)/4+c*(w-0.022)/2);
   }
-  boxM(W+0.02,0.03,0.04,MAT.paint,root,0,-0.145,0);
+  boxM(0.04,0.03,W+0.02,MAT.paint,root,0,-0.145,0);
   primaryBase(root,W);
   return{root,parts:[{t:'Керамические элементы Al₂O₃',p:[0,-0.01,0.3]},{t:'Гибкое основание',p:[0,-0.09,-0.3]},{t:'Пружинный натяжной узел',p:[0,-0.48,0.89]}],
    list:['Сегменты с элементами из алюмооксидной керамики','Гибкое основание подстраивает контакт под профиль ленты','Держатель и поперечный вал','Пружинный узел для настройки рабочего контакта']};}
 function buildPrimCarb(){const root=new THREE.Group(),W=1.0,N=7,w=W/N;
   for(let i=0;i<N;i++){const z=-W/2+w*(i+.5);
-    boxM(w-0.02,0.07,0.06,MAT.pu,root,0,-0.115,z);
-    boxM(w-0.03,0.07,0.012,MAT.galv,root,0,-0.045,z);
-    boxM(w-0.03,0.014,0.016,MATX.carbide,root,0,-0.007,z);}
-  boxM(W+0.02,0.03,0.05,MAT.paint,root,0,-0.165,0);
+    boxM(0.06,0.07,w-0.02,MAT.pu,root,0,-0.115,z);
+    boxM(0.012,0.07,w-0.03,MAT.galv,root,0,-0.045,z);
+    boxM(0.016,0.014,w-0.03,MATX.carbide,root,0,-0.007,z);}
+  boxM(0.05,0.03,W+0.02,MAT.paint,root,0,-0.165,0);
   primaryBase(root,W);
   return{root,parts:[{t:'Кромка из карбида вольфрама',p:[0,-0.005,0.3]},{t:'Упругие модули',p:[0,-0.115,-0.28]},{t:'Пружинный натяжитель',p:[0,-0.48,0.89]}],
    list:['Лезвия с кромкой из карбида вольфрама','Индивидуальный упругий модуль под каждым лезвием','Держатель и поперечный вал','Натяжной узел']};}
@@ -827,7 +839,7 @@ function wrap(x,side){const g=new THREE.CylinderGeometry(0.299+BT/2,0.299+BT/2,1
 wrap(X0,-1);wrap(X1,1);
 
 /* solutions on the conveyor */
-let primType='prim_seg',secType='sec_mod',plowType='plow_v';
+let primType='prim_one',secType='sec_mod',plowType='plow_v';
 const sol={prim:null,sec:null,plow:null};
 function disposeTree(o){o.traverse(n=>{if(n.geometry&&n.geometry!==HEX)n.geometry.dispose();});}
 function place(kind){
@@ -1029,7 +1041,7 @@ const PRODUCTS=[
   desc:'Спиральные полиуретановые ролики очищают и поддерживают ленту. Есть центрирующие версии.',
   adv:'Вращающийся рабочий орган помогает отделять стойкие налипания.',sel:SEL_SP}
 ];
-const pview=$('pview');let pr=null,pscene,pcam,pctl,cur=null,pid='prim_seg',pSpin=[],pCtxOn=true,pLblOn=true,pSpinOn=!reduceMotion;
+const pview=$('pview');let pr=null,pscene,pcam,pctl,cur=null,pid='prim_one',pSpin=[],pCtxOn=true,pLblOn=true,pSpinOn=!reduceMotion;
 const plabels=$('plabels');
 function initViewer(){
   try{pr=setupRenderer(pview);}catch(e){return;}
@@ -1099,7 +1111,7 @@ if(window.ResizeObserver){const ro=new ResizeObserver(resize);ro.observe(view);r
 initViewer();
 setMode(1);setPause(paused);$('oStick').textContent=STICK[Math.min(4,Math.floor(stick*4.999))];
 {const st=+new URLSearchParams(location.search).get('step');if(st>=2&&st<=4)setTimeout(()=>setMode(st),700);}
-showProduct('prim_seg');resize();
+showProduct('prim_one');resize();
 if(location.hash==='#shot'){camera.position.set(...CAMS.card.p);controls.target.set(...CAMS.card.t);}
 for(let i=0;i<200;i++){updateParts(1/30);step(1/30);}
 const clock=new THREE.Clock();let first=true;
