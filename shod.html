@@ -575,6 +575,38 @@ function buildSpiral(){
     {t:'Подвес',p:[0,0.12,-0.73]}],
     list:['Полиуретановая спираль на стальном валу','Центрирующее исполнение: навивка от центра в разные стороны','Подвесы к ставу','Чистит рабочую поверхность и поддерживает ленту']};
 }
+/* ---- catalogue look: colours and missing details after the Legacy catalogue pictures ---- */
+const SRGB=c=>new THREE.Color(c).convertSRGBToLinear();
+const REDR=new THREE.MeshStandardMaterial({color:SRGB(0xc0281f),roughness:.6}),REDC=new THREE.MeshStandardMaterial({color:SRGB(0x7a150f),roughness:.55,metalness:.2}),
+  REDF=new THREE.MeshStandardMaterial({color:SRGB(0xa8221a),roughness:.5,metalness:.3}),DARKF=new THREE.MeshStandardMaterial({color:SRGB(0x2f3438),roughness:.45,metalness:.5}),
+  BRNF=new THREE.MeshStandardMaterial({color:SRGB(0xc06a3c),roughness:.55,metalness:.3}),ORF=new THREE.MeshStandardMaterial({color:SRGB(0xe08a1e),roughness:.5,metalness:.25});
+function swapMat(root,from,to){root.traverse(n=>{if(n.isMesh&&n.material===from)n.material=to;});}
+function guideRoller(par,x,z,sg,mat){/* vertical edge-guide roller on an arm ahead of the set */
+  boxM(Math.abs(x)+0.05,0.03,0.03,mat,par,x/2,-0.17,z);boxM(0.03,0.36,0.03,mat,par,x,0.0,z+sg*0.03);
+  const r=roller(0.16,0.038,'plain');aim(r,new THREE.Vector3(0,1,-sg*0.22));r.position.set(x,0.28,z);par.add(r);
+  boxM(0.05,0.02,0.05,mat,par,x,0.18,z+sg*0.02);return r;}
+function endPlates(root,mat,h,y){for(const sg of[-1,1]){boxM(0.2,h,0.014,mat,root,0,y,sg*0.8);boxM(0.2,0.014,0.12,mat,root,0,y-h/2,sg*0.86);for(const dx of[-0.06,0.06])bolt(root,dx,y-h/2+0.008,sg*0.86);}}
+{const o=buildMech;buildMech=function(){const b=o();
+  for(const sg of[-1,1])guideRoller(b.piv,-0.36,sg*0.72,sg,ORF);
+  swapMat(b.root,MAT.rubber,REDR);swapMat(b.root,MAT.shell,REDC);swapMat(b.root,MAT.amber,ORF);swapMat(b.root,MAT.paint,ORF);
+  boxM(0.1,0.04,0.5,ORF,b.root,-0.2,-0.3,0).rotation.y=0.6;endPlates(b.root,ORF,0.16,-0.27);
+  b.parts.push({t:'Боковой направляющий ролик',p:[-0.36,0.36,0.72]});b.list.splice(2,0,'Боковые направляющие ролики на рычагах у кромок ленты');return b;};}
+{const o=buildCone;buildCone=function(){const b=o();
+  for(const sg of[-1,1])guideRoller(b.piv,0.0,sg*0.74,sg,DARKF);
+  swapMat(b.root,MAT.amber,DARKF);swapMat(b.root,MAT.paint,DARKF);
+  for(const dx of[-0.16,0.16])boxM(0.05,0.05,1.56,DARKF,b.root,dx,-0.305,0);for(const sg of[-1,1])boxM(0.38,0.04,0.05,DARKF,b.root,0,-0.305,sg*0.74);
+  endPlates(b.root,REDF,0.2,-0.25);
+  b.parts.push({t:'Направляющий ролик',p:[0,0.36,0.74]},{t:'Опорные кронштейны',p:[0,-0.2,0.82]});return b;};}
+{const o=buildHydro;buildHydro=function(){const b=o();swapMat(b.root,MAT.amber,REDF);swapMat(b.root,MAT.paint,REDF);swapMat(b.root,MAT.shell,REDR);endPlates(b.root,REDF,0.16,-0.27);return b;};}
+{const o=buildVReturn;buildVReturn=function(){const b=o();swapMat(b.root,MAT.shell,REDR);swapMat(b.root,MAT.paint,ORF);swapMat(b.root,MAT.amber,ORF);
+  for(const sg of[-1,1]){boxM(0.08,0.42,0.014,ORF,b.root,0,-0.02,sg*0.8);boxM(0.14,0.014,0.16,ORF,b.root,0,0.19,sg*0.86);for(const dx of[-0.04,0.04])bolt(b.root,dx,0.2,sg*0.86);
+    boxM(0.05,0.03,0.12,ORF,b.root,0,-0.2,sg*0.76);}
+  b.parts.push({t:'Боковые стойки с кронштейнами',p:[0,0.2,0.84]});return b;};}
+{const o=buildHeavyReturn;buildHeavyReturn=function(){const b=o();swapMat(b.root,MAT.shell,REDR);swapMat(b.root,MAT.paint,BRNF);swapMat(b.root,MAT.amber,BRNF);
+  for(const sg of[-1,1]){boxM(0.1,0.46,0.02,BRNF,b.root,0,-0.02,sg*0.82);boxM(0.16,0.016,0.18,BRNF,b.root,0,0.21,sg*0.88);for(const dx of[-0.05,0.05])bolt(b.root,dx,0.22,sg*0.88);
+    boxM(0.08,0.02,0.16,BRNF,b.root,0,-0.24,sg*0.78);}
+  return b;};}
+{const o=buildSpiral;buildSpiral=function(){const b=o();swapMat(b.root,MAT.pu,REDR);swapMat(b.root,MAT.amber,MAT.galv);return b;};}
 const BUILD={cone:buildCone,mech:buildMech,hydro:buildHydro,vret:buildVReturn,heavy:buildHeavyReturn,cret:buildCenterReturn,spiral:buildSpiral};
 
 function makeEnv(r){
