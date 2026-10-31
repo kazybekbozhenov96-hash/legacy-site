@@ -597,7 +597,40 @@ function endPlates(root,mat,h,y){for(const sg of[-1,1]){boxM(0.2,h,0.014,mat,roo
   for(const dx of[-0.16,0.16])boxM(0.05,0.05,1.56,DARKF,b.root,dx,-0.305,0);for(const sg of[-1,1])boxM(0.38,0.04,0.05,DARKF,b.root,0,-0.305,sg*0.74);
   endPlates(b.root,REDF,0.2,-0.25);
   b.parts.push({t:'Направляющий ролик',p:[0,0.36,0.74]},{t:'Опорные кронштейны',p:[0,-0.2,0.82]});return b;};}
-{const o=buildHydro;buildHydro=function(){const b=o();swapMat(b.root,MAT.amber,REDF);swapMat(b.root,MAT.paint,REDF);swapMat(b.root,MAT.shell,REDR);endPlates(b.root,REDF,0.16,-0.27);return b;};}
+buildHydro=function(){/* after catalogue pic: tandem troughing sets with ribbed rollers on a heavy turning frame, tall side posts with edge-guide rollers, hydraulic correction */
+  const root=new THREE.Group();pivotBase(root,true);
+  const piv=new THREE.Group();root.add(piv);const C=Math.cos(TROUGH),S=Math.sin(TROUGH);
+  for(const dx of[-0.2,0.2]){const t=new THREE.Group();t.position.x=dx;piv.add(t);troughSet(t,{paint:REDF,kind:'rubber',yb:-0.2});}
+  for(const sg of[-1,1]){boxM(0.62,0.06,0.06,REDF,piv,0,-0.2,sg*0.6);boxM(0.62,0.05,0.05,REDF,piv,0,-0.2,sg*0.22);
+    for(const dx of[-0.3,0.3]){boxM(0.012,0.12,0.14,REDF,piv,dx,-0.17,sg*0.6);for(const y of[-0.2,-0.14])bolt(piv,dx+Math.sign(dx)*0.008,y,sg*0.6,'x');}
+    /* tall side post with guide roller */
+    const zp=sg*0.8;boxM(0.08,0.62,0.07,REDF,piv,0.0,0.07,zp);boxM(0.2,0.012,0.16,REDF,piv,0,0.38,zp);boxM(0.012,0.2,0.14,REDF,piv,0.05,-0.1,zp);for(const y of[-0.15,-0.05])bolt(piv,0.058,y,zp,'x');
+    boxM(0.62,0.05,0.05,REDF,piv,0,-0.2,zp);
+    const arm=boxM(0.05,0.05,0.16,REDF,piv,0,0.3,zp-sg*0.07);
+    const r=roller(0.2,0.045,'rubber');aim(r,new THREE.Vector3(0,Math.cos(0.45),-sg*Math.sin(0.45)));r.position.set(0,0.42,sg*0.7);piv.add(r);
+    boxM(0.08,0.03,0.08,REDF,piv,0,0.33,sg*0.72);}
+  for(const x of[-0.3,0.3])boxM(0.06,0.05,1.25,REDF,piv,x,-0.26,0);
+  /* hydraulic actuator between the fixed base and the turning frame */
+  const anchor=new THREE.Vector3(0.5,-0.27,0.5),body=mesh(new THREE.CylinderGeometry(0.035,0.035,0.22,24),MAT.hyd,root),rod=mesh(new THREE.CylinderGeometry(0.015,0.015,1,14),MAT.chrome,root);
+  boxM(0.08,0.07,0.08,REDF,root,0.52,-0.29,0.5);
+  boxM(0.1,0.07,0.08,MAT.hyd,root,0.2,-0.29,-0.45);
+  const hoseA=new THREE.CatmullRomCurve3([new THREE.Vector3(0.2,-0.26,-0.45),new THREE.Vector3(0.3,-0.14,-0.1),new THREE.Vector3(0.42,-0.2,0.35),new THREE.Vector3(0.46,-0.24,0.5)]);mesh(new THREE.TubeGeometry(hoseA,40,0.009,8,false),MAT.hose,root);
+  const hoseB=new THREE.CatmullRomCurve3([new THREE.Vector3(0.16,-0.26,-0.45),new THREE.Vector3(-0.05,-0.15,-0.62),new THREE.Vector3(0,0.1,-0.75),new THREE.Vector3(0,0.3,-0.73)]);mesh(new THREE.TubeGeometry(hoseB,40,0.009,8,false),MAT.hose,root);
+  const tip=new THREE.Vector3(),dir=new THREE.Vector3();
+  function update(yaw){const lx=0.12,lz=0.5;tip.set(lx*Math.cos(yaw)+lz*Math.sin(yaw),-0.27,-lx*Math.sin(yaw)+lz*Math.cos(yaw));
+    dir.subVectors(tip,anchor);const L=dir.length();dir.normalize();aim(body,dir);body.position.copy(anchor).addScaledVector(dir,0.11);
+    const rl=Math.max(0.02,L-0.22);aim(rod,dir);rod.scale.set(1,rl,1);rod.position.copy(anchor).addScaledVector(dir,0.22+rl/2);}
+  update(0);boxM(0.05,0.05,0.05,REDF,piv,0.12,-0.27,0.5);
+  swapMat(root,MAT.rubber,REDR);swapMat(root,MAT.shell,REDC);swapMat(root,MAT.paint,REDF);
+  endPlates(root,REDF,0.18,-0.27);
+  return{root,piv,update,parts:[
+    {t:'Сдвоенные роликоопоры',p:[0.2,0.05,0.3]},
+    {t:'Следящий ролик',p:[0,0.5,0.72]},
+    {t:'Боковая стойка',p:[0,0.2,0.8]},
+    {t:'Гидроцилиндр коррекции',p:[0.35,-0.25,0.5]},
+    {t:'Гидравлический блок',p:[0.2,-0.26,-0.45]},
+    {t:'Поворотная рама',p:[0.3,-0.26,-0.3]}],
+    list:['Две роликоопоры подряд на общей поворотной раме, ролики с резиновыми кольцами','Боковые стойки со следящими роликами у обеих кромок ленты','Гидравлический механизм коррекции: блок, рукава, цилиндр','Работает от движения ленты, без внешнего питания','Усиленная болтовая рама и опорные кронштейны']};};
 {const o=buildVReturn;buildVReturn=function(){const b=o();swapMat(b.root,MAT.shell,REDR);swapMat(b.root,MAT.paint,ORF);swapMat(b.root,MAT.amber,ORF);
   for(const sg of[-1,1]){boxM(0.08,0.42,0.014,ORF,b.root,0,-0.02,sg*0.8);boxM(0.14,0.014,0.16,ORF,b.root,0,0.19,sg*0.86);for(const dx of[-0.04,0.04])bolt(b.root,dx,0.2,sg*0.86);
     boxM(0.05,0.03,0.12,ORF,b.root,0,-0.2,sg*0.76);}
@@ -982,7 +1015,7 @@ function showProduct(id){
     const beltG=carry?troughPiece():flatPiece();const bm=mesh(beltG,MAT.ghostBelt,wrap);bm.castShadow=false;bm.position.y=b.root.position.y+0.004;bm.visible=pBeltOn;pBelt=bm;
     pscene.add(wrap);cur={wrap,b,carry};
     plabels.innerHTML='';cur.lbls=b.parts.map(pp=>{const el=document.createElement('div');el.className='lbl pu';el.textContent=pp.t;plabels.appendChild(el);return{el,p:pp.p};});
-    pcam.position.set(1.35,carry?1.25:1.0,1.6);pctl.target.set(0,carry?0.3:0.35,0);pctl.autoRotate=pSpinOn;
+    pcam.position.set(pid==='hydro'?1.9:1.35,carry?(pid==='hydro'?1.6:1.25):1.0,pid==='hydro'?2.2:1.6);pctl.target.set(0,carry?0.3:0.35,0);pctl.autoRotate=pSpinOn;
   }
   $('pName').textContent=P0.name;$('pRef').textContent=P0.ref;$('pDesc').textContent=P0.desc;$('pAdv').textContent=P0.adv;
   const lst=(BUILD[id]===undefined?[]:PARTLIST[id]);$('pParts').innerHTML='';lst.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('pParts').appendChild(li);});
