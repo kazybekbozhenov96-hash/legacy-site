@@ -868,7 +868,7 @@ const C={th:new Float32Array(NC),x:new Float32Array(NC),y:new Float32Array(NC),z
 const T={x:new Float32Array(NT),y:new Float32Array(NT),z:new Float32Array(NT),vz:new Float32Array(NT),vy:new Float32Array(NT),r:new Float32Array(NT),st:new Uint8Array(NT),t:new Float32Array(NT)};
 let mode=1,stick=0.6,paused=reduceMotion,labelsOn=false,SPEED=1.6,simTime=0,oreAcc=0,crbAcc=0,stoneAcc=0;
 const pres={prim:0,sec:0,plow:0},target={prim:0,sec:0,plow:0};
-const P1=0.85,P2=0.8,QDROP=0.3;          /* model rules: share removed by primary / secondary, chance to drop at a return idler */
+const P1=0.85,P2=1.0,QDROP=0.3;          /* model rules: share removed by primary / secondary, chance to drop at a return idler */
 const dropTimes=[],stoneHits=[];let hitFlash=0;
 function spawnOre(){for(let i=0;i<NO;i++)if(!O.st[i]){O.r[i]=rnd(.014,.04);O.x[i]=LOAD_X+rnd(-.15,.15);O.z[i]=rnd(-.2,.2);O.y[i]=BELT_Y+0.85;O.vy[i]=-0.5;O.st[i]=1;return;}}
 function spawnCarry(){for(let i=0;i<NC;i++)if(!C.st[i]){C.r[i]=rnd(.007,.016);C.th[i]=Math.PI/2;C.z[i]=rnd(-.42,.42);C.st[i]=1;C.pass[i]=0;C.next[i]=0;return;}}
@@ -1129,5 +1129,7 @@ tick();
 })();
 
 </script>
+<script>window.LEGACY_CAT={"page": "konveyer-ochistka.html", "map": {"prim_seg": [14], "prim_one": [15], "prim_cer": [19], "prim_carb": [17], "sec_mod": [21], "sec_damp": [22], "sec_slurry": [23], "brush": [27], "plow_v": [25], "plow_diag": [26], "spiral": [28]}}</script>
+<script src="catphoto.js" defer></script>
 </body>
 </html>
