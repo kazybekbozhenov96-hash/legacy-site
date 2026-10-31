@@ -130,46 +130,64 @@ function buildRail(snap){const g=new T.Group();
     return{root:g,parts:[{t:'Профиль с опорным буртом',p:[-0.4,0.25,0]},{t:'Прямой профиль',p:[0,0.3,0]},{t:'Наклонный профиль',p:[0.4,0.25,0]}],
      list:['Полиуретановые профили разной формы под узел','Бурт снизу фиксируется в монтажной рейке','Изношенный участок меняют без замены всего уплотнения'],
      desc:'Полиуретановые профили для контактного уплотнения зоны пересыпа. Крепление на рейке и фиксация позволяют менять изношенный участок.',adv:'Позволяют заменить изношенный участок и восстановить положение уплотнения.',sel:['Высота профиля','Зазор до ленты','Скорость ленты','Температура']};}
-  const L=1.2;const w=new T.Group();w.rotation.x=0.35;w.position.set(0,0.28,0.1);g.add(w);
-  box(L,0.5,0.012,std({color:0x7a4a2c,roughness:.8,metalness:.4}),w,0,0.25,0);
-  box(L,0.06,0.02,GRY,w,0,0.03,0.016);
-  const pr=box(L,0.2,0.014,RED,w,0,-0.07,0.012);pr.rotation.x=-0.2;
-  for(let x=-0.5;x<=0.51;x+=0.25){const c=mesh(new T.TorusGeometry(0.035,0.008,8,16,Math.PI),GRY,w,x,0.06,0.04);c.rotation.z=Math.PI;box(0.03,0.05,0.02,GRY,w,x,0.03,0.03);}
-  const belt=box(1.4,0.012,0.8,BLK,g,0,0.06,-0.15);belt.rotation.x=-0.2;
+  const L=1.2,WALL=std({color:0x6f8a80,roughness:.8,metalness:.3});
+  box(L,0.6,0.014,WALL,g,0,0.55,0);
+  const yr=0.33;box(L,0.012,0.045,GRY,g,0,yr+0.032,0.03);box(L,0.012,0.045,GRY,g,0,yr-0.032,0.03);box(L,0.075,0.008,GRY,g,0,yr,0.011);
+  cylX(0.021,L,RED,g,0,yr,0.035,18);
+  const ye=0.1,ze=0.11,sh=new T.Shape(),N=18,Aa=[],Bb=[];
+  for(let i=0;i<=N;i++){const t=i/N,u=1-t;const zz=u*u*0.035+2*u*t*0.045+t*t*ze,yy=u*u*(yr-0.02)+2*u*t*0.17+t*t*ye;const th=0.016*(1-t)+0.006*t;Aa.push([zz,yy]);Bb.push([zz+th,yy+th*0.4]);}
+  sh.moveTo(Aa[0][0],Aa[0][1]);Aa.forEach(q=>sh.lineTo(q[0],q[1]));for(let i=N;i>=0;i--)sh.lineTo(Bb[i][0],Bb[i][1]);sh.closePath();
+  const lg=new T.ExtrudeGeometry(sh,{depth:L,bevelEnabled:false});lg.rotateY(Math.PI/2);lg.scale(1,1,-1);lg.translate(-L/2,0,0);mesh(lg,RED,g);
+  for(let x=-0.45;x<=0.46;x+=0.3){const c=mesh(new T.TorusGeometry(0.042,0.007,8,18,Math.PI),GRY,g,x,yr,0.06);c.rotation.set(0,-Math.PI/2,Math.PI/2);mesh(new T.CylinderGeometry(0.006,0.006,0.07,8),GRY,g,x,yr+0.045,0.035);}
+  for(let x=-0.55;x<=0.56;x+=0.22){const b=cylZ(0.008,0.08,GRY,g,x,yr+0.075,0.04,8);}
+  const belt=box(L+0.2,0.012,0.6,BLK,g,0,ye-0.012,0.05);belt.rotation.x=-0.25;
   return{root:g,parts:[{t:'Профиль K-Snap-Loc',p:[0,0.2,0.15]},{t:'Монтажная рейка',p:[0.4,0.33,0.15]},{t:'Фиксаторы',p:[-0.5,0.36,0.2]},{t:'Стенка течки',p:[0.3,0.55,0.25]}],
    list:['Гибкий полиуретановый профиль 127 / 150 / 230 / 355 мм','Защёлкивается в монтажную рейку длиной 2000 мм','Быстросъёмные фиксаторы','Составы R69 (−30…+80 °C) и B93 (−25…+120 °C)'],
    desc:'Гибкий полиуретановый профиль закрывает зазор между стенкой течки и лентой. Уплотнение защёлкивается в монтажную рейку и удерживается фиксирующими элементами.',adv:'Защёлкивающееся крепление упрощает замену изношенного профиля без разборки стенки течки.',sel:['Высота профиля','Зазор до ленты','Скорость ленты','Температура']};}
 function buildBlock(){const g=new T.Group(),L=1.2,a=0.55,C=Math.cos(a),S=Math.sin(a);
   box(L,0.012,0.5,BLK,g,0,0.3,0);for(const sg of[-1,1]){const w=box(L,0.012,0.7,BLK,g,0,0.3+0.35*S,sg*(0.25+0.35*C));w.rotation.x=-sg*a;}
   for(const sg of[-1,1]){box(L,0.36,0.014,GRY,g,0,0.55,sg*0.36);
-    for(let i=0;i<7;i++){const x=-L/2+0.09+i*0.17;box(0.16,0.12,0.05,RED,g,x,0.38,sg*0.33);box(0.1,0.08,0.012,GRY,g,x,0.39,sg*0.305);bolt(g,x,0.39,sg*0.298,'z');}}
+    for(let i=0;i<7;i++){const x=-L/2+0.09+i*0.17;box(0.165,0.13,0.05,RED,g,x,0.4,sg*0.392);box(0.11,0.08,0.012,GRY,g,x,0.41,sg*0.423);bolt(g,x,0.41,sg*0.43,'z');}}
   box(0.014,0.36,0.72,GRY,g,-L/2,0.55,0);
   return{root:g,parts:[{t:'Сменные блоки Super Block',p:[0.2,0.4,0.3]},{t:'Прижимные пластины',p:[-0.3,0.42,-0.3]},{t:'Стенки течки',p:[0,0.7,0.36]},{t:'Лента',p:[0.4,0.32,0]}],
    list:['Сменные полиуретановые блоки по нижней кромке стенок','Прижимные пластины на болтах','Боковые и задняя стенки загрузочного узла'],
    desc:'Для самых тяжёлых условий. Сменные элементы для боковых и задней стенок загрузочного узла. Прижимные пластины и опоры под лентой подбирают совместно с уплотнением.',adv:'Закрывают боковые и задние зоны просыпи; отдельные блоки можно заменять по износу.',sel:['Геометрия загрузочного узла','Нагрузка','Крупность материала']};}
-function buildNC(){const g=new T.Group(),Rr=1.0,cy=1.25,a0=0.62;
-  const sh=new T.Shape(),N=24;for(let i=0;i<=N;i++){const t=-Math.PI/2-a0+2*a0*i/N;sh.lineTo?0:0;if(i===0)sh.moveTo(Math.cos(t)*Rr,Math.sin(t)*Rr);else sh.lineTo(Math.cos(t)*Rr,Math.sin(t)*Rr);}
+function buildNC(){const g=new T.Group(),Rr=1.0,cy=1.25,a0=0.62,L=1.0;
+  const BLUE=std({color:0x2f8cff,roughness:.35,emissive:0x1e7bff,emissiveIntensity:.9});
+  const sh=new T.Shape(),N=24;for(let i=0;i<=N;i++){const t=-Math.PI/2-a0+2*a0*i/N;if(i===0)sh.moveTo(Math.cos(t)*Rr,Math.sin(t)*Rr);else sh.lineTo(Math.cos(t)*Rr,Math.sin(t)*Rr);}
   for(let i=N;i>=0;i--){const t=-Math.PI/2-a0+2*a0*i/N;sh.lineTo(Math.cos(t)*(Rr+0.015),Math.sin(t)*(Rr+0.015));}
-  const bg=new T.ExtrudeGeometry(sh,{depth:1.0,bevelEnabled:false});bg.translate(0,0,-0.5);mesh(bg,std({color:0x2c3035,roughness:.8,side:T.DoubleSide}),g,0,cy,0);
-  for(const sg of[-1,1]){const t=-Math.PI/2+sg*(a0-0.12),px=Math.cos(t)*(Rr-0.07),py=cy+Math.sin(t)*(Rr-0.07);
-    const u=new T.Group();u.position.set(px,py,0);u.rotation.z=t+Math.PI/2;g.add(u);
-    box(0.3,0.04,1.0,GRY,u,0,0.05,0);for(let k=0;k<5;k++)box(0.045,0.02,0.9,CYAN,u,-0.1+k*0.05,0.02,0);
-    const post=box(0.04,py-0.02,0.04,GRY,g,px+sg*0.18,(py-0.02)/2,0.42);box(0.04,py-0.02,0.04,GRY,g,px+sg*0.18,(py-0.02)/2,-0.42);
-    box(0.22,0.03,0.03,GRY,g,px+sg*0.08,py+0.03,0.42);box(0.22,0.03,0.03,GRY,g,px+sg*0.08,py+0.03,-0.42);}
-  for(const z of[-0.42,0.42]){box(1.5,0.04,0.05,GRY,g,0,0.04,z);const cr=box(0.05,0.3,0.05,GRY,g,0,0.15,z);}
-  return{root:g,parts:[{t:'Бесконтактный элемент',p:[0.5,0.62,0.3]},{t:'Лента',p:[0,0.27,0]},{t:'Рабочий зазор',p:[-0.5,0.55,-0.3]}],
+  const bg=new T.ExtrudeGeometry(sh,{depth:L,bevelEnabled:false});bg.translate(0,0,-L/2);mesh(bg,std({color:0x2c3035,roughness:.8,side:T.DoubleSide}),g,0,cy,0);
+  for(const sg of[-1,1]){
+    /* skirt wall of the chute */
+    const ti=-Math.PI/2+sg*(a0-0.34),wx=Math.cos(ti)*Rr,wy=cy+Math.sin(ti)*Rr;
+    box(0.014,0.42,L,GRY,g,wx,wy+0.25,0);
+    /* bent holder: vertical flange bolted to the skirt, inclined plate along the belt wing, blue elements just above the belt */
+    const ts=-Math.PI/2+sg*(a0-0.17),px=Math.cos(ts)*(Rr-0.02),py=cy+Math.sin(ts)*(Rr-0.02);
+    const u=new T.Group();u.position.set(px,py,0);u.rotation.z=ts+Math.PI/2;g.add(u);
+    box(0.26,0.014,L,GRY,u,0,0.05,0);
+    const nS=8;for(let k=0;k<nS;k++){const zz=-L/2+L/nS*(k+0.5);box(0.22,0.028,L/nS-0.012,BLUE,u,0,0.022,zz);}
+    box(0.012,0.2,L,GRY,g,wx+sg*0.014,wy+0.13,0);
+    for(let k=0;k<5;k++){const zz=-0.4+k*0.2;const bl=cylZ(0.008,0.16,GRY,g,wx+sg*0.08,wy+0.14,zz,10);bl.rotation.set(0,Math.PI/2,0);
+      cylZ(0.016,0.012,GRY,g,wx+sg*0.022,wy+0.14,zz,6).rotation.set(0,Math.PI/2,0);}
+    const leg=box(0.04,0.6,0.04,GRY,g,px+sg*0.22,0.3,0.42);leg.rotation.z=sg*0.25;const leg2=box(0.04,0.6,0.04,GRY,g,px+sg*0.22,0.3,-0.42);leg2.rotation.z=sg*0.25;}
+  for(const z of[-0.42,0.42]){box(1.5,0.04,0.05,GRY,g,0,0.04,z);box(0.05,0.3,0.05,GRY,g,0,0.15,z);}
+  return{root:g,parts:[{t:'Бесконтактные элементы',p:[0.42,0.48,0.3]},{t:'Гнутый держатель на болтах',p:[0.52,0.72,-0.2]},{t:'Стенка течки',p:[0.36,0.98,0.35]},{t:'Лента',p:[0,0.27,0]}],
    list:['Боковые и хвостовые элементы над кромкой ленты','Не касаются ленты: работают на рабочем зазоре','Положение и зазор настраивают по геометрии загрузочной зоны'],
    desc:'Боковые и хвостовые элементы для ограничения просыпи и выхода пылевоздушного потока. Положение и рабочий зазор согласуют по геометрии загрузочной зоны.',adv:'Рабочий зазор снижает трение о ленту; эффективность зависит от его правильной настройки.',sel:['Геометрия загрузочной зоны','Ширина ленты','Пылевыделение']};}
 function buildCover(){const g=new T.Group(),L=2.6,R=0.5,y=0.45;
-  const c=new T.CylinderGeometry(R,R,L,40,1,true,0,Math.PI);c.rotateZ(Math.PI/2);mesh(c,GLS,g,0,y+0.08,0).castShadow=false;
-  for(let x=-L/2;x<=L/2+0.01;x+=0.43){const a=new T.TorusGeometry(R+0.005,0.012,6,24,Math.PI);const t=mesh(a,GRY,g,x,y+0.08,0);t.rotation.y=Math.PI/2;
-    for(const sg of[-1,1])box(0.03,0.12,0.03,GRY,g,x,y+0.02,sg*R);}
-  for(const sg of[-1,1])box(L,0.04,0.04,GRY,g,0,y+0.08,sg*R);
+  const BLU=std({color:0x1f6fd1,roughness:.4,metalness:.2}),WGL=std({color:0xf4f6f8,roughness:.3,transparent:true,opacity:.42,side:T.DoubleSide,depthWrite:false});
+  const c=new T.CylinderGeometry(R,R,L,40,1,true,0,Math.PI);c.rotateZ(Math.PI/2);mesh(c,WGL,g,0,y+0.08,0).castShadow=false;
+  for(let x=-L/2+0.05;x<=L/2;x+=0.85){const a=new T.TorusGeometry(R+0.006,0.014,6,28,Math.PI);const t=mesh(a,BLU,g,x,y+0.08,0);t.rotation.y=Math.PI/2;}
+  for(const sg of[-1,1]){box(L,0.11,0.016,BLU,g,0,y+0.03,sg*R);for(let x=-L/2+0.15;x<L/2;x+=0.3)cylZ(0.012,0.01,GRY,g,x,y+0.03,sg*(R+0.01),10);
+    box(L,0.06,0.012,BLK,g,0,y-0.05,sg*(R-0.02));}
+  {const e=new T.CircleGeometry(R,32,0,Math.PI);const m=mesh(e,BLK,g,L/2,y+0.08,0);m.rotation.y=Math.PI/2;m.rotation.z=0;
+   for(let z=-R+0.08;z<R-0.05;z+=0.08)box(0.004,Math.sqrt(Math.max(0,R*R-z*z))-0.05,0.006,WHT,g,L/2+0.004,y+0.08+(Math.sqrt(Math.max(0,R*R-z*z))-0.05)/2,z);
+   for(let k=0;k<6;k++){const z=-0.32+k*0.13;cylZ(0.008,0.1,GRY,g,L/2+0.03,y+0.05,z,8).rotation.set(0,Math.PI/2,0);}}
   box(L,0.008,0.62,BLK,g,0,y-0.01,0);
   for(let x=-L/2+0.3;x<L/2;x+=0.65){for(const sg of[-1,1]){const r=cylZ(0.04,0.3,GRY,g,x,y-0.04,sg*0.28,16);r.rotation.x=sg*0.5;const b=box(0.05,0.3,0.02,GRY,g,x,y-0.12,sg*0.36);b.rotation.x=-sg*0.4;}
     cylZ(0.04,0.3,GRY,g,x,y-0.06,0,16);box(0.06,0.04,0.9,GRY,g,x,y-0.22,0);}
-  for(const sg of[-1,1])box(L+0.2,0.06,0.04,GRY,g,0,y-0.25,sg*0.45);
-  return{root:g,parts:[{t:'Фильтрующее полотно',p:[0,y+0.58,0]},{t:'Дуги каркаса',p:[-0.43,y+0.45,0.35]},{t:'Роликоопоры под лентой',p:[0.35,y-0.1,0.4]}],
+  for(const sg of[-1,1]){box(L+0.2,0.06,0.04,GRY,g,0,y-0.25,sg*0.45);for(const x of[-L/2+0.1,L/2-0.1])box(0.05,0.55,0.05,GRY,g,x,y-0.0,sg*0.62);}
+  return{root:g,parts:[{t:'Фильтрующее полотно',p:[0,y+0.58,0]},{t:'Дуги каркаса',p:[-0.45,y+0.45,0.35]},{t:'Бортовые планки',p:[0.4,y+0.05,0.5]},{t:'Торцевая завеса',p:[1.3,y+0.3,0]},{t:'Роликоопоры под лентой',p:[0.35,y-0.1,0.4]}],
    list:['Воздухопроницаемое полотно над лентой','Дуговой каркас по всей длине зоны','Работает вместе с бортовыми уплотнениями и аспирацией'],
    desc:'Воздухопроницаемое полотно над лентой удерживает частицы пыли и позволяет выходить воздуху. Применяется совместно с бортовыми уплотнениями и системой пылеудаления.',adv:'Выпускает воздух через полотно, удерживая часть пыли внутри перегрузочного узла.',sel:['Длина зоны','Ширина ленты','Пылевыделение','Наличие аспирации']};}
 const PRODUCTS=[

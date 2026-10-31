@@ -263,6 +263,10 @@ document.addEventListener('DOMContentLoaded',function(){
         <button class="chip" data-plow="plow_v" aria-pressed="true">V-образный</button>
         <button class="chip" data-plow="plow_diag" aria-pressed="false">Диагональный</button>
       </div>
+      <div class="sub">Дополнительно</div>
+      <div class="chips" role="group" aria-label="Дополнительно">
+        <button class="chip" id="bSpiral" aria-pressed="false">+ Спиральный ролик</button>
+      </div>
     </div>
     <div class="box">
       <h3>Камера и вид</h3>
@@ -708,7 +712,7 @@ function catSecEnds(root,ty){
     for(const dx of[-0.07,0.07])bolt(root,dx,ty-0.165,z,'y');
     cylZ(0.05,0.05,CAT_OR,root,0,ty,z-sg*0.12,20);}
 }
-function buildSecMod(){const root=new THREE.Group(),ty=-0.24,W=0.96,N=6;
+function buildSecMod(){const root=new THREE.Group(),ty=-0.285,W=0.96,N=6;
   const hx=new THREE.CylinderGeometry(0.03,0.03,2.0,6);hx.rotateX(Math.PI/2);mesh(hx,CAT_GREY,root,0,ty,0);
   const bd=new THREE.CylinderGeometry(0.075,0.075,W,28);bd.rotateX(Math.PI/2);mesh(bd,CAT_REDP,root,0,ty+0.02,0);
   boxM(0.11,0.06,W,CAT_REDP,root,0,ty+0.08,0);
@@ -716,10 +720,10 @@ function buildSecMod(){const root=new THREE.Group(),ty=-0.24,W=0.96,N=6;
     cylY(0.009,0.16,CAT_GREY,g,0,0.08,0,10);cylY(0.016,0.02,CAT_GREY,g,0,0.01,0,6);
     const pl=boxM(0.07,0.008,0.075,CAT_GREY,g,0.0,0.165,0);pl.rotation.z=-0.25;
     boxM(0.012,0.012,0.075,MATX.carbide,g,0.034,0.174,0);}
-  for(const sg of[-1,1]){const z=sg*0.62,g=new THREE.Group();g.position.set(0,ty,z);root.add(g);
+  for(const sg of[-1,1]){const z=sg*0.62,g=new THREE.Group();g.position.set(0,ty-0.06,z);g.scale.set(1,0.8,1);root.add(g);
     boxM(0.02,0.24,0.12,CAT_REDP,g,-0.11,0.0,0);boxM(0.02,0.24,0.12,CAT_REDP,g,0.11,0.0,0);
     boxM(0.24,0.02,0.12,CAT_REDP,g,0,-0.12,0);boxM(0.26,0.02,0.14,CAT_REDP,g,0,0.12,0);
-    boxM(0.02,0.1,0.14,CAT_REDP,g,-0.12,0.18,0);
+    boxM(0.02,0.08,0.14,CAT_REDP,g,-0.12,-0.17,0);
     for(const dx of[-0.07,0.07])for(const dz of[-0.04,0.04])bolt(g,dx,0.135,dz,'y');
     cylY(0.014,0.1,CAT_GREY,g,0,0.06,0,10);boxM(0.08,0.07,0.08,CAT_REDP,g,0,0.0,0);
     for(const a of[0,1,2])bolt(g,0.045,-0.02+a*0.02,0.03,'x');}
@@ -874,7 +878,8 @@ const retRollers=RET_ST.map(x=>{const b=buildPlainReturn();b.root.position.set(x
   return{x,g:b.root,crust,b:0};});
 
 /* spiral roller on the return strand */
-const SPIRAL_X=-2.25;{const sp=buildSpiral();sp.root.position.set(SPIRAL_X,RET_Y,0);scene.add(sp.root);}
+const SPIRAL_X=-2.25;const spiralG=buildSpiral().root;spiralG.position.set(SPIRAL_X,RET_Y,0);spiralG.visible=false;scene.add(spiralG);
+function setSpiral(on){spiralG.visible=on;const b=document.getElementById('bSpiral');if(b)b.setAttribute('aria-pressed',on);const u=document.getElementById('pUse');if(u&&pid==='spiral')u.textContent=on?'Убрать с конвейера':'Поставить на конвейер';}
 /* belt */
 function pt(u,k){const a=TROUGH*k,C=Math.cos(a),S=Math.sin(a),au=Math.abs(u),sg=u<0?-1:1;if(au<=0.2)return[u,0];const d=au-0.2;return[sg*(0.2+d*C),d*S];}
 function kAt(x){return clamp((x-X0)/0.9,0,1)*clamp((X1-x)/0.9,0,1);}
@@ -1000,7 +1005,7 @@ const labelDefs=[
   {t:()=>'Камень попал под барабан',p:()=>[X0+0.1,RET_Y+0.25,0.4],cls:'bad',show:()=>hitFlash>0.2},
   {t:()=>'Разгрузочный барабан',p:()=>[X1,HY+0.4,-0.62],show:()=>labelsOn},
   {t:()=>'Хвостовой барабан',p:()=>[X0,HY+0.35,0.62],show:()=>labelsOn},
-  {t:()=>'Спиральный ролик',p:()=>[SPIRAL_X,RET_Y-0.12,0.66],show:()=>labelsOn},
+  {t:()=>'Спиральный ролик',p:()=>[SPIRAL_X,RET_Y-0.12,0.66],show:()=>labelsOn||spiralG.visible},
   {t:()=>'Обратная ветвь',p:()=>[-0.2,RET_Y,0.66],show:()=>labelsOn}
 ];
 const lblLayer=$('labels');
@@ -1009,7 +1014,7 @@ function placeLabel(el,v,cam,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||M
 function updateLabels(){const w=view.clientWidth,h=view.clientHeight;for(const d of labelDefs){if(!d.show()){d.el.hidden=true;d.was=false;continue;}const now=performance.now();if(!d.was){d.was=true;d.until=now+4500;}if(!labelsOn&&now>d.until){d.el.hidden=true;continue;}const t=d.t();if(d.el.textContent!==t)d.el.textContent=t;tmpV.set(...d.p());placeLabel(d.el,tmpV,camera,w,h);}}
 
 /* ---------- camera ---------- */
-const CAMS={sec:{p:[X2+1.0,0.3,1.55],t:[X2,0.48,0]},overview:{p:[5.6,3.3,5.4],t:[0.6,0.7,0]},head:{p:[X1+1.05,0.95,2.2],t:[X1+0.2,0.55,0]},card:{p:[X1+2.0,1.7,2.9],t:[X1-1.0,0.62,0]},under:{p:[X2-0.95,0.14,0.95],t:[X2+0.05,0.4,0]},tail:{p:[XP+1.6,1.25,1.3],t:[XP-0.2,0.45,0]}};
+const CAMS={spiral:{p:[SPIRAL_X+1.15,0.18,1.45],t:[SPIRAL_X,0.4,0]},sec:{p:[X2+1.0,0.3,1.55],t:[X2,0.48,0]},overview:{p:[5.6,3.3,5.4],t:[0.6,0.7,0]},head:{p:[X1+1.05,0.95,2.2],t:[X1+0.2,0.55,0]},card:{p:[X1+2.0,1.7,2.9],t:[X1-1.0,0.62,0]},under:{p:[X2-0.95,0.14,0.95],t:[X2+0.05,0.4,0]},tail:{p:[XP+1.6,1.25,1.3],t:[XP-0.2,0.45,0]}};
 camera.position.set(...CAMS.overview.p);controls.target.set(...CAMS.overview.t);
 let tween=null;
 function fitP(c){const t=new THREE.Vector3(...c.t),p=new THREE.Vector3(...c.p);if(camera.aspect<1)p.sub(t).multiplyScalar(1+(1-camera.aspect)*0.9).add(t);return p;}
@@ -1133,7 +1138,7 @@ function showProduct(id){
   $('pDesc').textContent=P0.desc;$('pAdv').textContent=P0.adv;
   $('pParts').innerHTML='';(PARTLIST[id]||[]).forEach(s=>{const li=document.createElement('li');li.textContent=s;$('pParts').appendChild(li);});
   $('pSel').innerHTML='';P0.sel.forEach(s=>{const sp=document.createElement('span');sp.textContent=s;$('pSel').appendChild(sp);});
-  $('pUse').hidden=!P0.kind;
+  $('pUse').hidden=!P0.kind&&id!=='spiral';$('pUse').textContent=id==='spiral'&&spiralG.visible?'Убрать с конвейера':'Поставить на конвейер';
 }
 const PARTLIST={};
 {const keep=spinList;for(const id in CLEAN){spinList=[];const b=CLEAN[id]();PARTLIST[id]=b.list||[];disposeTree(b.root);}spinList=keep;}
@@ -1146,7 +1151,8 @@ $('pBelt').onclick=()=>{pCtxOn=!pCtxOn;$('pBelt').setAttribute('aria-pressed',pC
 $('pLbl').onclick=()=>{pLblOn=!pLblOn;$('pLbl').setAttribute('aria-pressed',pLblOn);};
 $('pSpin').onclick=()=>{pSpinOn=!pSpinOn;$('pSpin').setAttribute('aria-pressed',pSpinOn);if(pctl)pctl.autoRotate=pSpinOn;};
 $('pSpin').setAttribute('aria-pressed',pSpinOn);$('pBelt').setAttribute('aria-pressed',pCtxOn);
-$('pUse').onclick=()=>{const p=PRODUCTS.find(q=>q.id===pid);if(!p.kind)return;choose(p.kind,pid);
+$('bSpiral').onclick=()=>{setSpiral(!spiralG.visible);if(spiralG.visible)goCam('spiral');};
+$('pUse').onclick=()=>{const p=PRODUCTS.find(q=>q.id===pid);if(pid==='spiral'){setSpiral(!spiralG.visible);if(spiralG.visible){goCam('spiral');if(view.scrollIntoView)view.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'center'});}return;}if(!p.kind)return;choose(p.kind,pid);
   goCam(p.kind==='prim'?'head':p.kind==='sec'?'under':'tail');if(view.scrollIntoView)view.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'center'});};
 let pVisible=true;
 if(window.IntersectionObserver)new IntersectionObserver(es=>{pVisible=es[0].isIntersecting;}).observe(pview);

@@ -436,7 +436,7 @@ const M={
   rail:new THREE.MeshStandardMaterial({color:0x2a3138,metalness:.6,roughness:.4}),
   uhmw:new THREE.MeshStandardMaterial({color:0xd6e1d3,roughness:.45}),
   rubber:new THREE.MeshStandardMaterial({color:0x17191c,roughness:.95}),
-  fabric:new THREE.MeshStandardMaterial({color:0xc9bfa9,roughness:1,transparent:true,opacity:.58,side:THREE.DoubleSide,depthWrite:false}),
+  fabric:new THREE.MeshStandardMaterial({color:0xf4f6f8,roughness:.35,transparent:true,opacity:.45,side:THREE.DoubleSide,depthWrite:false}),
   ground:new THREE.MeshStandardMaterial({color:0x161b21,roughness:1}),
   rock:new THREE.MeshStandardMaterial({color:0xffffff,roughness:.9,flatShading:true}),
   fine:new THREE.MeshStandardMaterial({color:0x8a7f72,roughness:1,flatShading:true})
@@ -617,8 +617,13 @@ part(sealR,new THREE.Vector3(0,0.05,1.2),'seal');
 const cover=new THREE.Group();
 {const L=LZ1-(-3.6);const g=new THREE.CylinderGeometry(SK_Z+0.03,SK_Z+0.03,L,36,1,true,0,Math.PI);g.rotateZ(Math.PI/2);
  const m=new THREE.Mesh(g,M.fabric);m.position.set((-3.6+LZ1)/2,SK_TOP,0);cover.add(m);
- for(let x=-3.6;x<=LZ1+0.01;x+=0.6){const a=new THREE.TorusGeometry(SK_Z+0.035,0.012,6,24,Math.PI);const t=new THREE.Mesh(a,M.rail);t.rotation.y=Math.PI/2;t.position.set(x,SK_TOP,0);cover.add(t);}
- for(let z=-0.36;z<=0.37;z+=0.08){box(0.01,0.5,0.07,M.rubber,LZ1+0.01,SK_TOP-0.25+0.04,z,cover);}
+ const COVB=new THREE.MeshStandardMaterial({color:new THREE.Color(0x1f6fd1).convertSRGBToLinear(),roughness:.4,metalness:.2});
+ for(let x=-3.6;x<=LZ1+0.01;x+=0.6){const a=new THREE.TorusGeometry(SK_Z+0.035,0.014,6,24,Math.PI);const t=new THREE.Mesh(a,COVB);t.rotation.y=Math.PI/2;t.position.set(x,SK_TOP,0);cover.add(t);}
+ for(const sg of[-1,1]){box(LZ1+3.6,0.11,0.016,COVB,(-3.6+LZ1)/2,SK_TOP-0.03,sg*(SK_Z+0.03),cover);
+   for(let x=-3.5;x<LZ1;x+=0.3){const b=new THREE.Mesh(new THREE.CylinderGeometry(0.011,0.011,0.01,10),M.rail);b.rotation.x=Math.PI/2;b.position.set(x,SK_TOP-0.03,sg*(SK_Z+0.04));cover.add(b);}}
+ {const BL=new THREE.MeshStandardMaterial({color:0x111214,roughness:.85,side:THREE.DoubleSide});const e=new THREE.Mesh(new THREE.CircleGeometry(SK_Z+0.03,32,0,Math.PI),BL);e.rotation.y=Math.PI/2;e.position.set(LZ1+0.01,SK_TOP,0);cover.add(e);
+  const R0=SK_Z+0.03,W=new THREE.MeshStandardMaterial({color:0xe8e8e4,roughness:.5});for(let z=-R0+0.06;z<R0-0.04;z+=0.07){const h=Math.sqrt(R0*R0-z*z)-0.04;box(0.004,h,0.005,W,LZ1+0.014,SK_TOP+h/2,z,cover);}
+  for(let z=-0.3;z<=0.31;z+=0.1)box(LZ1+0.01-LZ1+0.02,0.36,0.08,BL,LZ1+0.01,SK_TOP-0.18,z,cover);}
 }
 part(cover,new THREE.Vector3(0,1.1,0),'cover');
 
@@ -651,7 +656,21 @@ for(const[g,sg]of[[linerL,-1],[linerR,1]]){const cg=new THREE.Group();g.add(cg);
 /* outer seals: wrap the K-Snap-Loc lip, add dual profile, rail profile and Super Block */
 const outerSets={z_snap:[],z_dual:[],z_rail:[],z_block:[]};
 for(const[g,sg]of[[sealL,-1],[sealR,1]]){
-  const snap=new THREE.Group();while(g.children.length)snap.add(g.children[0]);g.add(snap);outerSets.z_snap.push(snap);
+  const snap=new THREE.Group();while(g.children.length)g.remove(g.children[0]);g.add(snap);outerSets.z_snap.push(snap);
+  {/* K-Snap-Loc: steel channel bolted to the skirt, red PU profile with a bulb held in the channel, lip curving down onto the belt, U-pins */
+   const zr=SK_Z+0.03,yr=SK_BOT+0.1,ze=SK_Z+0.06,ye=BELT_Y+0.006+prof(sFromZ(ze,1),1)[1]+0.003;
+   const ch=new THREE.Group();snap.add(ch);
+   box(LZ1-LZ0,0.012,0.04,VM.grey,(LZ0+LZ1)/2,yr+0.03,sg*(SK_Z+0.026),ch);box(LZ1-LZ0,0.012,0.04,VM.grey,(LZ0+LZ1)/2,yr-0.03,sg*(SK_Z+0.026),ch);
+   box(LZ1-LZ0,0.072,0.008,VM.grey,(LZ0+LZ1)/2,yr,sg*(SK_Z+0.008),ch);
+   const bulb=cylX(0.02,LZ1-LZ0,VM.red,(LZ0+LZ1)/2,yr,sg*zr,snap,16);
+   const sh=new THREE.Shape(),N=16,A=[],B=[];
+   for(let i=0;i<=N;i++){const t=i/N,u=1-t;const z=u*u*zr+2*u*t*(zr+0.004)+t*t*ze,y=u*u*(yr-0.018)+2*u*t*((yr+ye)/2-0.01)+t*t*ye;const th=0.014*(1-t)+0.005*t;A.push([z,y]);B.push([z+th,y+th*0.3]);}
+   sh.moveTo(A[0][0],A[0][1]);A.forEach(q=>sh.lineTo(q[0],q[1]));for(let i=N;i>=0;i--)sh.lineTo(B[i][0],B[i][1]);sh.closePath();
+   const lg=new THREE.ExtrudeGeometry(sh,{depth:LZ1-LZ0,bevelEnabled:false,curveSegments:2});lg.rotateY(Math.PI/2);lg.scale(1,1,-1);lg.translate(LZ0,0,0);if(sg<0)lg.scale(1,1,-1);
+   const lip=new THREE.Mesh(lg,VM.red);lip.castShadow=true;snap.add(lip);
+   for(let x=LZ0+0.25;x<LZ1;x+=0.45){const pin=new THREE.Mesh(new THREE.TorusGeometry(0.04,0.006,8,18,Math.PI),VM.galv);pin.position.set(x,yr,sg*(SK_Z+0.05));pin.rotation.set(0,sg>0?-Math.PI/2:Math.PI/2,Math.PI/2);snap.add(pin);
+     const st=cylX(0.006,0.06,VM.galv,x,yr+0.04,sg*(SK_Z+0.03),snap,8);st.rotation.set(Math.PI/2,0,Math.PI/2);}
+   for(let x=LZ0+0.15;x<LZ1;x+=0.3){const b=cylX(0.008,0.07,VM.grey,x,yr+0.07,sg*(SK_Z+0.035),snap,8);b.rotation.set(Math.PI/2,0,Math.PI/2);}}
   const dual=new THREE.Group();g.add(dual);outerSets.z_dual.push(dual);
   box(LZ1-LZ0,0.08,0.022,M.rail,(LZ0+LZ1)/2,1.34,sg*(SK_Z+0.017),dual);
   for(const dy of[0,-0.035]){const l=new THREE.Mesh(lipGeo(sg),VM.red);l.position.y=dy;l.position.z=sg*(dy?0.025:0);dual.add(l);}
@@ -660,14 +679,26 @@ for(const[g,sg]of[[sealL,-1],[sealR,1]]){
   box(LZ1-LZ0,0.16,0.014,VM.red,(LZ0+LZ1)/2,1.2,sg*(SK_Z+0.045),rail);
   cylX(0.016,LZ1-LZ0,VM.red,(LZ0+LZ1)/2,1.13,sg*(SK_Z+0.06),rail,14);
   const blk=new THREE.Group();g.add(blk);outerSets.z_block.push(blk);
-  for(let x=LZ0+0.12;x<LZ1-0.05;x+=0.2){box(0.18,0.14,0.05,VM.red,x,1.2,sg*(SK_Z+0.03),blk);box(0.08,0.07,0.012,VM.grey,x,1.22,sg*(SK_Z+0.06),blk);
-    for(const dx of[-0.025,0.025]){const b=cylX(0.008,0.02,VM.grey,x+dx,1.23,sg*(SK_Z+0.068),blk,8);b.rotation.set(Math.PI/2,0,0);}}
+  for(let x=LZ0+0.1;x<LZ1-0.05;x+=0.2){box(0.195,0.15,0.05,VM.red,x,1.245,sg*(SK_Z+0.032),blk);box(0.12,0.08,0.012,VM.grey,x,1.255,sg*(SK_Z+0.063),blk);
+    for(const dx of[-0.025,0.025]){const b=cylX(0.01,0.02,VM.grey,x+dx,1.255,sg*(SK_Z+0.072),blk,8);b.rotation.set(Math.PI/2,0,0);}}
   dual.visible=rail.visible=blk.visible=false;}
 /* dust: non-contact seals with lit strips instead of the fabric cover */
 const covFab=new THREE.Group(),covNC=new THREE.Group();while(cover.children.length)covFab.add(cover.children[0]);cover.add(covFab,covNC);covNC.visible=false;
-for(const sg of[-1,1]){const pl=box(LZ1-LZ0,0.012,0.2,VM.grey,(LZ0+LZ1)/2,SK_BOT-0.02,sg*(SK_Z+0.09),covNC);pl.rotation.x=sg*0.35;
-  const st=box(LZ1-LZ0-0.1,0.012,0.03,VM.blue,(LZ0+LZ1)/2,SK_BOT-0.035,sg*(SK_Z+0.04),covNC);st.rotation.x=sg*0.35;
-  for(let x=LZ0+0.3;x<LZ1;x+=0.7)box(0.04,0.18,0.04,VM.grey,x,SK_BOT+0.06,sg*(SK_Z+0.15),covNC);}
+{const BLUE=new THREE.MeshStandardMaterial({color:0x2f8cff,emissive:0x1e7bff,emissiveIntensity:1.0,roughness:.35});
+ for(const sg of[-1,1]){
+  const zc=SK_Z+0.075,sc=sFromZ(zc,1),pc=prof(sc,1),yb=BELT_Y+0.006+pc[1]+0.018;
+  /* inclined holder plate along the belt wing with blue segments just above the belt */
+  const u=new THREE.Group();u.position.set(0,yb,sg*pc[0]);u.rotation.x=-sg*TROUGH;covNC.add(u);
+  box(LZ1-LZ0,0.012,0.17,VM.grey,(LZ0+LZ1)/2,0.03,0,u);
+  for(let x=LZ0+0.06;x<LZ1-0.03;x+=0.12)box(0.11,0.024,0.15,BLUE,x,0.008,0,u);
+  /* vertical flange bolted to the skirt */
+  box(LZ1-LZ0,0.16,0.012,VM.grey,(LZ0+LZ1)/2,SK_BOT+0.02,sg*(SK_Z+0.014),covNC);
+  for(let x=LZ0+0.2;x<LZ1;x+=0.35){const bl=cylX(0.008,0.12,VM.grey,x,SK_BOT+0.04,sg*(SK_Z+0.07),covNC,8);bl.rotation.set(Math.PI/2,0,Math.PI/2);
+    const n=cylX(0.016,0.012,VM.grey,x,SK_BOT+0.04,sg*(SK_Z+0.026),covNC,6);n.rotation.set(Math.PI/2,0,Math.PI/2);}}
+ /* tail elements under the back wall */
+ for(let z=-SK_Z+0.05;z<SK_Z;z+=0.1){const s0=sFromZ(z,1),p0=prof(s0,1);const b=box(0.05,0.024,0.09,BLUE,LZ0+0.04,BELT_Y+0.006+p0[1]+0.016,p0[0],covNC);
+   const sg=z<0?-1:1;if(Math.abs(z)>0.2)b.rotation.x=-sg*TROUGH;}
+ box(0.012,0.06,SK_Z*2,VM.grey,LZ0+0.06,1.05,0,covNC);}
 function applySeal(){linerCer.forEach(g=>g.visible=innerVar==='z_puc');for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar);}
 function applyDust(){covFab.visible=dustVar==='z_cover';covNC.visible=dustVar==='z_nc';}
 const VARS={z_station:'bed',z_torsion:'bed',z_bar:'bed',z_combo:'bed',z_pus:'inner',z_puc:'inner',z_dual:'outer',z_rail:'outer',z_snap:'outer',z_block:'outer',z_nc:'dust',z_cover:'dust'};
@@ -677,7 +708,7 @@ function setVar(id){const k=VARS[id];if(!k)return;
   else if(k==='outer'){outerVar=id;applySeal();if(mode<3)setMode(3);}
   else{dustVar=id;applyDust();if(mode<4)setMode(4);}
   document.querySelectorAll('[data-var]').forEach(b=>{if(VARS[b.dataset.var]===k)b.setAttribute('aria-pressed',b.dataset.var===id);});
-  const cam={bed:'bed',inner:'chute',outer:'under',dust:'cover'}[k];if(cam)goCam(cam);
+  const cam={bed:'bed',inner:'chute',outer:'seal',dust:'cover'}[k];if(cam)goCam(cam);
   if(typeof info==='function')info();}
 window.ZONA={setVar};
 
@@ -831,6 +862,7 @@ function updateParts(dt){
     o.position.copy(o.userData.ex).multiplyScalar(e);o.position.y+=lift;
   }
   for(const g of[bedCenter,sideL,sideR]){g.position.copy(g.userData.ex).multiplyScalar(e);}
+  if(typeof outerSets!=='undefined'){const ncOn=dustVar==='z_nc'&&pres.cover>0.5;for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar&&!ncOn);}
   for(const m of modules){m.g.position.y=m.y;for(const a of m.arms){a.piv.rotation.x=(-m.y)/a.ez;}}
 }
 
@@ -864,7 +896,7 @@ function updateLabels(){
 }
 
 /* ---------- camera tween ---------- */
-const CAMS={bed:{p:[DROP_X+1.3,1.75,1.75],t:[DROP_X+0.35,0.92,0]},cover:{p:[0.6,2.9,3.6],t:[-2.6,1.2,0]},overview:{p:[1.4,3.5,7.4],t:[-2.2,1.1,0]},chute:{p:[0.9,2.55,0.75],t:[-3.4,1.15,0]},under:{p:[-1.4,0.32,2.3],t:[-2.8,0.86,0]}};
+const CAMS={seal:{p:[-1.55,1.42,1.3],t:[-2.5,1.22,0.43]},bed:{p:[DROP_X+1.3,1.75,1.75],t:[DROP_X+0.35,0.92,0]},cover:{p:[0.6,2.9,3.6],t:[-2.6,1.2,0]},overview:{p:[1.4,3.5,7.4],t:[-2.2,1.1,0]},chute:{p:[0.9,2.55,0.75],t:[-3.4,1.15,0]},under:{p:[-1.4,0.32,2.3],t:[-2.8,0.86,0]}};
 let tween=null;
 function fitP(c){const t=new THREE.Vector3(...c.t),p=new THREE.Vector3(...c.p);if(camera.aspect<1)p.sub(t).multiplyScalar(1+(1-camera.aspect)*0.9).add(t);return p;}
 function goCam(name){const c=CAMS[name];tween={t:0,p0:camera.position.clone(),t0:controls.target.clone(),p1:fitP(c),t1:new THREE.Vector3(...c.t)};
