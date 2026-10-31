@@ -427,6 +427,7 @@ class Helix extends THREE.Curve{constructor(R,y0,y1,turns,hand){super();this.R=R
   getPoint(u,tg){tg=tg||new THREE.Vector3();const a=this.hand*u*this.turns*Math.PI*2;return tg.set(this.R*Math.cos(a),this.y0+(this.y1-this.y0)*u,this.R*Math.sin(a));}}
 
 let spinList=[];   /* rollers that turn with the belt, filled by roller() */
+const SPIRAL_RED=new THREE.MeshStandardMaterial({color:0xc4241c,roughness:.42});
 function roller(len,r,kind,r2){
   const g=new THREE.Group(),sp=new THREE.Group();g.add(sp);
   const L=len-0.03;kind=kind||'plain';
@@ -434,7 +435,7 @@ function roller(len,r,kind,r2){
   else if(kind==='rubber'){mesh(new THREE.CylinderGeometry(r*0.8,r*0.8,L,28),MAT.shell,sp);const n=Math.max(3,Math.floor(L/0.042));
     for(let k=0;k<n;k++){const y=-L/2+(k+0.5)*L/n;mesh(new THREE.CylinderGeometry(r,r,L/n*0.62,32),MAT.rubber,sp,0,y,0);}}
   else if(kind==='spiral'){mesh(new THREE.CylinderGeometry(0.036,0.036,L,20),MAT.galv,sp);
-    for(const[y0,y1,hd]of[[-L/2,-0.01,1],[0.01,L/2,-1]]){const c=new Helix(r-0.014,y0,y1,(y1-y0)/0.1,hd);mesh(new THREE.TubeGeometry(c,Math.round((y1-y0)*260),0.014,8,false),MAT.pu,sp);
+    for(const[y0,y1,hd]of[[-L/2,-0.01,1],[0.01,L/2,-1]]){const c=new Helix(r-0.014,y0,y1,(y1-y0)/0.1,hd);mesh(new THREE.TubeGeometry(c,Math.round((y1-y0)*260),0.02,10,false),SPIRAL_RED,sp);
       for(let k=0;k<=Math.floor((y1-y0)/0.12);k++){const s=mesh(new THREE.BoxGeometry(0.008,0.01,r*2-0.03),MAT.galv,sp,0,y0+k*0.12,0);s.rotation.y=k;}}}
   else mesh(new THREE.CylinderGeometry(r,r,L,36),MAT.shell,sp);
   const rt=kind==='cone'?r2:r;
@@ -589,7 +590,7 @@ function buildCenterReturn(){
 }
 function buildSpiral(){
   const root=new THREE.Group();const r=roller(1.4,0.075,'spiral');aim(r,new THREE.Vector3(0,0,1));r.position.set(0,-0.075,0);root.add(r);
-  for(const sg of[-1,1])hanger(root,sg*0.725,0.17,-0.095,MAT.amber);
+  for(const sg of[-1,1])hanger(root,sg*0.725,0.17,-0.095,MAT.galv);
   return{root,piv:null,parts:[
     {t:'Полиуретановая спираль',p:[0,0.0,0.35]},
     {t:'Встречная навивка',p:[0,0.0,0.0]},
@@ -659,13 +660,93 @@ function primaryBase(root,W,blades){
 function bladeProfile(h,t0,t1,bend){const s=new THREE.Shape(),N=10,L=[],R=[];
   for(let k=0;k<=N;k++){const f=k/N,y=-h+h*f,off=bend*(1-f*f),t=t0+(t1-t0)*f;L.push([off-t/2,y]);R.push([off+t/2,y]);}
   s.moveTo(...L[0]);for(const p of L.slice(1))s.lineTo(...p);s.lineTo(R[N][0]-0.006,0.004);for(let k=N;k>=0;k--)s.lineTo(...R[k]);s.closePath();return s;}
-function buildPrimSeg(){const root=new THREE.Group(),W=1.0,N=6,w=W/N;
-  for(let i=0;i<N;i++){const z=-W/2+w*(i+.5);
-    const b=boxM(0.034,0.13,w-0.012,MAT.pu,root,0,-0.07,z);
-    boxM(0.04,0.03,w-0.012,MAT.paint,root,0,-0.145,z);bolt(root,0.024,-0.145,z,'x');}
-  primaryBase(root,W);
-  return{root,parts:[{t:'Полиуретановые сегменты',p:[0,-0.03,0.3]},{t:'Держатель лезвия',p:[0,-0.16,-0.35]},{t:'Пружинный натяжитель',p:[0,-0.48,0.89]},{t:'Вал',p:[0,-0.25,-0.75]}],
-   list:['Отдельные полиуретановые сегменты, каждый меняется по отдельности','Держатель лезвия на рычагах','Поперечный вал через стенки разгрузочной течки','Двусторонний пружинный натяжитель для регулировки прижима']};}
+
+/* ---- catalogue-accurate cleaners (cat. pictures 14, 17, 21, 22, 23) ---- */
+const CAT_GREY=new THREE.MeshStandardMaterial({color:0x9aa2a8,roughness:.4,metalness:.6});
+const CAT_OR=new THREE.MeshStandardMaterial({color:0xe08a1e,roughness:.45,metalness:.2});
+const CAT_RED=new THREE.MeshStandardMaterial({color:0xc0221b,roughness:.42,metalness:.05});
+const CAT_REDP=new THREE.MeshStandardMaterial({color:0xc4241c,roughness:.35,metalness:.25});
+const CAT_BLUE=new THREE.MeshStandardMaterial({color:0x2a49c9,roughness:.5});
+const CAT_DARK=new THREE.MeshStandardMaterial({color:0x222426,roughness:.6});
+/* primary: round grey tube under the blade, rectangular holder with clamps, orange spring tensioners at the ends */
+function catPrimBase(root,W,lever){
+  const ty=-0.27;cylZ(0.04,2.1,CAT_GREY,root,0,ty,0,28);
+  boxM(0.07,0.06,W+0.06,CAT_GREY,root,0,-0.175,0);
+  for(let i=0;i<6;i++)bolt(root,0.036,-0.175,-W/2+0.06+i*(W-0.12)/5,'x');
+  for(const sg of[-1,1]){const z=sg*(W/2+0.02);boxM(0.08,0.09,0.05,CAT_GREY,root,0,-0.22,z);cylZ(0.052,0.06,CAT_GREY,root,0,ty,z,24);
+    for(const dx of[-0.03,0.03])bolt(root,dx,-0.17,z,'y');}
+  for(const sg of[-1,1]){const z=sg*0.92,g=new THREE.Group();g.position.set(0,ty,z);root.add(g);
+    boxM(0.12,0.2,0.02,sg>0?CAT_DARK:CAT_OR,g,0.0,-0.02,sg*0.03);
+    boxM(0.09,0.16,0.05,CAT_OR,g,0.01,-0.03,0);cylZ(0.05,0.07,CAT_OR,g,0,0,0,24);
+    for(const y of[0.05,-0.09])bolt(g,0.05,y,0,'x');
+    if(lever){const lv=cylZ(0.03,0.22,CAT_OR,g,0.06,-0.12,sg*0.1,18);lv.rotation.y=sg*0.5;}
+    else{const sp=new THREE.Group();sp.position.set(0.03,-0.2,0);sp.rotation.z=0.35;g.add(sp);
+      cylY(0.007,0.24,CAT_GREY,sp,0,-0.02,0,8);springCoil(sp,0,0,0,0.12,0.022);cylY(0.02,0.03,CAT_DARK,sp,0,-0.14,0,6);cylY(0.02,0.02,CAT_OR,sp,0,0.07,0,12);}}
+}
+function buildPrimSeg(){const root=new THREE.Group(),W=1.0,N=2,w=W/N;
+  for(let i=0;i<N;i++){const z=-W/2+w*i+0.007;
+    const g=new THREE.ExtrudeGeometry(bladeProfile(0.21,0.08,0.032,0.035),{depth:w-0.014,bevelEnabled:true,bevelThickness:0.005,bevelSize:0.004,bevelSegments:2,curveSegments:4});g.translate(0,0,z);
+    mesh(g,CAT_RED,root,0,0,0);}
+  catPrimBase(root,W,false);
+  return{root,parts:[{t:'Полиуретановые сегменты',p:[0,-0.05,0.25]},{t:'Держатель лезвия',p:[0,-0.175,-0.35]},{t:'Пружинный натяжитель',p:[0.03,-0.5,0.92]},{t:'Вал',p:[0,-0.27,-0.75]}],
+   list:['Сегментированное полиуретановое лезвие: каждый сегмент меняется отдельно','Держатель лезвия на трубчатом валу с хомутами','Вал проходит через стенки разгрузочной течки','Пружинные натяжители с обеих сторон']};}
+function buildPrimCarb(){const root=new THREE.Group(),W=1.0,N=5,w=W/N;
+  for(let i=0;i<N;i++){const z=-W/2+w*(i+.5),g=new THREE.Group();g.position.set(0,-0.15,z);g.rotation.z=0.5;root.add(g);
+    boxM(0.05,0.06,w-0.01,CAT_BLUE,g,0,0.0,0);
+    boxM(0.01,0.2,w-0.008,CAT_GREY,g,0.03,0.11,0);
+    boxM(0.016,0.016,w-0.012,MATX.carbide,g,0.03,0.215,0);
+    for(const dz of[-w*0.3,0,w*0.3])bolt(g,0.037,0.2,dz,'x');}
+  catPrimBase(root,W,true);
+  return{root,parts:[{t:'Твердосплавные лезвия',p:[0.05,-0.01,0.25]},{t:'Упругое основание',p:[0,-0.15,-0.3]},{t:'Натяжитель с рычагом',p:[0.06,-0.4,0.98]},{t:'Трубчатый вал',p:[0,-0.27,-0.75]}],
+   list:['Наклонные лезвия с кромкой из карбида вольфрама','Упругое основание под каждым лезвием','Держатель на трубчатом валу','Натяжители с рычагами на обоих концах']};}
+/* secondary end units: orange housings with adjusting screw on top and a post to a foot plate */
+function catSecEnds(root,ty){
+  for(const sg of[-1,1]){const z=sg*0.9;
+    boxM(0.15,0.13,0.15,CAT_OR,root,0,ty,z);cylZ(0.055,0.17,CAT_OR,root,0,ty,z,24);
+    cylY(0.03,0.1,CAT_GREY,root,0,ty+0.11,z,16);cylY(0.036,0.03,CAT_DARK,root,0,ty+0.17,z,6);cylY(0.012,0.06,CAT_GREY,root,0,ty+0.21,z,8);
+    boxM(0.06,0.12,0.06,CAT_GREY,root,0,ty-0.12,z);boxM(0.2,0.02,0.16,CAT_GREY,root,0,ty-0.18,z);
+    for(const dx of[-0.07,0.07])bolt(root,dx,ty-0.165,z,'y');
+    cylZ(0.05,0.05,CAT_OR,root,0,ty,z-sg*0.12,20);}
+}
+function buildSecMod(){const root=new THREE.Group(),ty=-0.24,W=0.96,N=6;
+  const hx=new THREE.CylinderGeometry(0.03,0.03,2.0,6);hx.rotateX(Math.PI/2);mesh(hx,CAT_GREY,root,0,ty,0);
+  const bd=new THREE.CylinderGeometry(0.075,0.075,W,28);bd.rotateX(Math.PI/2);mesh(bd,CAT_REDP,root,0,ty+0.02,0);
+  boxM(0.11,0.06,W,CAT_REDP,root,0,ty+0.08,0);
+  for(let i=0;i<N;i++){const z=-W/2+0.08+i*(W-0.16)/(N-1),g=new THREE.Group();g.position.set(0,ty+0.1,z);g.rotation.z=0.25;root.add(g);
+    cylY(0.009,0.16,CAT_GREY,g,0,0.08,0,10);cylY(0.016,0.02,CAT_GREY,g,0,0.01,0,6);
+    const pl=boxM(0.07,0.008,0.075,CAT_GREY,g,0.0,0.165,0);pl.rotation.z=-0.25;
+    boxM(0.012,0.012,0.075,MATX.carbide,g,0.034,0.174,0);}
+  for(const sg of[-1,1]){const z=sg*0.62,g=new THREE.Group();g.position.set(0,ty,z);root.add(g);
+    boxM(0.02,0.24,0.12,CAT_REDP,g,-0.11,0.0,0);boxM(0.02,0.24,0.12,CAT_REDP,g,0.11,0.0,0);
+    boxM(0.24,0.02,0.12,CAT_REDP,g,0,-0.12,0);boxM(0.26,0.02,0.14,CAT_REDP,g,0,0.12,0);
+    boxM(0.02,0.1,0.14,CAT_REDP,g,-0.12,0.18,0);
+    for(const dx of[-0.07,0.07])for(const dz of[-0.04,0.04])bolt(g,dx,0.135,dz,'y');
+    cylY(0.014,0.1,CAT_GREY,g,0,0.06,0,10);boxM(0.08,0.07,0.08,CAT_REDP,g,0,0.0,0);
+    for(const a of[0,1,2])bolt(g,0.045,-0.02+a*0.02,0.03,'x');}
+  return{root,parts:[{t:'Стальные скребки',p:[0.03,0.0,0.25]},{t:'Полиуретановый корпус',p:[0,ty+0.05,-0.2]},{t:'Монтажная рамка',p:[0,ty+0.12,0.62]},{t:'Шестигранный вал',p:[0,ty,-0.9]}],
+   list:['Модульные стальные скребки с твердосплавной кромкой','Скребки закреплены в полиуретановом корпусе, гасящем удары','Монтажные рамки с регулировкой прижима','Шестигранный вал']};}
+function buildSecDamp(){const root=new THREE.Group(),ty=-0.26,W=0.96,N=6;
+  cylZ(0.04,2.0,CAT_GREY,root,0,ty,0,28);
+  for(let i=0;i<N;i++){const z=-W/2+0.08+i*(W-0.16)/(N-1),g=new THREE.Group();g.position.set(0,ty,z);root.add(g);
+    cylZ(0.055,0.07,CAT_GREY,g,0,0,0,24);cylZ(0.045,0.04,CAT_GREY,g,0.0,0.045,0,20);
+    boxM(0.025,0.17,0.03,CAT_GREY,g,-0.03,0.13,0);
+    const arm=boxM(0.08,0.022,0.03,CAT_GREY,g,0.0,0.215,0);
+    boxM(0.02,0.04,0.03,CAT_GREY,g,0.03,0.235,0);
+    boxM(0.03,0.006,0.13,CAT_GREY,g,0.03,0.258,0);boxM(0.008,0.006,0.13,MATX.carbide,g,0.046,0.261,0);}
+  catSecEnds(root,ty);
+  return{root,parts:[{t:'Раздельные лезвия',p:[0.03,0.0,0.25]},{t:'Амортизирующий узел',p:[0,ty+0.04,-0.3]},{t:'Корпус натяжителя',p:[0,ty,0.9]},{t:'Опора',p:[0,ty-0.3,-0.9]}],
+   list:['Отдельные Т-образные лезвия по ширине ленты','Каждое лезвие на своём амортизирующем узле','Регулируемый прижим в корпусах натяжителей','Опоры на монтажных плитах']};}
+function buildSecSlurry(){const root=new THREE.Group(),ty=-0.26,W=0.92;
+  cylZ(0.04,2.0,CAT_GREY,root,0,ty,0,28);
+  const sh=new THREE.Shape();sh.moveTo(-0.03,0);sh.lineTo(0.03,0);sh.lineTo(0.02,0.2);sh.lineTo(-0.006,0.2);sh.closePath();
+  const g=new THREE.ExtrudeGeometry(sh,{depth:W,bevelEnabled:true,bevelThickness:0.004,bevelSize:0.003,bevelSegments:1});g.translate(0,0,-W/2);
+  const bl=mesh(g,CAT_DARK,root,0,ty+0.06,0);bl.rotation.z=0.12;
+  boxM(0.07,0.05,W+0.04,CAT_GREY,root,0,ty+0.05,0);
+  for(const sg of[-1,1])cylZ(0.055,0.07,CAT_GREY,root,0,ty,sg*(W/2+0.07),24);
+  catSecEnds(root,ty);
+  return{root,parts:[{t:'Широкое полиуретановое лезвие',p:[0.02,0.0,0.25]},{t:'Держатель лезвия',p:[0,ty+0.05,-0.35]},{t:'Корпус натяжителя',p:[0,ty,0.9]},{t:'Опора',p:[0,ty-0.3,-0.9]}],
+   list:['Цельное широкое лезвие для сильных налипаний и шлама','Держатель на трубчатом валу','Корпуса натяжителей с регулировочными винтами','Опоры на монтажных плитах']};}
+
 function buildPrimOne(){const root=new THREE.Group(),W=1.04;
   /* one continuous curved urethane blade, contact edge parallel to the pulley face (as Martin QC1 / Flexco EZP1) */
   const g=new THREE.ExtrudeGeometry(bladeProfile(0.2,0.075,0.03,0.035),{depth:W,bevelEnabled:true,bevelThickness:0.006,bevelSize:0.004,bevelSegments:2,curveSegments:4});g.translate(0,0,-W/2);
@@ -684,43 +765,16 @@ function buildPrimCer(){const root=new THREE.Group(),W=1.0,N=8,w=W/N;
   primaryBase(root,W);
   return{root,parts:[{t:'Керамические элементы Al₂O₃',p:[0,-0.01,0.3]},{t:'Гибкое основание',p:[0,-0.09,-0.3]},{t:'Пружинный натяжной узел',p:[0,-0.48,0.89]}],
    list:['Сегменты с элементами из алюмооксидной керамики','Гибкое основание подстраивает контакт под профиль ленты','Держатель и поперечный вал','Пружинный узел для настройки рабочего контакта']};}
-function buildPrimCarb(){const root=new THREE.Group(),W=1.0,N=7,w=W/N;
-  for(let i=0;i<N;i++){const z=-W/2+w*(i+.5);
-    boxM(0.06,0.07,w-0.02,MAT.pu,root,0,-0.115,z);
-    boxM(0.012,0.07,w-0.03,MAT.galv,root,0,-0.045,z);
-    boxM(0.016,0.014,w-0.03,MATX.carbide,root,0,-0.007,z);}
-  boxM(0.05,0.03,W+0.02,MAT.paint,root,0,-0.165,0);
-  primaryBase(root,W);
-  return{root,parts:[{t:'Кромка из карбида вольфрама',p:[0,-0.005,0.3]},{t:'Упругие модули',p:[0,-0.115,-0.28]},{t:'Пружинный натяжитель',p:[0,-0.48,0.89]}],
-   list:['Лезвия с кромкой из карбида вольфрама','Индивидуальный упругий модуль под каждым лезвием','Держатель и поперечный вал','Натяжной узел']};}
-/* secondary: mounted under the return strand, +y up into the belt */
+
 function secondaryBase(root){
   boxM(0.06,0.06,1.6,MAT.paint,root,0,-0.26,0);
   for(const sg of[-1,1]){boxM(0.12,0.5,0.012,MAT.paint,root,0,-0.02,sg*0.81);
     boxM(0.05,0.03,0.04,MAT.cap,root,0,-0.26,sg*0.79);cylY(0.008,0.22,MAT.shaft,root,0.03,-0.1,sg*0.8,8);
     for(const y of[-0.18,0.0])bolt(root,-0.03,y,sg*0.817,'z');}
 }
-function buildSecMod(){const root=new THREE.Group(),N=6,W=1.0,w=W/N;
-  for(let i=0;i<N;i++){const z=-W/2+w*(i+.5),g=new THREE.Group();g.position.set(0,0,z);g.rotation.z=0.13;root.add(g);
-    boxM(0.05,0.07,w-0.03,MAT.pu,g,0,-0.18,0);boxM(0.012,0.14,w-0.04,MAT.galv,g,0,-0.08,0);boxM(0.016,0.014,w-0.04,MATX.carbide,g,0,-0.006,0);
-    bolt(g,0.012,-0.12,0,'x');}
-  secondaryBase(root);
-  return{root,parts:[{t:'Твердосплавные сегменты',p:[0,0,0.25]},{t:'Компенсация ударов',p:[0,-0.18,-0.3]},{t:'Натяжной механизм',p:[0,-0.1,0.8]}],
-   list:['Сменные твердосплавные сегменты','Упругие элементы компенсируют удары и стыки','Несущая труба под обратной ветвью','Натяжной механизм на боковых кронштейнах']};}
-function buildSecDamp(){const root=new THREE.Group(),N=8,W=1.0,w=W/N;
-  for(let i=0;i<N;i++){const z=-W/2+w*(i+.5),g=new THREE.Group();g.position.set(0,0,z);g.rotation.z=0.15;root.add(g);
-    const c=cylZ(0.035,w-0.025,MAT.pu,g,0,-0.2,0,18);
-    boxM(0.03,0.06,w-0.03,MAT.paint,g,0,-0.15,0);boxM(0.01,0.12,w-0.03,MAT.galv,g,0,-0.065,0);boxM(0.014,0.012,w-0.03,MATX.carbide,g,0,-0.004,0);}
-  secondaryBase(root);
-  return{root,parts:[{t:'Раздельные лезвия',p:[0,0,0.25]},{t:'Упругая опора каждого лезвия',p:[0,-0.2,-0.3]},{t:'Регулировка прижима',p:[0,-0.1,0.8]}],
-   list:['Отдельные лезвия по ширине ленты','Индивидуальная упругая опора смягчает удары','Регулируемый прижим','Для влажного и липкого материала, скорость до 10 м/с']};}
-function buildSecSlurry(){const root=new THREE.Group(),N=4,W=1.0,w=W/N;
-  for(let i=0;i<N;i++){const z=-W/2+w*(i+.5),g=new THREE.Group();g.position.set(0,0,z);g.rotation.z=0.12;root.add(g);
-    boxM(0.06,0.08,w-0.03,MAT.pu,g,0,-0.18,0);boxM(0.014,0.13,w-0.035,MAT.galv,g,0,-0.075,0);boxM(0.02,0.016,w-0.035,MATX.carbide,g,0,-0.008,0);}
-  secondaryBase(root);
-  boxM(0.02,0.05,1.0,MAT.rubber,root,-0.12,-0.04,0);
-  return{root,parts:[{t:'Широкие твердосплавные элементы',p:[0,0,0.25]},{t:'Упругие модули',p:[0,-0.18,-0.3]},{t:'Отбойник шлама',p:[-0.12,-0.02,0]}],
-   list:['Широкие твердосплавные рабочие элементы','Упругие модули для сильных налипаний','Отбойник уводит снятый шлам','Для вулканизированных стыков; реверс — в исполнении с ограничителем']};}
+
+
+
 function buildBrush(){const root=new THREE.Group();
   const sp=new THREE.Group();sp.position.set(0,-0.11,0);root.add(sp);
   cylZ(0.04,1.05,MAT.galv,sp,0,0,0,16);
@@ -819,6 +873,8 @@ const retRollers=RET_ST.map(x=>{const b=buildPlainReturn();b.root.position.set(x
   const crust=mesh(new THREE.CylinderGeometry(1,1,1,14),MAT.build,b.root,0,-R0,0);crust.rotation.x=Math.PI/2;crust.visible=false;
   return{x,g:b.root,crust,b:0};});
 
+/* spiral roller on the return strand */
+const SPIRAL_X=-2.25;{const sp=buildSpiral();sp.root.position.set(SPIRAL_X,RET_Y,0);scene.add(sp.root);}
 /* belt */
 function pt(u,k){const a=TROUGH*k,C=Math.cos(a),S=Math.sin(a),au=Math.abs(u),sg=u<0?-1:1;if(au<=0.2)return[u,0];const d=au-0.2;return[sg*(0.2+d*C),d*S];}
 function kAt(x){return clamp((x-X0)/0.9,0,1)*clamp((X1-x)/0.9,0,1);}
@@ -944,6 +1000,7 @@ const labelDefs=[
   {t:()=>'Камень попал под барабан',p:()=>[X0+0.1,RET_Y+0.25,0.4],cls:'bad',show:()=>hitFlash>0.2},
   {t:()=>'Разгрузочный барабан',p:()=>[X1,HY+0.4,-0.62],show:()=>labelsOn},
   {t:()=>'Хвостовой барабан',p:()=>[X0,HY+0.35,0.62],show:()=>labelsOn},
+  {t:()=>'Спиральный ролик',p:()=>[SPIRAL_X,RET_Y-0.12,0.66],show:()=>labelsOn},
   {t:()=>'Обратная ветвь',p:()=>[-0.2,RET_Y,0.66],show:()=>labelsOn}
 ];
 const lblLayer=$('labels');
