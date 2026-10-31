@@ -209,9 +209,29 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 @keyframes probGo{0%{transform:scale(1.035)}35%{transform:scale(.97);box-shadow:0 0 0 2px var(--pu),0 0 40px rgba(242,163,58,.45)}100%{transform:scale(1.02);box-shadow:0 0 0 2px var(--pu),0 0 28px rgba(242,163,58,.3)}}
 .dir,.mcard,.svc article{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
 @media (hover:hover){.dir:hover,.svc article:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.22);border-color:var(--pu)}.mcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.35),0 0 0 1px rgba(242,163,58,.5)}}
+.probs{overflow:visible}
+.probs .prob:nth-child(1){border-top-left-radius:6px}.probs .prob:nth-child(2){border-top-right-radius:6px}
+.probs .prob:nth-last-child(2){border-bottom-left-radius:6px}.probs .prob:last-child{border-bottom-right-radius:6px}
+.prob::after{border-radius:inherit}
+@media (max-width:480px){.probs .prob:nth-child(2){border-top-right-radius:0}.probs .prob:nth-child(1){border-top-right-radius:6px}.probs .prob:nth-last-child(2){border-bottom-left-radius:0}.probs .prob:last-child{border-bottom-left-radius:6px}}
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.prob,.prob i,.dir,.mcard,.svc article,.rv{transition:none!important;animation:none!important;transform:none!important;opacity:1!important}}
+
+/* 3D models: horizontal carousel */
+.models{display:flex!important;grid-template-columns:none!important;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding-bottom:4px;overscroll-behavior-x:contain}
+.models::-webkit-scrollbar{display:none}
+.models .mcard{flex:0 0 clamp(280px,38vw,440px);scroll-snap-align:start}
+.mcar{position:relative}
+.mnav{display:flex;gap:8px;align-items:center}
+.mnav button{all:unset;cursor:pointer;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--ink);background:var(--paper);transition:border-color .2s,transform .2s,opacity .2s}
+.mnav button:hover{border-color:var(--pu);transform:translateY(-1px)}
+.mnav button:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+.mnav button[disabled]{opacity:.35;cursor:default;transform:none}
+.mnav span{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:44px;text-align:center}
+.mcar::after{content:"";position:absolute;top:0;right:0;bottom:4px;width:60px;background:linear-gradient(90deg,transparent,var(--bg));pointer-events:none;transition:opacity .2s}
+.mcar.end::after{opacity:0}
+@media (max-width:760px){.models .mcard{flex-basis:84%}}
 
 /* nav: «Направления» mega-menu + mobile burger */
 .bar .in{position:relative}
