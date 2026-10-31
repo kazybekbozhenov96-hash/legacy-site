@@ -860,15 +860,18 @@ function step(dt){
 }
 const dummy=new THREE.Object3D(),zero=new THREE.Matrix4().makeScale(0,0,0);
 /* carryback: sticky material on the underside of the return strand; it travels with the belt so its tracking is visible */
-const NCB=320,CBmat=new THREE.MeshStandardMaterial({color:new THREE.Color(0x9a7442).convertSRGBToLinear(),roughness:1});
+const NCB=46,CBmat=new THREE.MeshStandardMaterial({color:new THREE.Color(0x9a7442).convertSRGBToLinear(),roughness:1});
 const cbMesh=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,5),CBmat,NCB);cbMesh.frustumCulled=false;cbMesh.receiveShadow=true;scene.add(cbMesh);
 const CBX=new Float32Array(NCB),CBS=new Float32Array(NCB),CBR=new Float32Array(NCB),CBL=new Float32Array(NCB);
-for(let i=0;i<NCB;i++){CBX[i]=X0+(X1-X0)*Math.random();CBS[i]=rnd(-0.42,0.42);CBR[i]=rnd(.035,.08);CBL[i]=rnd(.5,1.4);}
+for(let i=0;i<NCB;i++){CBX[i]=X0+(X1-X0)*Math.random();CBS[i]=rnd(-0.42,0.42);CBR[i]=rnd(.018,.04);CBL[i]=rnd(.6,1.4);}
 const FALL=[];
 function stepCarry(dt){const amt=cause==='build'?1:0.55;
   for(let i=0;i<NCB;i++){const x0=CBX[i];CBX[i]-=SPEED*dt;
-    for(const r of retRollers)if(x0>r.x&&CBX[i]<=r.x&&Math.random()<0.08*amt){FALL.push({x:r.x,y:RET_Y-0.01,z:CBS[i]+Oat(OR,r.x),vy:0,t:1.2});}
-    if(CBX[i]<X0+0.05){CBX[i]=X1-0.05;CBS[i]=rnd(-0.42,0.42);CBR[i]=rnd(.02,.055)*(0.6+amt*0.6);}}
+    let gone=false;
+    for(const r of retRollers)if(x0>r.x&&CBX[i]<=r.x){
+      const cleans=r.isV&&pres.v>0.5;            /* centring return sets with rubber rings knock the carryback off */
+      if(Math.random()<(cleans?0.72:0.06*amt)){FALL.push({x:r.x,y:RET_Y-0.01,z:CBS[i]+Oat(OR,r.x),vy:0,t:1.2});if(cleans||Math.random()<0.5)gone=true;}}
+    if(gone||CBX[i]<X0+0.05){CBX[i]=X1-0.05-Math.random()*0.4;CBS[i]=rnd(-0.4,0.4);CBR[i]=rnd(.018,.04)*(0.7+amt*0.4);}}
   for(let k=FALL.length-1;k>=0;k--){const f=FALL[k];f.vy-=9.81*dt;f.y+=f.vy*dt;f.t-=dt;if(f.y<0.01){f.y=0.01;f.vy=0;}if(f.t<=0)FALL.splice(k,1);}
   if(FALL.length>160)FALL.splice(0,FALL.length-160);}
 const NFB=160,fbMesh=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),CBmat,NFB);fbMesh.frustumCulled=false;scene.add(fbMesh);
