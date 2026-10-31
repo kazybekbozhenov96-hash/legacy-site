@@ -177,6 +177,7 @@ html.embed .top,html.embed .backlink,html.embed .info~*{display:none!important}h
 .bar.ok i{background:var(--ok)}
 .box h3+.chips{margin-top:-4px}
 </style>
+<style>.equip{background:var(--panel);border:1px solid var(--pu);border-radius:6px;padding:14px 16px;display:grid;gap:10px;margin-top:12px}.equip h3{margin:0;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--pu);font-weight:500}.equip h3 span{color:var(--muted);text-transform:none;letter-spacing:0;margin-left:8px;font-family:var(--body,inherit)}.eqrow{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px;align-items:center}.eqrow b{font-size:13.5px}.eqd{margin:2px 0 0;font-size:13.5px;color:var(--muted);line-height:1.5}@media (max-width:640px){.eqrow{grid-template-columns:minmax(0,1fr)}}</style>
 <script>try{if(location.hash==="#embed")document.documentElement.classList.add("embed")}catch(e){}</script>
 <style id="hud-min">
 .hud{padding-right:40px}
@@ -230,14 +231,27 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
   </section>
 
+  <section class="equip" aria-label="Оборудование на линии">
+    <h3>Оборудование на линии <span>выберите — и оно встанет на своё место</span></h3>
+    <div class="eqrow"><b>Питатель</b><div class="chips" role="group" aria-label="Питатель">
+      <button class="chip" data-fd="grizzly" aria-pressed="true">Колосниковый</button><button class="chip" data-fd="apron" aria-pressed="false">Пластинчатый</button><button class="chip" data-fd="vibro" aria-pressed="false">Вибрационный</button></div></div>
+    <div class="eqrow"><b>Дробилка</b><div class="chips" role="group" aria-label="Дробилка">
+      <button class="chip" data-cr="jaw" aria-pressed="true">Щёковая</button><button class="chip" data-cr="gyr" aria-pressed="false">Гирационная</button><button class="chip" data-cr="cone" aria-pressed="false">Конусная</button><button class="chip" data-cr="hsi" aria-pressed="false">Роторная</button><button class="chip" data-cr="vsi" aria-pressed="false">Центробежно-ударная</button></div></div>
+    <div class="eqrow"><b>Грохот</b><div class="chips" role="group" aria-label="Грохот">
+      <button class="chip" data-sc="banana" aria-pressed="true">Банановый (многоскатный)</button><button class="chip" data-sc="horiz" aria-pressed="false">Горизонтальный / эллиптический</button></div></div>
+    <div class="eqrow"><b>Сито (шаг 4)</b><div class="chips" role="group" aria-label="Сито">
+      <button class="chip" data-sv="pu" aria-pressed="true">Полиуретановые панели</button><button class="chip" data-sv="rub" aria-pressed="false">Резиновые панели</button><button class="chip" data-sv="wire" aria-pressed="false">Металлическая сетка</button></div></div>
+    <p class="eqd" id="eqD">Все машины — из каталога Legacy. Модели условные: показывают устройство и принцип работы.</p>
+  </section>
+
   <section class="console" aria-label="Пульт">
     <div class="box">
       <h3>Линия по шагам</h3>
       <div class="modes">
         <button class="mode" data-mode="1" aria-pressed="true"><span class="n">1</span><span class="t">Изношенная линия</span></button>
         <button class="mode" data-mode="2" aria-pressed="false"><span class="n">2</span><span class="t">Новый питатель</span></button>
-        <button class="mode" data-mode="3" aria-pressed="false"><span class="n">3</span><span class="t">Новые щёки</span></button>
-        <button class="mode" data-mode="4" aria-pressed="false"><span class="n">4</span><span class="t">Полиуретановые сита</span></button>
+        <button class="mode" data-mode="3" aria-pressed="false"><span class="n">3</span><span class="t">Новые дробящие элементы</span></button>
+        <button class="mode" data-mode="4" aria-pressed="false"><span class="n">4</span><span class="t">Новые сита</span></button>
       </div>
     </div>
     <div class="box">
@@ -251,11 +265,6 @@ document.addEventListener('DOMContentLoaded',function(){
         <button class="chip" data-fines="low" aria-pressed="false">Мало</button>
         <button class="chip" data-fines="mid" aria-pressed="true">Средне</button>
         <button class="chip" data-fines="high" aria-pressed="false">Много</button>
-      </div>
-      <h3>Питатель на шаге 2</h3>
-      <div class="chips" role="group" aria-label="Тип питателя">
-        <button class="chip" data-fd="grizzly" aria-pressed="true">Колосниковый</button>
-        <button class="chip" data-fd="apron" aria-pressed="false">Пластинчатый</button>
       </div>
     </div>
     <div class="box">
@@ -783,8 +792,9 @@ const panFull=new THREE.Group(),panShort=new THREE.Group(),grizzly=new THREE.Gro
    boxM(0.3,0.25,0.22,MATR.dark,feeder,-4.0,panY(-4)+0.1,s*0.62);}
  for(const x of[FX0+0.25,FX1-0.25])for(const s of[-1,1]){spring(fSup,x,panY(x)-0.45,s*0.42,0.38,0.06);boxM(0.14,panY(x)-0.45,0.14,MAT.paint,fSup,x,(panY(x)-0.45)/2,s*0.42);}
  const ch=boxM(0.8,0.03,0.7,MAT.plate,scene,-3.15,1.55,0);ch.rotation.z=-0.55;}
+const _nJ0=scene.children.length;
 /* --- jaw crusher --- */
-const JX=-2.3,JY0=0.95,JY1=2.15,FIXX=-2.62;
+const JX=-2.3,JY0=0.95,JY1=2.15,FIXX=-2.62,CRX=-2.15;
 const jaw=new THREE.Group();scene.add(jaw);
 for(const s of[-1,1]){if(s<0)boxM(1.5,1.5,0.06,MATR.yel,jaw,JX,1.5,-0.5);
   else{for(const[x,y,w,h]of[[JX,2.22,1.5,0.12],[JX,0.78,1.5,0.12],[JX-0.72,1.5,0.1,1.5],[JX+0.72,1.5,0.1,1.5]])boxM(w,h,0.07,MATR.yel,jaw,x,y,0.5);
@@ -804,6 +814,7 @@ const flywheels=[];for(const s of[-1,1]){const fw=new THREE.Group();fw.position.
 boxM(1.8,0.15,1.6,MAT.paint,scene,JX,0.6,0);for(const x of[JX-0.8,JX+0.8])for(const s of[-1,1])boxM(0.15,0.55,0.15,MAT.paint,scene,x,0.27,s*0.7);
 {const mo=mesh(new THREE.CylinderGeometry(0.22,0.22,0.6,24),new THREE.MeshStandardMaterial({color:0x3b6e8f,roughness:.45,metalness:.35}),scene,-0.9,1.0,0.82);mo.rotation.x=Math.PI/2;
  boxM(0.6,0.5,0.6,MAT.paint,scene,-0.9,0.5,0.82);}
+const oldJaw=new THREE.Group();scene.children.slice(_nJ0).forEach(o=>oldJaw.add(o));scene.add(oldJaw);
 /* --- discharge conveyor (incline) --- */
 const CA=new THREE.Vector3(-2.3,0.42,0),CB=new THREE.Vector3(2.75,2.55,0),CLEN=CA.distanceTo(CB),CANG=Math.atan2(CB.y-CA.y,CB.x-CA.x);
 const conv=new THREE.Group();conv.position.copy(CA);conv.rotation.z=CANG;scene.add(conv);
@@ -812,8 +823,9 @@ const conv=new THREE.Group();conv.position.copy(CA);conv.rotation.z=CANG;scene.a
  for(let u=0.2;u<CLEN;u+=0.55){const r=roller(0.85,0.05);aim(r,new THREE.Vector3(0,0,1));r.position.set(u,-0.05,0);conv.add(r);}
  for(const u of[0,CLEN]){const d=mesh(new THREE.CylinderGeometry(0.12,0.12,0.9,24),MAT.cap,conv,u,-0.07,0);d.rotation.x=Math.PI/2;}
  for(let u=1.2;u<CLEN-0.3;u+=1.6){const p=new THREE.Vector3(CA.x+Math.cos(CANG)*u,CA.y+Math.sin(CANG)*u,0);for(const s of[-1,1])boxM(0.1,p.y-0.1,0.1,MAT.paint,scene,p.x,(p.y-0.1)/2,s*0.47);}}
+const _nS0=scene.children.length;
 /* --- vibrating screen, two decks --- */
-const SX0=2.9,SX1=6.0,SY=2.25,SSL=0.16,SDY=0.34;const d1=x=>SY-(x-SX0)*SSL,d2=x=>d1(x)-SDY;const S2X1=5.6;
+const SX0=2.9,SX1=6.0,SY=2.25,SSL=0.16,SDY=0.34;let d1=x=>SY-(x-SX0)*SSL,d2=x=>d1(x)-SDY;let S2X1=5.6;
 const screen=new THREE.Group();scene.add(screen);
 const deckMeshes=[];
 {const ang=Math.atan(SSL),len=(SX1-SX0)/Math.cos(ang);
@@ -824,6 +836,7 @@ const deckMeshes=[];
  for(const s of[-1,1]){const m=mesh(new THREE.CylinderGeometry(0.13,0.13,0.3,20),MATR.dark,screen,4.4,d1(4.4)+0.45,s*0.72);m.rotation.x=Math.PI/2;}
  const pan=boxM(len*0.9,0.03,1.0,MAT.plate,screen,(SX0+SX1)/2-0.1,d2((SX0+SX1)/2)-0.45,0);pan.visible=false;}
 for(const x of[SX0+0.3,SX1-0.3])for(const s of[-1,1]){spring(scene,x,d2(x)-0.62,s*0.56,0.3,0.06);boxM(0.16,d2(x)-0.62,0.16,MAT.paint,scene,x,(d2(x)-0.62)/2,s*0.56);}
+const oldScr=new THREE.Group();scene.children.slice(_nS0).forEach(o=>oldScr.add(o));scene.add(oldScr);
 /* stockpiles */
 const PILES=[{x:6.85,z:0,c:0x8b7d6b,n:'Крупная фракция'},{x:5.85,z:0,c:0x978a77,n:'Средняя фракция'},{x:4.3,z:0,c:0xa69a88,n:'Мелкая фракция'}];
 const pileMesh=PILES.map(p=>{const m=mesh(new THREE.ConeGeometry(0.55,0.42,24),new THREE.MeshStandardMaterial({color:p.c,roughness:1,flatShading:true,map:STX.ore}),scene,p.x,0.21,p.z);m.castShadow=false;return m;});
@@ -839,6 +852,9 @@ function setTone(i,wet){oreCol.setHSL(rnd(.06,.1),rnd(.08,.2),wet?rnd(.2,.3):rnd
 let mode=1,feedType='dry',finesLevel='mid',paused=reduceMotion,labelsOn=false,simTime=0,acc=0;
 const pres={feed:0,jaw:0,deck:0},target={feed:0,jaw:0,deck:0};
 const FINES={low:0.15,mid:0.3,high:0.5};
+let GXV=GX;
+let crType='jaw',scType='banana',svType='pu',newCr=null,newScr=null;
+function sieveMat(){return svType==='pu'?deckMat.pu:svType==='rub'?(deckMat.rub||(deckMat.rub=new THREE.MeshStandardMaterial({map:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#1d1e20';g.fillRect(0,0,w,h);g.fillStyle='#050505';for(let i=0;i<7;i++)for(let j=0;j<7;j++)g.fillRect(i*w/7+8,j*h/7+8,w/7-16,h/7-16);},true),roughness:.85,side:THREE.DoubleSide}))):(deckMat.wire||(deckMat.wire=new THREE.MeshStandardMaterial({map:canvasTex(256,256,(g,w,h)=>{g.fillStyle='#0e1012';g.fillRect(0,0,w,h);g.strokeStyle='#c9cfd4';g.lineWidth=4;for(let x=0;x<=w;x+=21){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();g.beginPath();g.moveTo(0,x);g.lineTo(w,x);g.stroke();}},true),roughness:.35,metalness:.8,side:THREE.DoubleSide})));}
 function passP(){const base=pres.deck>0.5?0.95:0.28;return feedType==='wet'&&pres.deck<0.5?base*0.6:base;}
 const stat={out:0,big:0,fineInA:0,toA:0};
 function spawn(){for(let i=0;i<NO;i++)if(!O.st[i]){const fine=Math.random()<FINES[finesLevel];O.r[i]=fine?rnd(.015,.03):rnd(.05,.1);O.x[i]=FX0+rnd(.1,.4);O.z[i]=rnd(-.3,.3);O.y[i]=panY(O.x[i])+0.6;O.vy[i]=-0.5;O.st[i]=1;setTone(i,feedType==='wet');oreMesh.instanceColor.needsUpdate=true;return;}}
@@ -854,11 +870,10 @@ function step(dt){
   for(let i=0;i<NO;i++){const st=O.st[i];if(!st)continue;const r=O.r[i];
     if(st===1){if(O.vy[i]!==0){O.vy[i]-=9.81*dt;O.y[i]+=O.vy[i]*dt;if(O.y[i]<=panY(O.x[i])+r){O.y[i]=panY(O.x[i])+r;O.vy[i]=0;}continue;}
       O.x[i]+=vF*dt;O.y[i]=panY(O.x[i])+r+0.008*Math.sin(simTime*60+i);
-      if(even&&fdType!=='apron'&&O.x[i]>GX&&r<0.04&&Math.random()<dt*6){O.st[i]=7;O.vx[i]=0.2;O.vy[i]=0;}
+      if(even&&fdType==='grizzly'&&O.x[i]>GXV&&r<0.04&&Math.random()<dt*6){O.st[i]=7;O.vx[i]=0.2;O.vy[i]=0;}
       else if(O.x[i]>=FX1){O.st[i]=2;O.s[i]=0;O.r1[i]=r;O.vx[i]=0;}}
     else if(st===2){O.s[i]+=dt*(0.55+0.2*Math.sin(i));const s=Math.min(1,O.s[i]);
-      const xin=FIXX+0.32*(1-s)+0.06,xout=FIXX+(gap==='new'?0.05:0.11);
-      O.x[i]=xin*(1-s)+xout*s;O.y[i]=JY1-(JY1-JY0)*s;
+      if(crType==='jaw'){const xin=FIXX+0.32*(1-s)+0.06,xout=FIXX+(gap==='new'?0.05:0.11);O.x[i]=xin*(1-s)+xout*s;}else{const q=1-s;O.x[i]=CRX+(FX1+0.05-CRX)*q*q*q;}O.y[i]=JY1-(JY1-JY0)*s;
       const out=O.r1[i]<0.035?O.r1[i]:(gap==='new'?rnd(.016,.032):(Math.random()<0.5?rnd(.045,.075):rnd(.02,.04)));
       if(!O.t[i])O.t[i]=out;O.r[i]=O.r1[i]+(O.t[i]-O.r1[i])*s;
       if(s>=1){O.st[i]=3;O.s[i]=0.04;stat.out++;if(O.r[i]>0.04)stat.big++;O.t[i]=0;}}
@@ -878,6 +893,7 @@ function step(dt){
   pitman.rotation.z=(pres.jaw>0.5?PIT_ANG.new:PIT_ANG.worn)+0.02*Math.sin(simTime*5);
   feeder.position.set(0.006*Math.sin(simTime*50),0.006*Math.sin(simTime*50+1),0);
   screen.position.set(0.008*Math.sin(simTime*45),0.01*Math.sin(simTime*45+1.2),0);
+  if(typeof lineUpdate==='function')lineUpdate(dt,vF);
   STX.belt.offset.x-=dt*1.0/CLEN*3;
 }
 const dummy=new THREE.Object3D(),zero=new THREE.Matrix4().makeScale(0,0,0);
@@ -887,21 +903,23 @@ function writeInstances(){
 }
 function updateParts(dt){
   const kk=Math.min(1,dt*3);for(const k in pres)pres[k]+=(target[k]-pres[k])*kk;
-  const g=pres.feed>0.5,ap=g&&fdType==='apron';feeder.visible=!ap;fSup.visible=!ap;apronMain.g.visible=ap;panFull.visible=!g;panShort.visible=g&&!ap;grizzly.visible=g&&!ap;
-  const j=pres.jaw>0.5;fixedNew.visible=j;movNew.visible=j;fixedOld.visible=!j;movOld.visible=!j;
-  for(const m of deckMeshes)m.material=pres.deck>0.5?deckMat.pu:deckMat.clog;
+  const g=pres.feed>0.5,ap=g&&fdType==='apron';feeder.visible=false;fSup.visible=false;apronMain.g.visible=ap;if(typeof lineVis==='function')lineVis(g);
+  const j=pres.jaw>0.5;if(newCr&&newCr.b.fj){const wm=j?null:MATR.mnWorn;for(const pl of[newCr.b.fj,newCr.b.mj])pl.traverse(n=>{if(n.isMesh){if(!n.userData.m0)n.userData.m0=n.material;n.material=wm||n.userData.m0;}});}fixedNew.visible=j;movNew.visible=j;fixedOld.visible=!j;movOld.visible=!j;
+  for(const m of deckMeshes)m.material=pres.deck>0.5?sieveMat():deckMat.clog;if(newScr)newScr.traverse(n=>{if(n.isMesh&&n.userData.deck)n.material=pres.deck>0.5?sieveMat():deckMat.clog;});
 }
 
 /* ---------- labels ---------- */
 const tmpV=new THREE.Vector3();
+const CRN={jaw:{n:'Щёковая дробилка',worn:'Стёртые щёки — щель выросла',fresh:'Новые щёки — продукт по норме'},gyr:{n:'Гирационная дробилка',worn:'Изношенная броня — щель выросла',fresh:'Новая броня конуса и чаши'},cone:{n:'Конусная дробилка',worn:'Изношенная броня — продукт крупнее',fresh:'Новая броня — продукт по норме'},hsi:{n:'Роторная дробилка',worn:'Стёртые била и отбойные плиты',fresh:'Новые била — продукт по норме'},vsi:{n:'Центробежно-ударная дробилка',worn:'Стёртые наконечники ротора',fresh:'Новые наконечники — кубовидный продукт'}};
+const FDN={grizzly:'Колосниковый питатель',apron:'Пластинчатый питатель',vibro:'Вибрационный питатель'};const SCN={banana:'Банановый грохот',horiz:'Горизонтальный грохот'};const SVN={pu:'Полиуретановые панели',rub:'Резиновые панели',wire:'Металлическая сетка'};
 const labelDefs=[
   {t:()=>'Подача рывками: дробилка то пустая, то завалена',p:()=>[-4.2,FY+0.5,0.5],cls:'bad',show:()=>pres.feed<0.5},
-  {t:()=>'Колосники: мелочь идёт мимо дробилки',p:()=>[(GX+FX1)/2,panY(-3.1)+0.15,0.5],cls:'pu',show:()=>pres.feed>0.6},
-  {t:()=>'Стёртые щёки — щель выросла',p:()=>[FIXX+0.1,1.2,0.55],cls:'bad',show:()=>pres.jaw<0.5},
-  {t:()=>'Новые щёки — продукт по норме',p:()=>[FIXX+0.1,1.2,0.55],cls:'pu',show:()=>pres.jaw>0.6},
+  {t:()=>fdType==='grizzly'?'Колосники: мелочь идёт мимо дробилки':fdType==='apron'?'Пластинчатый питатель: ровный слой':'Вибропитатель: ровная подача',p:()=>[-3.6,panY(-3.6)+0.25,0.5],cls:'pu',show:()=>pres.feed>0.6},
+  {t:()=>CRN[crType].worn,p:()=>[CRX,1.2,0.6],cls:'bad',show:()=>pres.jaw<0.5},
+  {t:()=>CRN[crType].fresh,p:()=>[CRX,1.2,0.6],cls:'pu',show:()=>pres.jaw>0.6},
   {t:()=>'Сито забито — мелочь уходит в крупную фракцию',p:()=>[4.5,d1(4.5)+0.2,0.55],cls:'bad',show:()=>pres.deck<0.5},
-  {t:()=>'Полиуретановые панели',p:()=>[4.5,d1(4.5)+0.2,0.55],cls:'pu',show:()=>pres.deck>0.6},
-  {t:()=>'Щёковая дробилка',p:()=>[JX,2.45,0.5],show:()=>labelsOn},
+  {t:()=>SVN[svType],p:()=>[4.5,d1(4.5)+0.2,0.55],cls:'pu',show:()=>pres.deck>0.6},
+  {t:()=>CRN[crType].n,p:()=>[CRX,2.5,0.5],show:()=>labelsOn},{t:()=>FDN[fdType],p:()=>[-4.0,FY+0.2,0.6],show:()=>labelsOn},{t:()=>SCN[scType],p:()=>[4.45,2.75,0.5],show:()=>labelsOn},
   {t:()=>'Ленточный конвейер',p:()=>[0.2,1.6,0.5],show:()=>labelsOn},
   ...PILES.map(p=>({t:()=>p.n,p:()=>[p.x,0.6,p.z+0.3],show:()=>labelsOn}))
 ];
@@ -911,7 +929,7 @@ function placeLabel(el,v,cam,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||M
 function updateLabels(){const w=view.clientWidth,h=view.clientHeight;for(const d of labelDefs){if(!d.show()){d.el.hidden=true;d.was=false;continue;}const now=performance.now();if(!d.was){d.was=true;d.until=now+4500;}if(!labelsOn&&now>d.until){d.el.hidden=true;continue;}const t=d.t();if(d.el.textContent!==t)d.el.textContent=t;tmpV.set(...d.p());placeLabel(d.el,tmpV,camera,w,h);}}
 
 /* ---------- camera ---------- */
-const CAMS={overview:{p:[2.5,5.4,9.6],t:[0.4,1.3,0]},feeder:{p:[-2.6,3.9,2.9],t:[-4.0,2.3,0]},jaw:{p:[-1.35,1.2,3.0],t:[-2.4,1.4,0]},screen:{p:[5.8,4.2,3.0],t:[4.4,2.0,0]},piles:{p:[8.6,2.0,4.2],t:[5.4,0.6,0]},card:{p:[3.4,3.3,6.2],t:[-0.4,1.5,0]}};
+const CAMS={overview:{p:[2.5,5.4,9.6],t:[0.4,1.3,0]},feeder:{p:[-2.6,3.9,2.9],t:[-4.0,2.3,0]},jaw:{p:[-1.35,1.2,3.0],t:[-2.4,1.4,0]},screen:{p:[5.4,4.6,4.0],t:[4.4,1.8,0]},piles:{p:[8.6,2.0,4.2],t:[5.4,0.6,0]},card:{p:[3.4,3.3,6.2],t:[-0.4,1.5,0]}};
 const STEPCAM={1:'overview',2:'feeder',3:'jaw',4:'screen'};
 camera.position.set(...CAMS.overview.p);controls.target.set(...CAMS.overview.t);
 let tween=null;
@@ -920,12 +938,16 @@ function goCam(n){const c=CAMS[n];tween={t:0,p0:camera.position.clone(),t0:contr
   document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cam===n));}
 
 /* ---------- UI ---------- */
+const CRT={gyr:{t:'Гирационная дробилка',p:'Подвижный конус совершает круговое качание внутри неподвижной чаши, кусок раздавливается в камере дробления непрерывно. Броня конуса и чаши восстановлена — продукт выходит по норме.',l:['Первичное дробление крупного куска при высокой производительности','Броня конуса и чаши — по модели машины и чертежу','Втулки и эксцентрики — по каталожному номеру']},cone:{t:'Конусная дробилка',p:'Материал раздавливается между подвижным конусом и бронёй чаши. Гидроцилиндры держат щель и пропускают недробимый предмет. Новая броня вернула заданную крупность продукта.',l:['Среднее и мелкое дробление','Профиль брони — под крупность питания и продукта','Щель регулируется гидравликой']},hsi:{t:'Роторная дробилка',p:'Ротор с билами отбрасывает кусок на отбойные плиты, материал дробится ударом. Новые била и плиты вернули форму и крупность продукта.',l:['Для пород средней абразивности, даёт кубовидный щебень','Била, отбойные плиты, футеровка — по модели машины','Зазор до отбойных плит регулируют тягами']},vsi:{t:'Центробежно-ударная дробилка',p:'Ротор разгоняет материал и бросает его на каменную полку или наковальни. Камень бьёт о камень, продукт выходит кубовидным. Новые наконечники ротора вернули скорость и качество продукта.',l:['Вторичное и третичное дробление, производство песка','Наконечники и футеровка ротора — по модели машины','Скорость ротора задаёт крупность продукта']}};
 function info(){
   let t,r,p,l;
   if(mode===1){t='Изношенная линия';r='Исходное состояние';p='Материал из бункера идёт рывками: дробилка то простаивает, то завалена. Щёки стёрлись, разгрузочная щель выросла, и в продукт уходит кусок крупнее нормы. Сито грохота забито, мелочь не проходит и уходит в крупную фракцию.';l=['Камера «В дробилку» — щёки видны сквозь прозрачную боковину','Камера «Грохот» — что происходит на деках','Камера «Фракции» — куда уходит материал'];}
   else if(mode===2&&fdType==='apron'){t='Пластинчатый питатель';r='Каталог · раздел 07.1 · питатели';p='Под бункером стоит пластинчатый питатель: замкнутое полотно из литых пластин на двух тяговых цепях. Приводные звёздочки на головном валу тянут полотно, пластины вытягивают кусковой материал из бункера ровным слоем и ссыпают его в дробилку. Борта удерживают материал, опорные катки принимают удар кусков.';l=['Для крупнокускового и тяжёлого материала под бункером первичной дробилки','Производительность задаёт скорость полотна и высота слоя','Ширину, скорость и привод подбирают по крупности питания и нагрузке'];}
+  else if(mode===2&&fdType==='vibro'){t='Вибрационный питатель';r='Каталог · раздел 07.1 · питатели';p='Лоток на пружинных подвесках, два вибродвигателя создают направленные колебания. Материал идёт ровным слоем и с постоянной скоростью, поэтому дробилка загружена равномерно. Мелкий класс не отделяется — для этого нужен колосниковый питатель.';l=['Для сыпучего и мелкокускового материала','Производительность регулируют частотой и амплитудой','Подвесное или опорное исполнение — по компоновке бункера'];}
   else if(mode===2){t='Колосниковый питатель';r='Каталог · раздел 07.1 · питатели';p='Вибрационный питатель подаёт материал ровным слоем, а колосниковый участок в конце отделяет мелкий класс: мелочь идёт мимо дробилки сразу на конвейер, дробилка работает только с тем, что нужно дробить.';l=['Ширину, скорость и привод подбирают по крупности питания и нагрузке','Пластинчатые питатели — для кускового материала','Монтаж согласуют с компоновкой бункера'];}
+  else if(mode===3&&crType!=='jaw'){const c=CRT[crType];t=c.t;r='Каталог · раздел 07.2 · дробилки и 07.6 · дробящие элементы';p=c.p;l=c.l;}
   else if(mode===3){t='Новые щёки';r='Каталог · раздел 07.6 · дробящие элементы';p='Изношенные щёки заменены, разгрузочная щель восстановлена. Продукт выходит по норме, нагрузка на грохот и следующие стадии становится предсказуемой.';l=['Щёки, брони, била — по модели машины, номеру детали или чертежу','Материал и геометрию согласуют под конкретную машину','Втулки, валы, эксцентрики — по каталожному номеру и посадочным размерам'];}
+  else if(svType!=='pu'){t=svType==='rub'?'Резиновые панели':'Металлическая сетка';r='Каталог · раздел 07.5 · сита и просеивающие поверхности';p=svType==='rub'?'Забитая сетка заменена резиновыми панелями с квадратной ячейкой. Резина хорошо держит удар крупного куска и гасит шум, мелочь проходит через ячейки.':'Забитая сетка заменена новой металлической сеткой. Большая живая площадь даёт высокую пропускную способность, натяжение держит сетку ровной.';l=svType==='rub'?['Для верхних дек и ударных нагрузок','Размер ячейки и крепление — по посадочному месту','Модульная замена изношенных панелей']:['Для сухого материала и высокой производительности','Проволока и ячейка — по фракции и абразивности','Натяжное и модульное исполнение'];}
   else{t='Полиуретановые сита';r='Каталог · раздел 07.5 · сита и просеивающие поверхности';p='Забитая сетка заменена модульными полиуретановыми панелями. Мелочь проходит через ячейки, фракции получаются чистыми, изношенную панель меняют отдельно.';l=['Размер ячейки и тип фиксации — по посадочному месту','Для влажного материала и тонкого рассева — специальные исполнения','Резиновые и комбинированные поверхности — для ударных нагрузок'];}
   $('iT').textContent=t;$('iR').textContent=r;$('iP').textContent=p;$('iL').innerHTML='';l.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('iL').appendChild(li);});
 }
@@ -933,7 +955,7 @@ function setMode(m,user){const prev=mode;mode=m;if(user&&m!==prev&&STEPCAM[m])go
 function pick(attr,id){document.querySelectorAll('[data-'+attr+']').forEach(b=>b.setAttribute('aria-pressed',b.dataset[attr]===id));}
 document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode,true)));
 document.querySelectorAll('[data-feed]').forEach(b=>b.addEventListener('click',()=>{feedType=b.dataset.feed;pick('feed',feedType);}));
-document.querySelectorAll('[data-fd]').forEach(b=>b.addEventListener('click',()=>{fdType=b.dataset.fd;pick('fd',fdType);if(mode<2)setMode(2,true);else{info();goCam('feeder');}}));
+document.querySelectorAll('[data-fd]').forEach(b=>b.addEventListener('click',()=>{fdType=b.dataset.fd;pick('fd',fdType);if(typeof eqNote==='function')eqNote('fd');if(mode<2)setMode(2,true);else{info();goCam('feeder');}}));
 document.querySelectorAll('[data-fines]').forEach(b=>b.addEventListener('click',()=>{finesLevel=b.dataset.fines;pick('fines',finesLevel);}));
 document.querySelectorAll('[data-cam]').forEach(b=>b.addEventListener('click',()=>goCam(b.dataset.cam)));
 function setLabels(v){labelsOn=v;$('bLbl').setAttribute('aria-pressed',v);}
@@ -1075,7 +1097,7 @@ function v2Jaw(){const g=new THREE.Group(),y=0.2,D=0.95;
   const mb=new THREE.Group();mb.position.set(1.2,y+0.6,0.82);g.add(mb);boxM(0.55,0.06,0.42,K.creamD,mb,0,-0.25,0);motor(mb,0,0,0,0.2,0.5,K.blue,'z');
   for(const s of[1,-1]){const b=new THREE.CatmullRomCurve3([new THREE.Vector3(1.2,y+0.6+s*0.1,1.05),new THREE.Vector3(0.6,y+0.8+s*0.25,1.05),new THREE.Vector3(0.05,y+1.05+s*0.5,0.95)]);mesh(new THREE.TubeGeometry(b,30,0.012,6,false),K.black,g);}
   boxM(1.7,0.12,1.3,K.creamD,g,0,0.06,0);
-  return{root:g,cam:[[2.0,1.9,2.9],[0,0.75,0]],parts:[{t:'Неподвижная щека',p:[-0.6,y+0.9,0.2]},{t:'Подвижная щека',p:[-0.15,y+0.5,0.2]},{t:'Шатун',p:[0.2,y+0.75,0]},{t:'Маховик',p:[0.05,y+1.6,0.82]},{t:'Распорная плита',p:[0.48,y+0.32,0.3]},{t:'Электродвигатель',p:[1.2,y+0.85,0.82]}]};}
+  return{root:g,pit,fj,mj,pw,cam:[[2.0,1.9,2.9],[0,0.75,0]],parts:[{t:'Неподвижная щека',p:[-0.6,y+0.9,0.2]},{t:'Подвижная щека',p:[-0.15,y+0.5,0.2]},{t:'Шатун',p:[0.2,y+0.75,0]},{t:'Маховик',p:[0.05,y+1.6,0.82]},{t:'Распорная плита',p:[0.48,y+0.32,0.3]},{t:'Электродвигатель',p:[1.2,y+0.85,0.82]}]};}
 /* ---- gyratory & cone ---- */
 function v2Gyr(){const g=new THREE.Group();
   lath([[0.55,0],[0.7,0],[0.7,0.5],[0.6,0.55],[0.62,0.95],[0.5,0.95],[0.45,0.55],[0.3,0.5],[0.3,0.2],[0.55,0.2]],kC(K.cream),g,48,0.2);
@@ -1159,7 +1181,7 @@ function screenBox(g,L,W,y,sl,decks,banana){const sideM=K.cream;
   for(const s of[-1,1]){const sh=new THREE.Shape();sh.moveTo(-L/2,0);sh.lineTo(L/2,0);sh.lineTo(L/2,0.55);sh.lineTo(-L/2,0.85);sh.closePath();
     const geo=new THREE.ExtrudeGeometry(sh,{depth:0.03,bevelEnabled:false});const m=mesh(geo,sideM,g,0,y,s*W/2-0.015);m.rotation.z=-sl;
     for(let i=0;i<5;i++){const st=boxM(0.04,0.6,0.04,K.creamD,g,-L/2+0.3+i*L/5,y+0.35-(i*L/5)*Math.sin(sl),s*(W/2+0.03));}}
-  decks.forEach((dy,i)=>{if(banana){const segs=[[0.5,0.35],[0.33,0.25],[0.15,0.4]];let x=-L/2,yy=y+0.6-i*0.3;for(const [a,f] of segs){const l=L*f;const p=mesh(new THREE.BoxGeometry(l/Math.cos(a+sl),0.02,W-0.06),PUYM,g,x+l/2,yy-l/2*Math.tan(a+sl),0);p.rotation.z=-(a+sl);x+=l;yy-=l*Math.tan(a+sl);}}
+  decks.forEach((dy,i)=>{if(banana){const segs=[[0.3,0.35],[0.18,0.25],[0.05,0.4]];let x=-L/2,yy=y+0.7-i*0.2;for(const [a,f] of segs){const l=L*f;const p=mesh(new THREE.BoxGeometry(l/Math.cos(a+sl),0.02,W-0.06),PUYM,g,x+l/2,yy-l/2*Math.tan(a+sl),0);p.rotation.z=-(a+sl);x+=l;yy-=l*Math.tan(a+sl);}}
     else{const p=mesh(new THREE.BoxGeometry(L,0.02,W-0.06),PUYM,g,0,y+0.5-i*0.32,0);p.rotation.z=-sl;}
     for(let k=0;k<5;k++)cylZk(0.025,W,K.white,g,-L/2+0.25+k*L/5,y+0.6-i*0.32-(k*L/5)*Math.sin(sl)*0.9,0,12);});
   for(const x of[-L/2+0.2,L/2-0.2])for(const s of[-1,1]){coil(g,x,y-0.32,s*(W/2+0.08),0.3,0.06,K.dark);boxM(0.2,y-0.32,0.2,K.creamD,g,x,(y-0.32)/2,s*(W/2+0.08));boxM(0.24,0.05,0.18,K.cream,g,x,y-0.02,s*(W/2+0.08));}}
@@ -1168,7 +1190,7 @@ function v2Banana(){const g=new THREE.Group(),L=2.6,W=1.1,y=0.55;screenBox(g,L,W
   const gb=boxM(0.3,0.3,0.3,K.red,g,0.05,y+0.95,W/2+0.55);motor(g,0.05,y+0.95,W/2+1.0,0.15,0.45,K.yel,'z');
   for(const s of[-1,1])boxM(0.12,0.9,0.12,K.yel,g,1.4,0.45,s*(W/2+0.35));boxM(0.06,0.06,W+0.8,K.yel,g,1.4,0.9,0);
   return{root:g,cam:[[3.0,2.3,3.0],[0,0.7,0]],parts:[{t:'Многоскатная дека',p:[-0.7,y+0.75,0]},{t:'Вибровозбудитель',p:[0.05,y+1.15,0.3]},{t:'Двигатель и привод',p:[0.05,y+1.2,W/2+0.9]},{t:'Пружинные опоры',p:[L/2-0.2,0.35,W/2+0.08]}]};}
-function v2Horiz(){const g=new THREE.Group(),L=2.6,W=1.1,y=0.55;screenBox(g,L,W,y,0.18,[0,1],false);
+function v2Horiz(){const g=new THREE.Group(),L=2.6,W=1.1,y=0.55;screenBox(g,L,W,y,0.04,[0,1],false);
   for(const s of[-1,1]){const e=exciter(g,0.2,y+0.2,s*(W/2+0.18),0.01,K.red);motor(g,0.6,y+0.05,s*(W/2+0.25),0.14,0.4,K.red,'x');}
   const ex=new THREE.Group();ex.position.set(0.3,y+0.95,0);g.add(ex);
   for(const dz of[-0.2,0.2]){cylZk(0.05,W,K.steel,ex,0,0,0,12);}for(const x of[-0.18,0.18]){cylZk(0.15,0.14,K.orange,ex,x,0,-W/2+0.1,24);cylZk(0.15,0.14,K.orange,ex,x,0,W/2-0.1,24);cylZk(0.12,0.3,K.yel,ex,x,0,0,24);}
@@ -1203,6 +1225,64 @@ function v2Rotor(){const g=new THREE.Group();
   cylY(0.18,0.3,K.yel,g,0,0.3,0,32);cylY(0.08,0.4,K.steel,g,0,0.3,0,16);
   return{root:g,cam:[[1.5,1.4,1.7],[0,0.35,0]],spin:g,axis:'y',parts:[{t:'Диски ротора',p:[0.5,0.67,0]},{t:'Износостойкие наконечники',p:[0.48,0.4,0.25]},{t:'Распределительный диск',p:[0,0.45,0]}]};}
 const NEWB={apron:v2Apron,grizzly:v2Grizzly,vibro:v2Vibro,jaw:v2Jaw,gyr:v2Gyr,cone:v2Cone,hsi:v2Hsi,vsi:v2Vsi,mob:v2Mob,banana:v2Banana,horiz:v2Horiz,pu:v2Pu,wire:v2Wire,plates:v2Plates,bush:v2Bush,rotor:v2Rotor};
+/* ---------- catalogue machines on the main line ---------- */
+var LINE={fd:{},cr:{},sc:{}};
+for(const p of PRODUCTS){const a={vibro:2,gyr:3,cone:3,hsi:3,vsi:3,wire:4}[p.id];if(a)p.act=a;}
+function postM(par,x,y0,y1,z){const h=y1-y0;if(h>0.02)boxM(0.14,h,0.14,MAT.paint,par,x,y0+h/2,z);}
+function placeFeeder(t){if(LINE.fd[t])return LINE.fd[t];
+  const b=NEWB[t](),hold=new THREE.Group(),inner=new THREE.Group();inner.add(b.root);hold.add(inner);
+  const L=FX1-FX0,cx=(FX0+FX1)/2;let s,py;
+  if(t==='grizzly'){s=L/2.3;py=panY(cx)-0.64*s;hold.position.set(cx,py,0);inner.scale.setScalar(s);
+    for(const x of[-0.9*s,0.9*s])for(const z of[-0.58*s,0.58*s])postM(hold,x,-py,0,z);}
+  else{s=L/1.7;py=panY(cx)-0.62*s;hold.position.set(cx,py,0);inner.scale.setScalar(s);const top=1.65*s;
+    for(const x of[-0.7*s,0.7*s]){boxM(0.14,0.14,1.95,MAT.paint,hold,x,top+0.07,0);for(const z of[-0.92,0.92])postM(hold,x,-py,top+0.14,z);}}
+  hold.visible=false;scene.add(hold);return LINE.fd[t]={g:hold,inner,b};}
+function placeCr(t){if(LINE.cr[t])return LINE.cr[t];
+  const b=NEWB[t](),hold=new THREE.Group(),inner=new THREE.Group();hold.add(inner);inner.add(b.root);
+  if(t!=='hsi'&&t!=='jaw')b.root.rotation.y=Math.PI/2;
+  b.root.updateMatrixWorld(true);const bx=new THREE.Box3().setFromObject(b.root),sz=bx.getSize(new THREE.Vector3()),ce=bx.getCenter(new THREE.Vector3());
+  const PB=0.62,TOP=t==='jaw'?2.3:2.25,s=Math.min((TOP-PB)/sz.y,(t==='jaw'?1.5:1.3)/sz.x,1.9/sz.z);
+  inner.scale.setScalar(s);inner.position.set(-ce.x*s,-bx.min.y*s,-ce.z*s);hold.position.set(CRX,PB,0);
+  const hx=sz.x*s/2,hz=Math.max(0.62,sz.z*s/2);
+  for(const x of[-hx,hx])for(const z of[-hz,hz])postM(hold,x,-PB,0,z);
+  for(const z of[-hz,hz])boxM(2*hx+0.14,0.1,0.12,MAT.paint,hold,0,-0.05,z);for(const x of[-hx,hx])boxM(0.12,0.1,2*hz,MAT.paint,hold,x,-0.05,0);
+  hold.visible=false;scene.add(hold);return LINE.cr[t]={g:hold,b};}
+function placeScr(t){if(LINE.sc[t])return LINE.sc[t];
+  const b=NEWB[t](),hold=new THREE.Group(),inner=new THREE.Group();hold.add(inner);inner.add(b.root);
+  const L=2.6,W=1.1,y=0.55,s=(SX1-SX0)/L,cx=(SX0+SX1)/2;
+  b.root.traverse(n=>{if(n.isMesh&&n.material===PUYM)n.userData.deck=true;});
+  let yl;
+  if(t==='banana'){const segs=[[0.35,0.35],[0.23,0.25],[0.1,0.4]];yl=(xl,i)=>{let x=-L/2,yy=y+0.7-i*0.2+0.012;for(const [a,f] of segs){const l=L*f;if(xl<=x+l||f===0.4)return yy-(Math.max(0,xl-x))*Math.tan(a);x+=l;yy-=l*Math.tan(a);}return yy;};}
+  else{const sl=0.04;yl=(xl,i)=>y+0.512-i*0.32-xl*Math.tan(sl);}
+  const py=2.3-s*yl(-L/2,0);hold.position.set(cx,py,0);inner.scale.set(s,s,-s);
+  for(const x of[-(L/2-0.2)*s,(L/2-0.2)*s])for(const zz of[-1,1])postM(hold,x,-py,0,zz*(W/2+0.08)*s);
+  if(t==='banana')for(const zz of[-1,1])postM(hold,1.4*s,-py,0,zz*(W/2+0.35)*s);
+  for(const zz of[-1,1])boxM((L-0.2)*s,0.12,0.14,MAT.paint,hold,0,-0.06,zz*(W/2+0.08)*s);
+  const f1=X=>py+s*yl((X-cx)/s,0),f2=X=>py+s*yl((X-cx)/s,1);
+  hold.visible=false;scene.add(hold);return LINE.sc[t]={g:hold,inner,b,f1,f2};}
+let curFd=null;
+function applyLine(){
+  for(const k in LINE.cr)LINE.cr[k].g.visible=false;for(const k in LINE.sc)LINE.sc[k].g.visible=false;
+  newCr=placeCr(crType);newCr.g.visible=true;oldJaw.visible=false;
+  newScr=placeScr(scType);newScr.g.visible=true;oldScr.visible=false;d1=newScr.f1;d2=newScr.f2;S2X1=SX1-0.08;
+  newScr=Object.assign(newScr,{traverse:f=>newScr.g.traverse(f)});
+  placeFeeder('grizzly');placeFeeder('vibro');GXV=FX0+(FX1-FX0)/2-0.15*(FX1-FX0)/2.3;
+}
+function lineVis(even){const t=even?fdType:'vibro';for(const k in LINE.fd)LINE.fd[k].g.visible=(k===t&&!(even&&fdType==='apron'));curFd=LINE.fd[t]||null;}
+function lineUpdate(dt,vF){if(!LINE||!newCr)return;const T=simTime;
+  if(curFd&&curFd.g.visible)curFd.inner.position.set(0.006*Math.sin(T*50),0.006*Math.sin(T*50+1),0);
+  const b=newCr.b;if(b.spin)b.spin.rotation[b.axis||'y']-=dt*9;
+  if(b.pit){b.pit.rotation.z=-0.3+0.035*Math.sin(T*6);if(b.pw)b.pw.rotation.z-=dt*6;}
+  if(newScr&&newScr.inner)newScr.inner.position.set(0.008*Math.sin(T*45),0.01*Math.sin(T*45+1.2),0);}
+applyLine();lineVis(pres.feed>0.5);
+document.querySelectorAll('[data-cr]').forEach(b=>b.addEventListener('click',()=>{crType=b.dataset.cr;pick('cr',crType);applyLine();eqNote('cr');info();goCam('jaw');}));
+document.querySelectorAll('[data-sc]').forEach(b=>b.addEventListener('click',()=>{scType=b.dataset.sc;pick('sc',scType);applyLine();eqNote('sc');goCam('screen');}));
+document.querySelectorAll('[data-sv]').forEach(b=>b.addEventListener('click',()=>{svType=b.dataset.sv;pick('sv',svType);eqNote('sv');if(mode<4)setMode(4,true);else{info();goCam('screen');}}));
+const EQD={grizzly:'Колосниковый питатель: лоток и две ступени колосников на пружинах. Мелочь проваливается между колосниками и идёт мимо дробилки.',apron:'Пластинчатый питатель: полотно из литых пластин на тяговых цепях вытягивает кусковой материал из бункера ровным слоем.',vibro:'Вибрационный питатель: лоток на пружинных подвесках с двумя вибродвигателями, ровная подача сыпучего материала.',
+ jaw:'Щёковая дробилка: подвижная щека на эксцентриковом валу качается и раздавливает кусок о неподвижную щеку.',gyr:'Гирационная дробилка: подвижный конус качается по кругу внутри чаши, крупный кусок дробится непрерывно.',cone:'Конусная дробилка: среднее и мелкое дробление между конусом и бронёй чаши, щель держат гидроцилиндры.',hsi:'Роторная дробилка: ротор с билами бросает кусок на отбойные плиты, продукт — кубовидный.',vsi:'Центробежно-ударная дробилка: ротор разгоняет материал и бросает на каменную полку, камень бьёт о камень.',
+ banana:'Банановый грохот: дека из нескольких участков с убывающим углом, быстрый рассев на входе и точный на выходе.',horiz:'Горизонтальный грохот: почти плоские деки, эллиптические колебания — точное разделение по фракциям.',
+ pu:'Полиуретановые панели: модульные, износостойкие, меняются по одной. Включаются на шаге 4.',rub:'Резиновые панели: держат удар крупного куска и гасят шум. Включаются на шаге 4.',wire:'Металлическая сетка: большая живая площадь и высокая пропускная способность. Включается на шаге 4.'};
+function eqNote(k){const id=k==='fd'?fdType:k==='cr'?crType:k==='sc'?scType:svType;const el=$('eqD');if(el&&EQD[id])el.textContent=EQD[id];}
 PRODUCTS.push(
  {id:'bush',grp:'Запасные и износостойкие части',name:'Механические узлы',short:'Втулки, эксцентрики, валы',cut:false,build:null,list:['Втулки эксцентрика и корпусные элементы','Валы и детали приводов','Подбор по каталожному номеру и посадочным размерам'],desc:'Втулки, эксцентриковые и корпусные элементы, валы и детали приводов. Подбор по каталожному номеру и посадочным размерам.',sel:SEL_Z},
  {id:'rotor',grp:'Запасные и износостойкие части',name:'Роторы и футеровки',short:'Для ударных и центробежных дробилок',cut:false,build:null,list:['Роторы центробежных дробилок','Износостойкие наконечники и футеровки','Защитные плиты и крепёж'],desc:'Элементы ударных и центробежных дробилок; защитные плиты и крепёж. Комплектование по требуемому объёму ремонта.',sel:SEL_Z});
@@ -1253,7 +1333,7 @@ $('pCut').onclick=()=>{pCut=!pCut;$('pCut').setAttribute('aria-pressed',pCut);if
 $('pLbl').onclick=()=>{pLblOn=!pLblOn;$('pLbl').setAttribute('aria-pressed',pLblOn);};
 $('pSpin').onclick=()=>{pSpinOn=!pSpinOn;$('pSpin').setAttribute('aria-pressed',pSpinOn);if(pctl)pctl.autoRotate=pSpinOn;};
 $('pSpin').setAttribute('aria-pressed',pSpinOn);$('pCut').setAttribute('aria-pressed',pCut);
-$('pUse').onclick=()=>{const P0=PRODUCTS.find(p=>p.id===pid);if(!P0||!P0.act)return;if(pid==='apron'||pid==='grizzly'){fdType=pid;pick('fd',fdType);}if(mode<P0.act)setMode(P0.act,true);else goCam(STEPCAM[P0.act]);
+$('pUse').onclick=()=>{const P0=PRODUCTS.find(p=>p.id===pid);if(!P0||!P0.act)return;if(['apron','grizzly','vibro'].includes(pid)){fdType=pid;pick('fd',fdType);eqNote('fd');}if(['jaw','gyr','cone','hsi','vsi'].includes(pid)){crType=pid;pick('cr',crType);applyLine();eqNote('cr');info();}if(['banana','horiz'].includes(pid)){scType=pid;pick('sc',scType);applyLine();eqNote('sc');}if(pid==='wire'){svType='wire';pick('sv','wire');eqNote('sv');}if(pid==='pu'){svType='pu';pick('sv','pu');}if(mode<P0.act)setMode(P0.act,true);else goCam(STEPCAM[P0.act]);
   if(view.scrollIntoView)view.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'center'});};
 let pVisible=true;
 if(window.IntersectionObserver)new IntersectionObserver(es=>{pVisible=es[0].isIntersecting;}).observe(pview);
