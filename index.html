@@ -443,6 +443,12 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
   .hero .fields{margin-top:10px;gap:5px}
   .hero .fields span{font-size:10.5px;padding:2px 8px}
 }
+/* phone hero: title block up top, buttons and small labels pinned to the bottom (02.11) */
+@media (max-width:760px){
+  .hero{justify-content:stretch}
+  .hero .in{flex:1;display:flex;flex-direction:column;width:100%;padding-block:clamp(20px,5svh,44px) clamp(18px,3.5svh,32px)}
+  .hero .cta{margin-top:auto;padding-top:24px}
+}
 </style>
 </head>
 <body>
