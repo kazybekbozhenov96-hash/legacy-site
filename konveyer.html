@@ -505,6 +505,10 @@ section.blk{padding-block:72px 8px}
 }
 @media (max-width:900px){.dd-ph{display:none}}
 @media (prefers-reduced-motion:reduce){.dd-ph img{transition:none}}
+.lang{display:inline-flex;align-items:center;gap:2px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;margin-left:auto;margin-right:10px}
+.lang a{color:inherit;opacity:.55;text-decoration:none;padding:6px 5px;border-radius:4px}.lang a:hover{opacity:1}
+.lang a[aria-current]{opacity:1;color:var(--pu)}
+@media (max-width:420px){.lang{font-size:11px;margin-right:6px}.lang a{padding:6px 3px}}
 </style>
 </head>
 <body>
@@ -518,7 +522,7 @@ section.blk{padding-block:72px 8px}
       <a href="about.html">О нас</a>
       <a href="./#request">Запрос</a>
     </nav>
-    <a class="tel" href="#contacts">Контакты</a>
+    <nav class="lang" aria-label="Язык / Тіл / Language"><a href="konveyer.html" hreflang="ru" lang="ru" aria-current="true">RU</a><a href="kz/" hreflang="kk" lang="kk">KZ</a><a href="en/" hreflang="en" lang="en">EN</a></nav><a class="tel" href="#contacts">Контакты</a>
     <button class="burger" id="burger" aria-expanded="false" aria-controls="nav" aria-label="Меню"><span></span><span></span><span></span></button>
   </div>
 </header>

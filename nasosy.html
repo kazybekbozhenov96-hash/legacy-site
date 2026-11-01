@@ -637,6 +637,10 @@ details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width
 .ifill ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14.5px}
 .ifill a{margin-top:auto;font-weight:600;font-size:14px;color:var(--pu);text-decoration:none}
 .blk2 .cards .cfill{grid-column:auto}
+.lang{display:inline-flex;align-items:center;gap:2px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;margin-left:auto;margin-right:10px}
+.lang a{color:inherit;opacity:.55;text-decoration:none;padding:6px 5px;border-radius:4px}.lang a:hover{opacity:1}
+.lang a[aria-current]{opacity:1;color:var(--pu)}
+@media (max-width:420px){.lang{font-size:11px;margin-right:6px}.lang a{padding:6px 3px}}
 </style>
 </head>
 <body>
@@ -650,7 +654,7 @@ details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width
       <a href="about.html">О нас</a>
       <a href="./#request">Запрос</a>
     </nav>
-    <a class="tel" href="#contacts">Контакты</a>
+    <nav class="lang" aria-label="Язык / Тіл / Language"><a href="nasosy.html" hreflang="ru" lang="ru" aria-current="true">RU</a><a href="kz/" hreflang="kk" lang="kk">KZ</a><a href="en/" hreflang="en" lang="en">EN</a></nav><a class="tel" href="#contacts">Контакты</a>
     <button class="burger" id="burger" aria-expanded="false" aria-controls="nav" aria-label="Меню"><span></span><span></span><span></span></button>
   </div>
 </header>
