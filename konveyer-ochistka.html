@@ -505,6 +505,124 @@ section.blk{padding-block:72px 8px}
 }
 @media (max-width:900px){.dd-ph{display:none}}
 @media (prefers-reduced-motion:reduce){.dd-ph img{transition:none}}
+
+/* tech data + FAQ (added 2026-11) */
+.tech{margin-top:40px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.tech>*{min-width:0}
+.tech>h3{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px);margin-top:6px}
+.tech>h3+p{color:var(--muted);font-size:14.5px;margin-top:-4px}
+details.more{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+details.more>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:15px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:18px;line-height:1;color:var(--pu)}
+details.more[open]>summary::after{content:"\2212"}
+details.more>summary small{font-weight:400;color:var(--muted);font-size:13px}
+details.more>summary:focus-visible{outline:2px solid var(--pu);outline-offset:-2px;border-radius:6px}
+details.more .tw{margin:0 12px 12px;border-radius:4px}
+details.more .tnote{color:var(--muted);font-size:13.5px;padding:0 16px 14px}
+details.more td{font-variant-numeric:tabular-nums}
+details.faq>summary{font-weight:500}
+details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width:80ch}
+.rsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);background:#0f1419;color:#e6e9ec;border-radius:8px;overflow:hidden}
+.rsel .f{padding:20px 22px;display:grid;gap:14px;align-content:start}
+.rsel .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.rsel h4{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px)}
+.rsel .fld{display:grid;gap:6px}.rsel .fld>span{font-size:13px;color:#a8b3bd}
+.rsel .chips{display:flex;flex-wrap:wrap;gap:6px}
+.rsel .chips label{position:relative}
+.rsel .chips input{position:absolute;opacity:0;pointer-events:none}
+.rsel .chips label span{display:inline-block;cursor:pointer;font-size:13.5px;padding:7px 11px;border:1px solid #3d4a57;border-radius:4px;color:#d3dae0;font-variant-numeric:tabular-nums}
+.rsel .chips input:checked+span{background:#f2a33a;border-color:#f2a33a;color:#1a1206;font-weight:600}
+.rsel .chips input:focus-visible+span{outline:2px solid #f2a33a;outline-offset:2px}
+.rsel .res{background:#151c23;padding:20px 22px;display:grid;gap:12px;align-content:start;border-left:1px solid #28333e}
+.rsel dl{margin:0;display:grid}
+.rsel dl div{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:12px;padding:9px 0;border-bottom:1px solid #28333e}
+.rsel dt{color:#a8b3bd;font-size:13.5px}.rsel dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.rsel dd small{display:block;font-weight:400;color:#a8b3bd;font-size:12.5px}
+.rsel .res p{font-size:13px;color:#a8b3bd}
+.rsel .btn{background:#f2a33a;color:#1a1206;justify-self:start}
+@media (max-width:820px){.rsel{grid-template-columns:minmax(0,1fr)}.rsel .res{border-left:0;border-top:1px solid #28333e}}
+/* section page v2 2026-11 */
+.blk2{margin-top:56px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.blk2:first-child{margin-top:0}
+.blk2>*{min-width:0}
+.shd{display:grid;gap:6px;max-width:76ch}
+.shd h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,2.8vw,32px);line-height:1.1}
+.shd p:not(.eyebrow){color:var(--muted)}
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.types{grid-template-columns:minmax(0,1fr)}}
+.card .spec{list-style:none;margin:0;padding:0;display:grid;font-size:13.5px}
+.card .spec li{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.card .spec li span{color:var(--muted)}
+.card .spec li b{font-size:13.5px;font-weight:500}
+.tech{margin-top:0}
+.blk2.tech{margin-top:56px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.box{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 20px;display:grid;gap:10px;align-content:start}
+.box h3{font-family:var(--display);font-weight:500;font-size:18px}
+.box ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14.5px}
+.supph{margin:0;position:relative;border-radius:6px;overflow:hidden;min-height:240px;background:#1b1f22}
+.supph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.supph figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 16px 14px;color:#fff;font-size:14px;background:linear-gradient(transparent,rgba(12,15,18,.85))}
+@media (max-width:760px){.supph{min-height:200px}}
+.shero .show3d{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;width:100%;aspect-ratio:16/11;max-width:100%;border-radius:8px;overflow:hidden;background:#0f1419;border:1.5px solid #f2a33a;color:#fff;animation:t3dglow 2.8s ease-out infinite}
+.shero .show3d .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;aspect-ratio:auto;border-radius:0;animation:t3dpan 12s ease-in-out infinite alternate}
+.show3d::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(12,15,18,.15),rgba(12,15,18,.65))}
+.show3d>span{position:absolute;z-index:1}
+.show3d .badge{left:14px;top:14px;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#f2a33a;color:#1a1206;padding:5px 9px;border-radius:3px;font-weight:500}
+.show3d .badge i{width:7px;height:7px;border-radius:50%;background:#1a1206;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+@keyframes t3dpan{0%{transform:scale(1.05)}100%{transform:scale(1.22) translateX(-6%)}}
+.show3d .play{left:50%;top:46%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:12px;padding:14px 22px 14px 16px;border-radius:999px;background:rgba(12,15,18,.84);border:1.5px solid #f2a33a;white-space:nowrap;transition:transform .25s,background .25s}
+.show3d .play svg{width:34px;height:34px;color:#f2a33a;animation:spin3d 6s linear infinite}
+.show3d .play b{font-size:17px;font-weight:600}
+.show3d:hover .play{transform:translate(-50%,-50%) scale(1.06);background:#f2a33a;color:#1a1206}
+.show3d:hover .play svg{color:#1a1206}
+.show3d:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
+.show3d .feats{left:14px;bottom:14px;right:150px;display:flex;flex-wrap:wrap;gap:6px}
+.show3d .feats span{font-size:12.5px;padding:4px 9px;border-radius:3px;background:rgba(12,15,18,.72);border:1px solid rgba(255,255,255,.22);color:#e6e9ec}
+.shero .show3d .inset{right:14px;bottom:14px;width:124px;background:#fff;border-radius:5px;padding:6px 6px 4px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.shero .show3d .inset img{width:100%;height:62px;object-fit:contain;aspect-ratio:auto;border-radius:0}
+.show3d .inset small{display:block;text-align:center;font-size:10.5px;color:#5d6872;font-family:var(--mono)}
+@media (max-width:820px){.shero .show3d{order:-1}}
+@media (max-width:560px){.show3d .inset{display:none}.show3d .feats{right:14px}.show3d .play b{font-size:15px}}
+@media (prefers-reduced-motion:reduce){.shero .show3d,.show3d .bg,.show3d .play svg,.show3d .badge i{animation:none}}
+
+/* mega-menu photo panel (2026-11) */
+@media (min-width:901px){
+.dd-m{width:min(1080px,calc(100vw - 32px));grid-template-columns:minmax(0,260px) repeat(3,minmax(0,1fr));padding:0 18px 0 0;overflow:hidden}
+.dd-m>.dd-col{padding-top:18px}
+.dd-all{grid-column:2/-1;padding-bottom:16px}
+.dd-ph{grid-row:1/3;position:relative;display:block;min-height:300px;background:#1b1f22;overflow:hidden;text-decoration:none;color:#fff}
+.dd-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dd-ph:hover img{transform:scale(1.04)}
+.dd-ph::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(12,15,18,.9))}
+.dd-ph span{position:absolute;left:16px;right:16px;bottom:16px;z-index:1;display:grid;gap:10px}
+.dd-ph b{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.15;text-transform:uppercase;color:#fff}
+.dd-ph i{font-style:normal;justify-self:start;background:#f2a33a;color:#1a1206;font-weight:600;font-size:13.5px;padding:8px 12px;border-radius:4px}
+}
+@media (max-width:900px){.dd-ph{display:none}}
+@media (prefers-reduced-motion:reduce){.dd-ph img{transition:none}}
+
+.blk2 .feat{margin-top:0}
+.blk2>.grp{margin-top:0}
+.blk2>.grp>.cards{margin-top:14px}
+.cfill{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;min-height:260px;border-radius:6px;overflow:hidden;background:#0f1419;border:1.5px solid #f2a33a;color:#fff}
+.cfill img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.cfill:hover img{transform:scale(1.04)}
+.cfill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,15,18,.92) 0%,rgba(12,15,18,.55) 55%,rgba(12,15,18,.15) 100%)}
+.cfill .cf-t{position:absolute;inset:0;z-index:1;padding:22px 24px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;align-items:flex-start}
+.cfill .badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#f2a33a;color:#1a1206;padding:5px 9px;border-radius:3px;margin-bottom:auto}
+.cfill .badge i{width:7px;height:7px;border-radius:50%;background:#1a1206;animation:blink 1.4s ease-in-out infinite}
+.cfill b{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,22px);line-height:1.2;max-width:22ch}
+.cfill small{color:#c9d1d8;font-size:14px}
+.cfill .cf-go{display:inline-flex;align-items:center;gap:10px;margin-top:6px;background:#f2a33a;color:#1a1206;font-weight:600;font-size:15px;padding:10px 16px 10px 12px;border-radius:999px}
+.cfill .cf-go svg{width:24px;height:24px;animation:spin3d 6s linear infinite}
+.cfill:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
+@media (min-width:1120px){.cfill{grid-column:span 3}}
+@media (prefers-reduced-motion:reduce){.cfill img,.cfill .cf-go svg,.cfill .badge i{animation:none;transition:none}}
+
 </style>
 </head>
 <body>
@@ -531,22 +649,51 @@ section.blk{padding-block:72px 8px}
       <div>
         <p class="eyebrow"><b>Конвейерные решения</b> · раздел 01</p>
         <h1><i>01</i>Очистка ленты</h1>
-        <p class="lede">Материал остаётся на ленте, накапливается у барабана и уносится на обратную ветвь. Решение — первичные и вторичные очистители: снять основной слой на барабане и остатки на обратной ветви.</p>
-        <div class="cta"><a class="btn" href="index.html?sec=c1#request">Обсудить задачу</a><button class="t3d" data-3d="ochistka.html" data-name="Очистка ленты" aria-label="Открыть 3D-модель «Очистка ленты»"><span class="th"><img src="img/3d-ochistka.jpg" alt=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span><small>3D-модель</small><b>Покрутить «Очистка ленты»</b></span></button></div>
+        <p class="lede">Первичные и вторичные очистители, плужки, щётки и спиральные ролики для лент 600–2400 мм. Подберём по грузу, скорости и типу стыка.</p>
+        <div class="cta"><a class="btn" href="index.html?sec=c1#request">Запросить расчёт</a><a class="btn ghost" href="#pick">Подобрать очистку</a></div>
       </div>
-      <div class="pic"><img src="img/cat/5.jpg" alt="Налипание и очистка ленты"></div>
+      <button class="show3d" type="button" data-3d="ochistka.html" data-name="Очистка ленты" aria-label="Открыть интерактивную 3D-модель «Очистка ленты»">
+        <img class="bg" src="img/3d-ochistka.jpg" alt="">
+        <span class="badge"><i></i>3D · интерактивно</span>
+        <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><b>Покрутить 3D-модель</b></span>
+        <span class="feats"><span>5 типов лезвий</span><span>Первичная и вторичная очистка</span><span>Спиральный ролик</span></span>
+        <span class="inset"><img src="img/cat/14.jpg" alt="Сегментированное полиуретановое лезвие, фото из каталога"><small>фото из каталога</small></span>
+      </button>
     </div>
   </section>
 <nav class="jump" aria-label="Разделы направления «Конвейерные решения»"><div class="in"><a class="ov" href="konveyer.html">Обзор</a><a href="konveyer-ochistka.html" aria-current="page"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></nav>
   <div class="in" style="padding-top:12px">
-    <div style="height:28px"></div>
+    <div style="height:12px"></div>
 <section class="dsec" id="c1">
-<div class="grp"><h3>Первичная очистка</h3><p>Налипший материал снимается в зоне разгрузочного барабана до перехода ленты на обратную ветвь.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/13.jpg" alt="Полиуретановые очистители" loading="lazy"></div><div class="t"><b>Полиуретановые очистители</b><p>Скребок снимает основной слой материала. Сменное лезвие и регулируемый натяжной узел подбирают по ширине очистки и диаметру барабана.</p><p class="adv">Снимают основную массу налипаний и уменьшают перенос материала на обратную ветвь.</p><a class="ask" href="index.html?sec=c1&item=Полиуретановые очистители#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/14.jpg" alt="Сегментированное лезвие" loading="lazy"></div><div class="t"><b>Сегментированное лезвие</b><em>Лента 600–2400 мм · до 4,5 м/с</em><p>Раздельно заменяемые полиуретановые элементы и двусторонний пружинный натяжитель. Для прямого хода и вулканизированных стыков.</p><p class="adv">Позволяет заменить изношенный сегмент без замены всей рабочей кромки.</p><a class="ask" href="index.html?sec=c1&item=Сегментированное лезвие#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/15.jpg" alt="Цельное лезвие" loading="lazy"></div><div class="t"><b>Цельное лезвие</b><em>Лента 600–2400 мм · до 4,5 м/с</em><p>Полиуретановый скребок с общей рабочей кромкой и съёмным креплением. Пружинный узел позволяет регулировать контакт с лентой.</p><p class="adv">Единая сменная кромка упрощает замену; регулируемый прижим помогает поддерживать контакт с лентой.</p><a class="ask" href="index.html?sec=c1&item=Цельное лезвие#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/16.jpg" alt="Керамические лезвия" loading="lazy"></div><div class="t"><b>Керамические лезвия</b><em>Лента 600–2400 мм · до 4,5 м/с</em><p>Сменные элементы из оксида алюминия для первичной очистки в условиях абразивного воздействия и повышенной температуры. Допустимую температуру согласуют для конкретного исполнения.</p><p class="adv">Износостойкие рабочие элементы подходят для абразивного продукта; замена выполняется по сегментам.</p><a class="ask" href="index.html?sec=c1&item=Керамические лезвия#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/17.jpg" alt="Твердосплавные лезвия" loading="lazy"></div><div class="t"><b>Твердосплавные лезвия</b><em>Лента 600–2400 мм · до 6,5 м/с</em><p>Лезвия из карбида вольфрама с индивидуальными упругими модулями. Для мелкого и липкого материала, высоких нагрузок; прямой ход и вулканизированные стыки.</p><p class="adv">Износостойкая кромка снимает плотные налипания, а упругие модули компенсируют отклонения поверхности.</p><a class="ask" href="index.html?sec=c1&item=Твердосплавные лезвия#request">Запросить →</a></div></article></div></div>
-<div class="grp"><h3>Вторичная очистка</h3><p>Остаточный слой снимается после первичного очистителя на рабочей поверхности обратной ветви.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/21.jpg" alt="Модульные скребки" loading="lazy"></div><div class="t"><b>Модульные скребки</b><p>Сменные твердосплавные сегменты для последующей очистки. Натяжной механизм и компенсацию ударов подбирают с учётом режима движения и конструкции стыка.</p><p class="adv">Позволяют обслуживать отдельные сегменты и уменьшать остаточный унос материала после первичной очистки.</p><a class="ask" href="index.html?sec=c1&item=Модульные скребки#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/22.jpg" alt="Раздельные лезвия с амортизацией" loading="lazy"></div><div class="t"><b>Раздельные лезвия с амортизацией</b><em>Лента 600–2400 мм · до 10 м/с</em><p>Индивидуальные лезвия и упругие опоры для влажного, липкого материала. Регулируемый прижим и компенсация ударов. Совместимость с механическим стыком согласуют при подборе.</p><p class="adv">Упругие опоры смягчают удары по лезвиям и помогают сохранять контакт с лентой.</p><a class="ask" href="index.html?sec=c1&item=Раздельные лезвия с амортизацией#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/23.jpg" alt="Очистители для шлама" loading="lazy"></div><div class="t"><b>Очистители для шлама</b><em>Лента 600–2400 мм · до 6,5 м/с</em><p>Твердосплавные рабочие элементы с упругими модулями для сильных налипаний. Для вулканизированных стыков; реверс допускается в исполнении с ограничителем.</p><p class="adv">Снимают влажный остаточный слой, уменьшая его попадание на нижние ролики и под конвейер.</p><a class="ask" href="index.html?sec=c1&item=Очистители для шлама#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/24.jpg" alt="Полиуретановые скребки" loading="lazy"></div><div class="t"><b>Полиуретановые скребки</b><p>Дополнительная очистка рабочей поверхности. Ширину лезвия, прижим и монтажное положение подбирают по конструкции конвейера и условиям налипания.</p><p class="adv">Эластичная кромка обеспечивает дополнительную очистку и допускает регулировку прижима по мере износа.</p><a class="ask" href="index.html?sec=c1&item=Полиуретановые скребки#request">Запросить →</a></div></article></div></div>
-<div class="grp"><h3>Специальные очистители</h3><p>Защита барабанов от просыпи и очистка участков, где требуется другой рабочий орган.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/25.jpg" alt="V-образные плужки" loading="lazy"></div><div class="t"><b>V-образные плужки</b><p>Удаляют материал с внутренней поверхности обратной ветви перед барабаном. Защищают барабан от попадания камней.</p><p class="adv">Отводят просыпь в стороны, снижая риск её защемления между лентой и барабаном.</p><a class="ask" href="index.html?sec=c1&item=V-образные плужки#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/26.jpg" alt="Диагональные плужки" loading="lazy"></div><div class="t"><b>Диагональные плужки</b><p>Резиновая кромка на подвесной раме для очистки нерабочей поверхности ленты.</p><p class="adv">Защищают барабан от материала на внутренней стороне ленты.</p><a class="ask" href="index.html?sec=c1&item=Диагональные плужки#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/27.jpg" alt="Щёточные очистители" loading="lazy"></div><div class="t"><b>Щёточные очистители</b><p>Приводная щётка. Профиль ленты, щетину, рабочую ширину и питание согласуют при подборе.</p><p class="adv">Ворс достигает впадин профиля, если щётка согласована с типом ленты.</p><a class="ask" href="index.html?sec=c1&item=Щёточные очистители#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/28.jpg" alt="Спиральные ролики" loading="lazy"></div><div class="t"><b>Спиральные ролики</b><p>Спиральные полиуретановые ролики очищают и поддерживают ленту. Доступны центрирующие версии.</p><p class="adv">Вращающийся рабочий орган помогает отделять стойкие налипания.</p><a class="ask" href="index.html?sec=c1&item=Спиральные ролики#request">Запросить →</a></div></article></div></div>
-<div class="feat"><div class="pics"><img src="img/cat/19.jpg" alt="Керамический очиститель RLTC" loading="lazy"><img src="img/cat/20.jpg" alt="Керамический очиститель RLTC" loading="lazy"></div><div class="t"><span class="tag">Решение крупно</span><h3>Керамический очиститель RLTC</h3><p>Первичный очиститель с сегментами из алюмооксидной керамики для удаления налипаний с рабочей поверхности ленты в зоне разгрузочного барабана.</p><ol><li><b>Износостойкая рабочая поверхность</b><span>Керамические элементы контактируют с налипшим материалом по ширине очистки.</span></li><li><b>Гибкая сегментная сборка</b><span>Отдельные элементы на гибком основании позволяют приспосабливать контакт к профилю ленты.</span></li><li><b>Регулируемое натяжение</b><span>Пружинный узел служит для настройки и поддержания рабочего контакта.</span></li></ol></div></div>
-<div class="tbl"><h3>Как выбрать систему очистки</h3><div class="tw"><table><thead><tr><th>Задача</th><th>Решение</th><th>Что проверить</th></tr></thead><tbody><tr><td>Основной слой после разгрузки</td><td>Первичный очиститель на разгрузочном барабане</td><td>Диаметр барабана, ширина потока, пространство внутри разгрузочной течки</td></tr><tr><td>Тонкий остаточный слой</td><td>Вторичный очиститель на рабочей поверхности обратной ветви</td><td>Ровность ленты, опора в зоне контакта, отвод снятого материала</td></tr><tr><td>Материал на внутренней стороне</td><td>V-образный или прямой плужок перед барабаном</td><td>Направление движения, место установки и свободный выход материала. Перед натяжным барабаном</td></tr></tbody></table></div></div>
-<div class="pick"><div><b>Для подбора пришлите</b><p>Ширина и скорость ленты • диаметр барабана • тип стыка • материал и влажность • температура • реверс • место установки и доступ для обслуживания</p></div><a class="btn" href="index.html?sec=c1#request">Отправить запрос</a></div></section>
+<div class="blk2" id="primary"><div class="grp"><h3>Первичная очистка</h3><p>Налипший материал снимается в зоне разгрузочного барабана до перехода ленты на обратную ветвь.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/13.jpg" alt="Полиуретановые очистители" loading="lazy"></div><div class="t"><b>Полиуретановые очистители</b><p>Скребок снимает основной слой материала. Сменное лезвие и регулируемый натяжной узел подбирают по ширине очистки и диаметру барабана.</p><p class="adv">Снимают основную массу налипаний и уменьшают перенос материала на обратную ветвь.</p><a class="ask" href="index.html?sec=c1&item=Полиуретановые очистители#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/14.jpg" alt="Сегментированное лезвие" loading="lazy"></div><div class="t"><b>Сегментированное лезвие</b><em>Лента 600–2400 мм · до 4,5 м/с</em><p>Раздельно заменяемые полиуретановые элементы и двусторонний пружинный натяжитель. Для прямого хода и вулканизированных стыков.</p><p class="adv">Позволяет заменить изношенный сегмент без замены всей рабочей кромки.</p><a class="ask" href="index.html?sec=c1&item=Сегментированное лезвие#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/15.jpg" alt="Цельное лезвие" loading="lazy"></div><div class="t"><b>Цельное лезвие</b><em>Лента 600–2400 мм · до 4,5 м/с</em><p>Полиуретановый скребок с общей рабочей кромкой и съёмным креплением. Пружинный узел позволяет регулировать контакт с лентой.</p><p class="adv">Единая сменная кромка упрощает замену; регулируемый прижим помогает поддерживать контакт с лентой.</p><a class="ask" href="index.html?sec=c1&item=Цельное лезвие#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/16.jpg" alt="Керамические лезвия" loading="lazy"></div><div class="t"><b>Керамические лезвия</b><em>Лента 600–2400 мм · до 4,5 м/с</em><p>Сменные элементы из оксида алюминия для первичной очистки в условиях абразивного воздействия и повышенной температуры. Допустимую температуру согласуют для конкретного исполнения.</p><p class="adv">Износостойкие рабочие элементы подходят для абразивного продукта; замена выполняется по сегментам.</p><a class="ask" href="index.html?sec=c1&item=Керамические лезвия#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/17.jpg" alt="Твердосплавные лезвия" loading="lazy"></div><div class="t"><b>Твердосплавные лезвия</b><em>Лента 600–2400 мм · до 6,5 м/с</em><p>Лезвия из карбида вольфрама с индивидуальными упругими модулями. Для мелкого и липкого материала, высоких нагрузок; прямой ход и вулканизированные стыки.</p><p class="adv">Износостойкая кромка снимает плотные налипания, а упругие модули компенсируют отклонения поверхности.</p><a class="ask" href="index.html?sec=c1&item=Твердосплавные лезвия#request">Запросить →</a></div></article><button class="cfill" type="button" data-3d="ochistka.html" data-name="Очистка ленты" aria-label="Открыть 3D-модель «Очистка ленты»"><img src="img/3d-ochistka.jpg" alt="" loading="lazy"><span class="cf-t"><span class="badge"><i></i>3D · интерактивно</span><b>Все очистители на конвейере в 3D</b><small>Выберите лезвие — оно встанет на барабан</small><span class="cf-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Покрутить 3D-модель</span></span></button></div></div></div>
+<div class="blk2"><div class="feat"><div class="pics"><img src="img/cat/19.jpg" alt="Керамический очиститель RLTC" loading="lazy"><img src="img/cat/20.jpg" alt="Керамический очиститель RLTC" loading="lazy"></div><div class="t"><span class="tag">Решение крупно</span><h3>Керамический очиститель RLTC</h3><p>Первичный очиститель с сегментами из алюмооксидной керамики для удаления налипаний с рабочей поверхности ленты в зоне разгрузочного барабана.</p><ol><li><b>Износостойкая рабочая поверхность</b><span>Керамические элементы контактируют с налипшим материалом по ширине очистки.</span></li><li><b>Гибкая сегментная сборка</b><span>Отдельные элементы на гибком основании позволяют приспосабливать контакт к профилю ленты.</span></li><li><b>Регулируемое натяжение</b><span>Пружинный узел служит для настройки и поддержания рабочего контакта.</span></li></ol></div></div>
+</div>
+<div class="blk2" id="secondary"><div class="grp"><h3>Вторичная очистка</h3><p>Остаточный слой снимается после первичного очистителя на рабочей поверхности обратной ветви.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/21.jpg" alt="Модульные скребки" loading="lazy"></div><div class="t"><b>Модульные скребки</b><p>Сменные твердосплавные сегменты для последующей очистки. Натяжной механизм и компенсацию ударов подбирают с учётом режима движения и конструкции стыка.</p><p class="adv">Позволяют обслуживать отдельные сегменты и уменьшать остаточный унос материала после первичной очистки.</p><a class="ask" href="index.html?sec=c1&item=Модульные скребки#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/22.jpg" alt="Раздельные лезвия с амортизацией" loading="lazy"></div><div class="t"><b>Раздельные лезвия с амортизацией</b><em>Лента 600–2400 мм · до 10 м/с</em><p>Индивидуальные лезвия и упругие опоры для влажного, липкого материала. Регулируемый прижим и компенсация ударов. Совместимость с механическим стыком согласуют при подборе.</p><p class="adv">Упругие опоры смягчают удары по лезвиям и помогают сохранять контакт с лентой.</p><a class="ask" href="index.html?sec=c1&item=Раздельные лезвия с амортизацией#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/23.jpg" alt="Очистители для шлама" loading="lazy"></div><div class="t"><b>Очистители для шлама</b><em>Лента 600–2400 мм · до 6,5 м/с</em><p>Твердосплавные рабочие элементы с упругими модулями для сильных налипаний. Для вулканизированных стыков; реверс допускается в исполнении с ограничителем.</p><p class="adv">Снимают влажный остаточный слой, уменьшая его попадание на нижние ролики и под конвейер.</p><a class="ask" href="index.html?sec=c1&item=Очистители для шлама#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/24.jpg" alt="Полиуретановые скребки" loading="lazy"></div><div class="t"><b>Полиуретановые скребки</b><p>Дополнительная очистка рабочей поверхности. Ширину лезвия, прижим и монтажное положение подбирают по конструкции конвейера и условиям налипания.</p><p class="adv">Эластичная кромка обеспечивает дополнительную очистку и допускает регулировку прижима по мере износа.</p><a class="ask" href="index.html?sec=c1&item=Полиуретановые скребки#request">Запросить →</a></div></article></div></div></div>
+<div class="blk2" id="special"><div class="grp"><h3>Специальные очистители</h3><p>Защита барабанов от просыпи и очистка участков, где требуется другой рабочий орган.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/25.jpg" alt="V-образные плужки" loading="lazy"></div><div class="t"><b>V-образные плужки</b><p>Удаляют материал с внутренней поверхности обратной ветви перед барабаном. Защищают барабан от попадания камней.</p><p class="adv">Отводят просыпь в стороны, снижая риск её защемления между лентой и барабаном.</p><a class="ask" href="index.html?sec=c1&item=V-образные плужки#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/26.jpg" alt="Диагональные плужки" loading="lazy"></div><div class="t"><b>Диагональные плужки</b><p>Резиновая кромка на подвесной раме для очистки нерабочей поверхности ленты.</p><p class="adv">Защищают барабан от материала на внутренней стороне ленты.</p><a class="ask" href="index.html?sec=c1&item=Диагональные плужки#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/27.jpg" alt="Щёточные очистители" loading="lazy"></div><div class="t"><b>Щёточные очистители</b><p>Приводная щётка. Профиль ленты, щетину, рабочую ширину и питание согласуют при подборе.</p><p class="adv">Ворс достигает впадин профиля, если щётка согласована с типом ленты.</p><a class="ask" href="index.html?sec=c1&item=Щёточные очистители#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/28.jpg" alt="Спиральные ролики" loading="lazy"></div><div class="t"><b>Спиральные ролики</b><p>Спиральные полиуретановые ролики очищают и поддерживают ленту. Доступны центрирующие версии.</p><p class="adv">Вращающийся рабочий орган помогает отделять стойкие налипания.</p><a class="ask" href="index.html?sec=c1&item=Спиральные ролики#request">Запросить →</a></div></article></div></div></div>
+<div class="blk2"><div class="rsel" id="pick">
+ <div class="f"><p class="tag">Ориентировочный подбор</p><h4>Подберите очистку за минуту</h4>
+  <div class="fld"><span>Груз</span><div class="chips" id="oG"></div></div>
+  <div class="fld"><span>Скорость ленты</span><div class="chips" id="oV"></div></div>
+  <div class="fld"><span>Стык ленты</span><div class="chips" id="oJ"></div></div>
+  <div class="fld"><span>Реверс</span><div class="chips" id="oR"></div></div></div>
+ <div class="res" aria-live="polite"><dl id="oOut"></dl>
+  <p>Ориентир по каталогу Legacy. Точное исполнение подтвердим по ширине ленты, диаметру барабана и фото места установки.</p>
+  <a class="btn" id="oGo" href="index.html?sec=c1#request">Запросить расчёт с этими данными</a></div>
+</div></div>
+<div class="blk2 tech" id="sizes"><div class="shd"><p class="eyebrow">Технические данные</p><h2>Исполнения и материалы</h2><p>Нажмите, чтобы раскрыть.</p></div><details class="more"><summary>Исполнения очистителей <small>ширина ленты, скорость, стык</small></summary><div class="tw"><table><thead><tr><th>Исполнение</th><th>Ширина ленты, мм</th><th>Скорость до, м/с</th><th>Место</th><th>Стык и реверс</th></tr></thead><tbody><tr><td>Сегментированное ПУ-лезвие</td><td>600–2400</td><td>4,5</td><td>Первичная, на барабане</td><td>Вулканизированный стык</td></tr><tr><td>Цельное ПУ-лезвие</td><td>600–2400</td><td>4,5</td><td>Первичная, на барабане</td><td>Регулируемый прижим</td></tr><tr><td>Керамические сегменты</td><td>600–2400</td><td>4,5</td><td>Первичная, абразив и нагрев</td><td>Температуру согласуем по исполнению</td></tr><tr><td>Твердосплавные лезвия</td><td>600–2400</td><td>6,5</td><td>Первичная, плотные налипания</td><td>Вулканизированный стык</td></tr><tr><td>Раздельные лезвия с амортизацией</td><td>600–2400</td><td>10</td><td>Вторичная, обратная ветвь</td><td>Механический стык — по согласованию</td></tr><tr><td>Очиститель для шлама</td><td>600–2400</td><td>6,5</td><td>Вторичная, влажный остаток</td><td>Реверс — с ограничителем</td></tr></tbody></table></div><p class="tnote">Данные по исполнениям из каталога Legacy 2026.</p></details><details class="more"><summary>Материал рабочей кромки <small>полиуретан, керамика, карбид вольфрама, резина</small></summary><div class="tw"><table><thead><tr><th>Материал</th><th>Где работает лучше</th><th>Ограничения</th></tr></thead><tbody><tr><td>Полиуретан</td><td>Липкий и влажный груз, умеренная абразивность, первичная очистка</td><td>Высокая температура и сильный абразив сокращают ресурс</td></tr><tr><td>Керамика (оксид алюминия)</td><td>Абразивный груз, повышенная температура</td><td>Требует ровной ленты и стыка</td></tr><tr><td>Карбид вольфрама</td><td>Плотные налипания, высокие скорости, вторичная очистка</td><td>Механический стык проверяем по исполнению</td></tr><tr><td>Резина</td><td>Плужки, очистка нерабочей стороны</td><td>Не для основного слоя налипаний</td></tr></tbody></table></div></details><details class="more"><summary>Как выбрать систему очистки <small>задача, решение, что проверить</small></summary><div class="tw"><table><thead><tr><th>Задача</th><th>Решение</th><th>Что проверить</th></tr></thead><tbody><tr><td>Основной слой после разгрузки</td><td>Первичный очиститель на разгрузочном барабане</td><td>Диаметр барабана, ширина потока, пространство внутри разгрузочной течки</td></tr><tr><td>Тонкий остаточный слой</td><td>Вторичный очиститель на рабочей поверхности обратной ветви</td><td>Ровность ленты, опора в зоне контакта, отвод снятого материала</td></tr><tr><td>Материал на внутренней стороне</td><td>V-образный или прямой плужок перед барабаном</td><td>Направление движения, место установки и свободный выход материала. Перед натяжным барабаном</td></tr></tbody></table></div></details></div>
+<div class="blk2 tech" id="faq"><div class="shd"><p class="eyebrow">Вопросы</p><h2>Частые вопросы</h2></div><details class="more faq"><summary>Нужен ли вторичный очиститель, если стоит первичный?</summary><p class="ans">Первичный снимает основной слой на разгрузочном барабане. При влажном и липком грузе тонкий остаток уходит на обратную ветвь, налипает на ролики и сыплется под конвейер. Вторичный очиститель ставят на обратной ветви сразу за барабаном, он снимает этот остаток.</p></details><details class="more faq"><summary>Работают ли очистители с механическим стыком?</summary><p class="ans">Полиуретановые лезвия и раздельные лезвия с амортизацией работают с механическим стыком при согласованном исполнении. Для твердосплавных и керамических лезвий совместимость проверяем при подборе.</p></details><details class="more faq"><summary>Куда ставить плужок?</summary><p class="ans">На обратную ветвь перед хвостовым или натяжным барабаном, на внутреннюю сторону ленты. Плужок отводит камни и просыпь в стороны и не даёт им попасть между лентой и барабаном.</p></details><details class="more faq"><summary>Как понять, что очистка подобрана правильно?</summary><p class="ans">Сравните при одинаковом режиме работы налипание после разгрузки, просыпь под обратной ветвью и состояние кромок очистителя до и после установки. Прижим подтягивают по мере износа лезвия.</p></details><details class="more faq"><summary>Что прислать для подбора очистителя?</summary><p class="ans">Ширину и скорость ленты, диаметр барабана, груз и его влажность, температуру, тип стыка, есть ли реверс, фото рабочей поверхности и места установки.</p></details></div>
+<div class="blk2" id="supply"><div class="shd"><p class="eyebrow">Поставка</p><h2>Поставка</h2></div><div class="two sup">
+        <div class="box"><h3>Что входит</h3><ul>
+          <li>Поставка в Казахстан, Узбекистан и Кыргызстан</li>
+          <li>Условия поставки DDP, DAP и другие</li>
+          <li>Собственный склад запчастей, ответственное хранение</li>
+          <li>Консигнационные склады для конвейерного парка</li>
+          <li>Шеф-монтаж при каждой поставке</li>
+        </ul></div>
+        <figure class="supph"><img src="img/postavka.jpg" alt="Склад запчастей" loading="lazy"><figcaption>Склад запчастей и ответственное хранение</figcaption></figure>
+      </div></div>
+<div class="pick"><div><b>Для подбора пришлите</b><p>Ширина и скорость ленты • диаметр барабана • тип стыка • материал и влажность • температура • реверс • фото рабочей поверхности и места установки</p></div><a class="btn" href="index.html?sec=c1#request">Запросить расчёт</a></div>
+</section>
     <div class="pn"><a href="konveyer.html"><small>← Направление</small><b>Конвейерные решения</b></a><a class="nx" href="konveyer-udar.html"><small>Раздел 02 →</small><b>Ударные нагрузки в зоне пересыпа</b></a></div>
   </div>
   <section class="blk">
@@ -616,6 +763,29 @@ section.blk{padding-block:72px 8px}
 var M={'konveyer.html':['img/menu-konveyer.jpg','Конвейерные решения'],'droblenie.html':['img/menu-droblenie.jpg','Дробление и сортировка'],'nasosy.html':['img/menu-nasosy.jpg','Насосы']};
 document.querySelectorAll('.dd-m .dd-col').forEach(function(c){var h=c.querySelector('.dd-h');if(!h)return;var k=h.getAttribute('href'),v=M[k];if(!v)return;
 function sw(){if(I.getAttribute('src')!==v[0])I.src=v[0];T.textContent=v[1];a.href=k}c.addEventListener('mouseenter',sw);c.addEventListener('focusin',sw)});})();
+</script>
+<script>
+(function(){var st={g:"sticky",v:"1",j:"v",r:"n"};
+var G=[["dry","сухой"],["sticky","влажный, липкий"],["abr","абразивный"],["hot","горячий"]],V=[["1","до 4,5 м/с"],["2","4,5–6,5 м/с"],["3","6,5–10 м/с"]],J=[["v","вулканизированный"],["m","механический"]],Rv=[["n","нет"],["y","есть"]];
+function chips(id,n,o,k){var c=document.getElementById(id);if(!c)return;o.forEach(function(x){var lb=document.createElement('label');lb.innerHTML='<input type="radio" name="'+n+'" id="'+n+'-'+x[0]+'" value="'+x[0]+'"><span>'+x[1]+'</span>';var i=lb.querySelector('input');i.checked=st[k]===x[0];i.addEventListener('change',function(){st[k]=x[0];calc()});c.appendChild(lb)})}
+chips('oG','og',G,'g');chips('oV','ov',V,'v');chips('oJ','oj',J,'j');chips('oR','or',Rv,'r');
+function calc(){var g=st.g,v=st.v,m=st.j==="m",r=st.r==="y",pr,edge,sec,pl,note=[];
+if(v==="3"){pr="По согласованию";edge="—";note.push("первичные очистители в каталоге — до 6,5 м/с")}
+else if(g==="hot"||g==="abr"){if(v==="1"){pr="Керамические лезвия (RLTC)";edge="оксид алюминия"}else{pr="Твердосплавные лезвия";edge="карбид вольфрама"}}
+else if(v==="2"){pr="Твердосплавные лезвия";edge="карбид вольфрама"}
+else{pr=m?"Цельное ПУ-лезвие":"Сегментированное ПУ-лезвие";edge="полиуретан"}
+if(m&&(pr.indexOf("Твердосплав")===0||pr.indexOf("Керамич")===0))note.push("совместимость с механическим стыком проверим");
+if(v==="3"||(g==="sticky"&&(m||v!=="1"&&v!=="2")))sec="Раздельные лезвия с амортизацией";
+else if(g==="sticky")sec=r?"Очиститель для шлама с ограничителем":"Очиститель для шлама";
+else if(g==="abr"||g==="hot")sec="Модульные скребки";else sec="Полиуретановые скребки";
+if(sec.indexOf("Раздельные")===0&&m)note.push("механический стык для раздельных лезвий согласуем");
+pl=r?"Плужок для реверса — по согласованию":"V-образный плужок перед хвостовым барабаном";
+if(g==="sticky")note.push("на обратную ветвь можно добавить спиральный ролик");
+var rows=[["Первичный очиститель",pr],["Материал кромки",edge],["Вторичный очиститель",sec],["Плужок",pl]];if(note.length)rows.push(["Примечание","<small style='font-size:13px'>"+note.join("; ")+"</small>"]);
+document.getElementById('oOut').innerHTML=rows.map(function(x){return '<div><dt>'+x[0]+'</dt><dd>'+x[1]+'</dd></div>'}).join('');
+var it="Очистка: "+pr+" + "+sec+", груз "+G.filter(function(x){return x[0]===g})[0][1]+", "+V.filter(function(x){return x[0]===v})[0][1];
+document.getElementById('oGo').href="index.html?sec=c1&item="+encodeURIComponent(it.slice(0,118))+"#request"}
+calc()})();
 </script>
 </body>
 </html>
