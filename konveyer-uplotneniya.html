@@ -505,7 +505,23 @@ section.blk{padding-block:72px 8px}
 .lbx .nav.p{left:10px}.lbx .nav.n{right:10px}
 .lbx .x{all:unset;cursor:pointer;color:#fff;font-size:15px;padding:6px 12px;border:1px solid rgba(255,255,255,.4);border-radius:4px}
 .lbx button:focus-visible{outline:2px solid #f2a33a;outline-offset:2px}
-.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}</style>
+.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}
+/* mega-menu photo panel (2026-11) */
+@media (min-width:901px){
+.dd-m{width:min(1080px,calc(100vw - 32px));grid-template-columns:minmax(0,260px) repeat(3,minmax(0,1fr));padding:0 18px 0 0;overflow:hidden}
+.dd-m>.dd-col{padding-top:18px}
+.dd-all{grid-column:2/-1;padding-bottom:16px}
+.dd-ph{grid-row:1/3;position:relative;display:block;min-height:300px;background:#1b1f22;overflow:hidden;text-decoration:none;color:#fff}
+.dd-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dd-ph:hover img{transform:scale(1.04)}
+.dd-ph::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(12,15,18,.9))}
+.dd-ph span{position:absolute;left:16px;right:16px;bottom:16px;z-index:1;display:grid;gap:10px}
+.dd-ph b{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.15;text-transform:uppercase;color:#fff}
+.dd-ph i{font-style:normal;justify-self:start;background:#f2a33a;color:#1a1206;font-weight:600;font-size:13.5px;padding:8px 12px;border-radius:4px}
+}
+@media (max-width:900px){.dd-ph{display:none}}
+@media (prefers-reduced-motion:reduce){.dd-ph img{transition:none}}
+</style>
 </head>
 <body>
 
@@ -514,7 +530,7 @@ section.blk{padding-block:72px 8px}
     <a class="logo" href="./"><b>LEGACY</b><span>Kazakhstan</span></a>
     <nav class="nav" id="nav" aria-label="Разделы">
       <div class="dd" id="dd"><button class="dd-b on" id="ddB" aria-expanded="false" aria-controls="ddM">Направления<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
-        <div class="dd-m" id="ddM"><div class="dd-col"><a class="dd-h" href="konveyer.html" aria-current="page"><b>Конвейерные решения</b><small>Очистка, удар в зоне загрузки, уплотнения, ролики и барабаны, центрирование, ленты</small></a><div class="dd-s"><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></div><div class="dd-col"><a class="dd-h" href="droblenie.html"><b>Дробление и сортировка</b><small>Питатели, дробилки, мобильные комплексы, грохоты, сита, запчасти</small></a><div class="dd-s"><a href="droblenie-pitateli.html"><i>07.1</i>Питатели</a><a href="droblenie-drobilki.html"><i>07.2</i>Дробилки</a><a href="droblenie-mobilnye.html"><i>07.3</i>Мобильные комплексы</a><a href="droblenie-grohoty.html"><i>07.4</i>Грохоты</a><a href="droblenie-sita.html"><i>07.5</i>Сита и просеивающие поверхности</a><a href="droblenie-zapchasti.html"><i>07.6</i>Запасные и износостойкие части</a></div></div><div class="dd-col"><a class="dd-h" href="nasosy.html"><b>Насосы</b><small>Центробежные, химические, шламовые насосы и станции</small></a><div class="dd-s"></div></div><a class="dd-all" href="./#catalog">Все направления на главной →</a></div></div>
+        <div class="dd-m" id="ddM"><a class="dd-ph" id="ddPh" href="konveyer.html" tabindex="-1" aria-hidden="true"><img id="ddPhI" src="img/menu-konveyer.jpg" alt=""><span><b id="ddPhT">Конвейерные решения</b><i>Показать всё →</i></span></a><div class="dd-col"><a class="dd-h" href="konveyer.html" aria-current="page"><b>Конвейерные решения</b><small>Очистка, удар в зоне загрузки, уплотнения, ролики и барабаны, центрирование, ленты</small></a><div class="dd-s"><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></div><div class="dd-col"><a class="dd-h" href="droblenie.html"><b>Дробление и сортировка</b><small>Питатели, дробилки, мобильные комплексы, грохоты, сита, запчасти</small></a><div class="dd-s"><a href="droblenie-pitateli.html"><i>07.1</i>Питатели</a><a href="droblenie-drobilki.html"><i>07.2</i>Дробилки</a><a href="droblenie-mobilnye.html"><i>07.3</i>Мобильные комплексы</a><a href="droblenie-grohoty.html"><i>07.4</i>Грохоты</a><a href="droblenie-sita.html"><i>07.5</i>Сита и просеивающие поверхности</a><a href="droblenie-zapchasti.html"><i>07.6</i>Запасные и износостойкие части</a></div></div><div class="dd-col"><a class="dd-h" href="nasosy.html"><b>Насосы</b><small>Центробежные, химические, шламовые насосы и станции</small></a><div class="dd-s"></div></div><a class="dd-all" href="./#catalog">Все направления на главной →</a></div></div>
       <a href="about.html">О нас</a>
       <a href="./#models">3D-модели</a>
       <a href="./#request">Запрос</a>
@@ -621,6 +637,12 @@ document.querySelectorAll('.card .ph img').forEach(function(img){img.addEventLis
  th.innerHTML='';list.forEach(function(u,j){var b=document.createElement('button');b.setAttribute('aria-label','Фото '+(j+1));b.innerHTML='<img src="'+u+'" alt="">';b.onclick=function(){show(j)};th.appendChild(b);});show(0);d.showModal();});});
 document.getElementById('lbxP').onclick=function(){show(i-1)};document.getElementById('lbxN').onclick=function(){show(i+1)};document.getElementById('lbxX').onclick=function(){d.close()};
 d.addEventListener('click',function(e){if(e.target===d)d.close()});d.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1);});})();
+</script>
+<script>
+(function(){var a=document.getElementById('ddPh');if(!a)return;var I=document.getElementById('ddPhI'),T=document.getElementById('ddPhT');
+var M={'konveyer.html':['img/menu-konveyer.jpg','Конвейерные решения'],'droblenie.html':['img/menu-droblenie.jpg','Дробление и сортировка'],'nasosy.html':['img/menu-nasosy.jpg','Насосы']};
+document.querySelectorAll('.dd-m .dd-col').forEach(function(c){var h=c.querySelector('.dd-h');if(!h)return;var k=h.getAttribute('href'),v=M[k];if(!v)return;
+function sw(){if(I.getAttribute('src')!==v[0])I.src=v[0];T.textContent=v[1];a.href=k}c.addEventListener('mouseenter',sw);c.addEventListener('focusin',sw)});})();
 </script>
 </body>
 </html>

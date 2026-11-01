@@ -489,7 +489,106 @@ section.blk{padding-block:72px 8px}
 .pn b{font-weight:600}
 .pn .nx{text-align:right;grid-column:2}
 @media (max-width:560px){.pn{grid-template-columns:minmax(0,1fr)}.pn .nx{grid-column:1}}
-.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}</style>
+.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}
+/* tech data + FAQ (added 2026-11) */
+.tech{margin-top:40px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.tech>*{min-width:0}
+.tech>h3{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px);margin-top:6px}
+.tech>h3+p{color:var(--muted);font-size:14.5px;margin-top:-4px}
+details.more{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+details.more>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:15px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:18px;line-height:1;color:var(--pu)}
+details.more[open]>summary::after{content:"\2212"}
+details.more>summary small{font-weight:400;color:var(--muted);font-size:13px}
+details.more>summary:focus-visible{outline:2px solid var(--pu);outline-offset:-2px;border-radius:6px}
+details.more .tw{margin:0 12px 12px;border-radius:4px}
+details.more .tnote{color:var(--muted);font-size:13.5px;padding:0 16px 14px}
+details.more td{font-variant-numeric:tabular-nums}
+details.faq>summary{font-weight:500}
+details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width:80ch}
+.rsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);background:#0f1419;color:#e6e9ec;border-radius:8px;overflow:hidden}
+.rsel .f{padding:20px 22px;display:grid;gap:14px;align-content:start}
+.rsel .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.rsel h4{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px)}
+.rsel .fld{display:grid;gap:6px}.rsel .fld>span{font-size:13px;color:#a8b3bd}
+.rsel .chips{display:flex;flex-wrap:wrap;gap:6px}
+.rsel .chips label{position:relative}
+.rsel .chips input{position:absolute;opacity:0;pointer-events:none}
+.rsel .chips label span{display:inline-block;cursor:pointer;font-size:13.5px;padding:7px 11px;border:1px solid #3d4a57;border-radius:4px;color:#d3dae0;font-variant-numeric:tabular-nums}
+.rsel .chips input:checked+span{background:#f2a33a;border-color:#f2a33a;color:#1a1206;font-weight:600}
+.rsel .chips input:focus-visible+span{outline:2px solid #f2a33a;outline-offset:2px}
+.rsel .res{background:#151c23;padding:20px 22px;display:grid;gap:12px;align-content:start;border-left:1px solid #28333e}
+.rsel dl{margin:0;display:grid}
+.rsel dl div{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:12px;padding:9px 0;border-bottom:1px solid #28333e}
+.rsel dt{color:#a8b3bd;font-size:13.5px}.rsel dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.rsel dd small{display:block;font-weight:400;color:#a8b3bd;font-size:12.5px}
+.rsel .res p{font-size:13px;color:#a8b3bd}
+.rsel .btn{background:#f2a33a;color:#1a1206;justify-self:start}
+@media (max-width:820px){.rsel{grid-template-columns:minmax(0,1fr)}.rsel .res{border-left:0;border-top:1px solid #28333e}}
+
+/* roliki page 2026-11 */
+.blk2{margin-top:56px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.blk2:first-child{margin-top:0}
+.blk2>*{min-width:0}
+.shd{display:grid;gap:6px;max-width:76ch}
+.shd h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,2.8vw,32px);line-height:1.1}
+.shd p:not(.eyebrow){color:var(--muted)}
+.types{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:14px}
+.card .spec{list-style:none;margin:0;padding:0;display:grid;font-size:13.5px}
+.card .spec li{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.card .spec li span{color:var(--muted)}
+.card .spec li b{font-size:13.5px;font-weight:500}
+.tech{margin-top:0}
+.blk2.tech{margin-top:56px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.box{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 20px;display:grid;gap:10px;align-content:start}
+.box h3{font-family:var(--display);font-weight:500;font-size:18px}
+.box ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14.5px}
+.supph{margin:0;position:relative;border-radius:6px;overflow:hidden;min-height:240px;background:#1b1f22}
+.supph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.supph figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 16px 14px;color:#fff;font-size:14px;background:linear-gradient(transparent,rgba(12,15,18,.85))}
+@media (max-width:760px){.supph{min-height:200px}}
+.shero .show3d{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;width:100%;aspect-ratio:16/11;max-width:100%;border-radius:8px;overflow:hidden;background:#0f1419;border:1.5px solid #f2a33a;color:#fff;animation:t3dglow 2.8s ease-out infinite}
+.shero .show3d .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;aspect-ratio:auto;border-radius:0;animation:t3dpan 12s ease-in-out infinite alternate}
+.show3d::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(12,15,18,.15),rgba(12,15,18,.65))}
+.show3d>span{position:absolute;z-index:1}
+.show3d .badge{left:14px;top:14px;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#f2a33a;color:#1a1206;padding:5px 9px;border-radius:3px;font-weight:500}
+.show3d .badge i{width:7px;height:7px;border-radius:50%;background:#1a1206;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+@keyframes t3dpan{0%{transform:scale(1.05)}100%{transform:scale(1.22) translateX(-6%)}}
+.show3d .play{left:50%;top:46%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:12px;padding:14px 22px 14px 16px;border-radius:999px;background:rgba(12,15,18,.84);border:1.5px solid #f2a33a;white-space:nowrap;transition:transform .25s,background .25s}
+.show3d .play svg{width:34px;height:34px;color:#f2a33a;animation:spin3d 6s linear infinite}
+.show3d .play b{font-size:17px;font-weight:600}
+.show3d:hover .play{transform:translate(-50%,-50%) scale(1.06);background:#f2a33a;color:#1a1206}
+.show3d:hover .play svg{color:#1a1206}
+.show3d:focus-visible{outline:2px solid #f2a33a;outline-offset:3px}
+.show3d .feats{left:14px;bottom:14px;right:150px;display:flex;flex-wrap:wrap;gap:6px}
+.show3d .feats span{font-size:12.5px;padding:4px 9px;border-radius:3px;background:rgba(12,15,18,.72);border:1px solid rgba(255,255,255,.22);color:#e6e9ec}
+.shero .show3d .inset{right:14px;bottom:14px;width:124px;background:#fff;border-radius:5px;padding:6px 6px 4px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.shero .show3d .inset img{width:100%;height:62px;object-fit:contain;aspect-ratio:auto;border-radius:0}
+.show3d .inset small{display:block;text-align:center;font-size:10.5px;color:#5d6872;font-family:var(--mono)}
+@media (max-width:820px){.shero .show3d{order:-1}}
+@media (max-width:560px){.show3d .inset{display:none}.show3d .feats{right:14px}.show3d .play b{font-size:15px}}
+@media (prefers-reduced-motion:reduce){.shero .show3d,.show3d .bg,.show3d .play svg,.show3d .badge i{animation:none}}
+
+/* mega-menu photo panel (2026-11) */
+@media (min-width:901px){
+.dd-m{width:min(1080px,calc(100vw - 32px));grid-template-columns:minmax(0,260px) repeat(3,minmax(0,1fr));padding:0 18px 0 0;overflow:hidden}
+.dd-m>.dd-col{padding-top:18px}
+.dd-all{grid-column:2/-1;padding-bottom:16px}
+.dd-ph{grid-row:1/3;position:relative;display:block;min-height:300px;background:#1b1f22;overflow:hidden;text-decoration:none;color:#fff}
+.dd-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dd-ph:hover img{transform:scale(1.04)}
+.dd-ph::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(12,15,18,.9))}
+.dd-ph span{position:absolute;left:16px;right:16px;bottom:16px;z-index:1;display:grid;gap:10px}
+.dd-ph b{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.15;text-transform:uppercase;color:#fff}
+.dd-ph i{font-style:normal;justify-self:start;background:#f2a33a;color:#1a1206;font-weight:600;font-size:13.5px;padding:8px 12px;border-radius:4px}
+}
+@media (max-width:900px){.dd-ph{display:none}}
+@media (prefers-reduced-motion:reduce){.dd-ph img{transition:none}}
+</style>
 </head>
 <body>
 
@@ -498,7 +597,7 @@ section.blk{padding-block:72px 8px}
     <a class="logo" href="./"><b>LEGACY</b><span>Kazakhstan</span></a>
     <nav class="nav" id="nav" aria-label="Разделы">
       <div class="dd" id="dd"><button class="dd-b on" id="ddB" aria-expanded="false" aria-controls="ddM">Направления<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
-        <div class="dd-m" id="ddM"><div class="dd-col"><a class="dd-h" href="konveyer.html" aria-current="page"><b>Конвейерные решения</b><small>Очистка, удар в зоне загрузки, уплотнения, ролики и барабаны, центрирование, ленты</small></a><div class="dd-s"><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></div><div class="dd-col"><a class="dd-h" href="droblenie.html"><b>Дробление и сортировка</b><small>Питатели, дробилки, мобильные комплексы, грохоты, сита, запчасти</small></a><div class="dd-s"><a href="droblenie-pitateli.html"><i>07.1</i>Питатели</a><a href="droblenie-drobilki.html"><i>07.2</i>Дробилки</a><a href="droblenie-mobilnye.html"><i>07.3</i>Мобильные комплексы</a><a href="droblenie-grohoty.html"><i>07.4</i>Грохоты</a><a href="droblenie-sita.html"><i>07.5</i>Сита и просеивающие поверхности</a><a href="droblenie-zapchasti.html"><i>07.6</i>Запасные и износостойкие части</a></div></div><div class="dd-col"><a class="dd-h" href="nasosy.html"><b>Насосы</b><small>Центробежные, химические, шламовые насосы и станции</small></a><div class="dd-s"></div></div><a class="dd-all" href="./#catalog">Все направления на главной →</a></div></div>
+        <div class="dd-m" id="ddM"><a class="dd-ph" id="ddPh" href="konveyer.html" tabindex="-1" aria-hidden="true"><img id="ddPhI" src="img/menu-konveyer.jpg" alt=""><span><b id="ddPhT">Конвейерные решения</b><i>Показать всё →</i></span></a><div class="dd-col"><a class="dd-h" href="konveyer.html" aria-current="page"><b>Конвейерные решения</b><small>Очистка, удар в зоне загрузки, уплотнения, ролики и барабаны, центрирование, ленты</small></a><div class="dd-s"><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></div><div class="dd-col"><a class="dd-h" href="droblenie.html"><b>Дробление и сортировка</b><small>Питатели, дробилки, мобильные комплексы, грохоты, сита, запчасти</small></a><div class="dd-s"><a href="droblenie-pitateli.html"><i>07.1</i>Питатели</a><a href="droblenie-drobilki.html"><i>07.2</i>Дробилки</a><a href="droblenie-mobilnye.html"><i>07.3</i>Мобильные комплексы</a><a href="droblenie-grohoty.html"><i>07.4</i>Грохоты</a><a href="droblenie-sita.html"><i>07.5</i>Сита и просеивающие поверхности</a><a href="droblenie-zapchasti.html"><i>07.6</i>Запасные и износостойкие части</a></div></div><div class="dd-col"><a class="dd-h" href="nasosy.html"><b>Насосы</b><small>Центробежные, химические, шламовые насосы и станции</small></a><div class="dd-s"></div></div><a class="dd-all" href="./#catalog">Все направления на главной →</a></div></div>
       <a href="about.html">О нас</a>
       <a href="./#models">3D-модели</a>
       <a href="./#request">Запрос</a>
@@ -514,20 +613,81 @@ section.blk{padding-block:72px 8px}
     <div class="in">
       <div>
         <p class="eyebrow"><b>Конвейерные решения</b> · раздел 04</p>
-        <h1><i>04</i>Качественные комплектующие</h1>
-        <p class="lede">Износ и разрушение роликов нарушают опору ленты и увеличивают риск её повреждения. Детали подбирают по нагрузке, размерам и условиям работы.</p>
-        <div class="cta"><a class="btn" href="index.html?sec=c4#request">Обсудить задачу</a><button class="t3d" data-3d="roliki.html" data-name="Ролики и барабаны" aria-label="Открыть 3D-модель «Ролики и барабаны»"><span class="th"><img src="img/3d-roliki.jpg" alt=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span><small>3D-модель</small><b>Покрутить «Ролики и барабаны»</b></span></button></div>
+        <h1><i>04</i>Ролики, роликоопоры и барабаны</h1>
+        <p class="lede">Подберём по нагрузке или вашему чертежу, поставим по Казахстану, Узбекистану и Кыргызстану на условиях DDP или DAP.</p>
+        <div class="cta"><a class="btn" href="index.html?sec=c4#request">Запросить расчёт</a><a class="btn ghost" href="#pick">Подобрать ролик</a></div>
       </div>
-      <div class="pic" style="background:#fff"><img src="img/cat/48.jpg" alt="Роликоопора с амортизирующими роликами" style="object-fit:contain;padding:18px;animation:none"></div>
+      <button class="show3d" type="button" data-3d="roliki.html" data-name="Ролики и барабаны" aria-label="Открыть интерактивную 3D-модель «Ролики и барабаны»">
+        <img class="bg" src="img/3d-roliki.jpg" alt="">
+        <span class="badge"><i></i>3D · интерактивно</span>
+        <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5l4 2.3v4.4L12 16.5l-4-2.3V9.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9.8l4 2.3 4-2.3M12 12.1v4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><b>Покрутить 3D-модель</b></span>
+        <span class="feats"><span>Стальные и полимерные ролики</span><span>Футеровка барабана</span><span>Мотор-барабан</span></span>
+        <span class="inset"><img src="img/cat/48.jpg" alt="Желобчатая роликоопора, фото из каталога"><small>фото из каталога</small></span>
+      </button>
     </div>
   </section>
 <nav class="jump" aria-label="Разделы направления «Конвейерные решения»"><div class="in"><a class="ov" href="konveyer.html">Обзор</a><a href="konveyer-ochistka.html"><i>01</i>Очистка ленты</a><a href="konveyer-udar.html"><i>02</i>Ударные нагрузки в зоне пересыпа</a><a href="konveyer-uplotneniya.html"><i>03</i>Уплотнения в зоне течки</a><a href="konveyer-roliki.html" aria-current="page"><i>04</i>Качественные комплектующие</a><a href="konveyer-shod.html"><i>05</i>Сход ленты</a><a href="konveyer-lenty.html"><i>06</i>Ленты и защита конвейера</a></div></nav>
   <div class="in" style="padding-top:12px">
-    <div style="height:28px"></div>
+    <div style="height:12px"></div>
 <section class="dsec" id="c4">
-<div class="grp"><h3>Ролики и роликоопоры</h3><p>Опорные элементы для рабочей и обратной ветвей ленточных конвейеров.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/46.jpg" alt="Стальные ролики" loading="lazy"></div><div class="t"><b>Стальные ролики</b><p>Несущие и обратные ролики с подшипниковыми узлами и лабиринтными уплотнениями. Диаметр, длина, концы оси и защита подшипников — по чертежу и нагрузке.</p><p class="adv">Несут рабочую нагрузку; лабиринтные уплотнения ограничивают попадание загрязнений в подшипники.</p><a class="ask" href="index.html?sec=c4&item=Стальные ролики#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/47.jpg" alt="Полимерные ролики" loading="lazy"></div><div class="t"><b>Полимерные ролики</b><p>Обечайки из HDPE или UHMWPE; доступны также исполнения с полиуретаном. Большой срок службы.</p><p class="adv">Меньшая масса облегчает монтаж, а низкая склонность поверхности к налипанию упрощает очистку.</p><a class="ask" href="index.html?sec=c4&item=Полимерные ролики#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/48.jpg" alt="Роликоопоры" loading="lazy"></div><div class="t"><b>Роликоопоры</b><p>Желобчатые, прямые и специальные опорные узлы. Комплектование по ширине ленты, углу желоба и присоединительным размерам.</p><p class="adv">Задают профиль желоба и распределяют нагрузку между опорными роликами.</p><a class="ask" href="index.html?sec=c4&item=Роликоопоры#request">Запросить →</a></div></article></div></div>
-<div class="grp"><h3>Барабаны</h3><p>Передают тяговое усилие, обеспечивают натяжение и формируют траекторию конвейерной ленты.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/49.jpg" alt="Приводные барабаны" loading="lazy"></div><div class="t"><b>Приводные барабаны</b><p>Передают усилие от внешнего привода к ленте. Обечайку, вал, подшипниковые опоры и резиновую либо резинокерамическую футеровку выбирают по тяговой нагрузке.</p><p class="adv">Согласованная футеровка помогает передавать тяговое усилие и ограничивать проскальзывание ленты.</p><a class="ask" href="index.html?sec=c4&item=Приводные барабаны#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/50.jpg" alt="Натяжные и обводные барабаны" loading="lazy"></div><div class="t"><b>Натяжные и обводные барабаны</b><p>Натяжной барабан работает в составе натяжного устройства. Обводные барабаны меняют направление движения ленты и могут увеличивать угол охвата приводного барабана.</p><p class="adv">Позволяют сформировать нужную траекторию ленты и компоновку натяжного устройства.</p><a class="ask" href="index.html?sec=c4&item=Натяжные и обводные барабаны#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/51.jpg" alt="Мотор-барабаны" loading="lazy"></div><div class="t"><b>Мотор-барабаны</b><p>Компактный привод: электродвигатель и редуктор размещены внутри вращающейся обечайки. Для конвейеров с ограниченным местом под внешний привод. Тормоз, стопор обратного хода и датчик скорости — по согласованной комплектации.</p><p class="adv">Освобождает место под внешний двигатель и редуктор; приводные узлы размещены внутри оболочки.</p><a class="ask" href="index.html?sec=c4&item=Мотор-барабаны#request">Запросить →</a></div></article></div></div>
-<div class="pick"><div><b>Для подбора пришлите</b><p>Ролики: диаметр и длина • размер и форма концов оси • подшипник • ширина ленты • чертёж роликоопоры. Барабаны: назначение • диаметр и длина обечайки • натяжения ветвей • вал и посадки • опоры • покрытие • чертёж конвейера</p></div><a class="btn" href="index.html?sec=c4#request">Отправить запрос</a></div></section>
+<div class="blk2" id="rollers"><div class="shd"><p class="eyebrow">Ролики</p><h2>Ролики и роликоопоры</h2></div><div class="types">
+        <article class="card"><div class="ph"><img src="img/cat/46.jpg" alt="Стальной конвейерный ролик" loading="lazy"></div><div class="t">
+          <b>Стальные ролики</b><p>Несущие и обратные, с лабиринтными уплотнениями подшипников.</p>
+          <ul class="spec"><li><span>Диаметр</span><b>89, 108, 127, 133, 159, 194 мм</b></li><li><span>Обечайка</span><b>труба, стенка 3–6 мм</b></li><li><span>Подшипники</span><b>6204 … 6310</b></li><li><span>Исполнения</span><b>гладкие, футерованные резиной, с резиновыми дисками</b></li><li><span>Где</span><b>уголь, руда, щебень, общего назначения</b></li></ul>
+          <a class="ask" href="index.html?sec=c4&item=%D0%A1%D1%82%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5%20%D1%80%D0%BE%D0%BB%D0%B8%D0%BA%D0%B8#request">Запросить расчёт →</a></div></article>
+        <article class="card"><div class="ph"><img src="img/cat/47.jpg" alt="Полимерный конвейерный ролик" loading="lazy"></div><div class="t">
+          <b>Полимерные ролики</b><p>Обечайка из HDPE или UHMWPE, исполнения с полиуретаном.</p>
+          <ul class="spec"><li><span>Диаметр</span><b>89 … 159 мм</b></li><li><span>Масса</span><b>легче стальных</b></li><li><span>Плюсы</span><b>не ржавеют, меньше налипают</b></li><li><span>Где</span><b>соль, удобрения, влажный груз, химия</b></li></ul>
+          <a class="ask" href="index.html?sec=c4&item=%D0%9F%D0%BE%D0%BB%D0%B8%D0%BC%D0%B5%D1%80%D0%BD%D1%8B%D0%B5%20%D1%80%D0%BE%D0%BB%D0%B8%D0%BA%D0%B8#request">Запросить расчёт →</a></div></article>
+        <article class="card"><div class="ph"><img src="img/cat/48.jpg" alt="Желобчатая роликоопора с амортизирующими роликами" loading="lazy"></div><div class="t">
+          <b>Роликоопоры</b><p>В сборе под ширину ленты и крепление к ставу, или только ролики под вашу раму.</p>
+          <ul class="spec"><li><span>Желобчатые</span><b>3 ролика, угол 20°, 30°, 35°, 45°</b></li><li><span>Амортизирующие</span><b>зона загрузки, ролики с резиновыми кольцами (на фото)</b></li><li><span>Обратной ветви</span><b>прямые и V-образные</b></li><li><span>Ширина ленты</span><b>500 … 2400 мм</b></li></ul>
+          <a class="ask" href="index.html?sec=c4&item=%D0%A0%D0%BE%D0%BB%D0%B8%D0%BA%D0%BE%D0%BE%D0%BF%D0%BE%D1%80%D1%8B%20%D0%B2%20%D1%81%D0%B1%D0%BE%D1%80%D0%B5#request">Запросить расчёт →</a></div></article>
+      </div></div>
+<div class="blk2"><div class="rsel" id="pick">
+ <div class="f"><p class="tag">Ориентировочный подбор</p><h4>Подберите ролик за минуту</h4>
+  <div class="fld"><span>Ширина ленты, мм</span><div class="chips" id="cW"></div></div>
+  <div class="fld"><span>Место установки</span><div class="chips" id="cP"></div></div>
+  <div class="fld"><span>Скорость ленты</span><div class="chips" id="cV"></div></div>
+  <div class="fld"><span>Груз</span><div class="chips" id="cL"></div></div></div>
+ <div class="res" aria-live="polite"><dl id="rOut"></dl>
+  <p>Ориентир по типовому ряду ГОСТ/DIN. Точный диаметр, подшипник и концы оси подтвердим расчётом или по вашему чертежу.</p>
+  <a class="btn" id="rGo" href="index.html?sec=c4#request">Запросить расчёт с этими данными</a></div>
+</div></div>
+<div class="blk2 tech" id="sizes"><div class="shd"><p class="eyebrow">Типоразмеры</p><h2>Таблицы размеров</h2><p>Типовой ряд по ГОСТ 22646 и DIN 15207. Нажмите, чтобы раскрыть.</p></div><details class="more"><summary>Диаметр, ось и подшипник <small>89–194 мм</small></summary><div class="tw"><table><thead><tr><th>Диаметр, мм</th><th>Ось, мм</th><th>Подшипник</th><th>Ширина ленты, мм</th><th>Типичное применение</th></tr></thead><tbody><tr><td>89</td><td>20</td><td>6204</td><td>400–800</td><td>Лёгкие конвейеры, скорость до 2,5 м/с</td></tr><tr><td>108</td><td>20–25</td><td>6204, 6205</td><td>500–1000</td><td>Конвейеры общего назначения</td></tr><tr><td>127</td><td>25</td><td>6205, 6305</td><td>800–1400</td><td>Уголь, руда, щебень</td></tr><tr><td>133</td><td>25–30</td><td>6305, 6306</td><td>1000–1600</td><td>Нагруженные трассы</td></tr><tr><td>159</td><td>30–40</td><td>6306, 6308</td><td>1200–2000</td><td>Горнорудные конвейеры, 4–5 м/с</td></tr><tr><td>194</td><td>40–50</td><td>6308, 6310</td><td>1600–2400</td><td>Тяжёлые и скоростные трассы</td></tr></tbody></table></div><p class="tnote">Типовой ряд по ГОСТ 22646 и DIN 15207. Окончательный диаметр — по скорости ленты и нагрузке.</p></details><details class="more"><summary>Длина ролика по ширине ленты <small>500–2000 мм</small></summary><div class="tw"><table><thead><tr><th>Ширина ленты, мм</th><th>Желобчатая, 3 ролика</th><th>Прямая, 1 ролик</th><th>V-образная, 2 ролика</th></tr></thead><tbody><tr><td>500</td><td>200</td><td>600</td><td>—</td></tr><tr><td>650</td><td>250</td><td>750</td><td>380</td></tr><tr><td>800</td><td>315</td><td>950</td><td>465</td></tr><tr><td>1000</td><td>380</td><td>1150</td><td>600</td></tr><tr><td>1200</td><td>465</td><td>1400</td><td>700</td></tr><tr><td>1400</td><td>530</td><td>1600</td><td>800</td></tr><tr><td>1600</td><td>600</td><td>1800</td><td>900</td></tr><tr><td>1800</td><td>670</td><td>2000</td><td>1000</td></tr><tr><td>2000</td><td>750</td><td>2200</td><td>1100</td></tr></tbody></table></div><p class="tnote">Длина обечайки по DIN 15207. Для нестандартных рам — по чертежу.</p></details><details class="more"><summary>Материал обечайки <small>сталь, резина, HDPE, UHMWPE, полиуретан</small></summary><div class="tw"><table><thead><tr><th>Исполнение</th><th>Подходит для</th><th>Не рекомендуется</th></tr></thead><tbody><tr><td>Сталь</td><td>Высокие нагрузки, крупный кусок, длинные трассы</td><td>Солёная и кислая среда, сильное налипание</td></tr><tr><td>Сталь + резиновые кольца</td><td>Зона загрузки, удар кусков</td><td>Вне зоны загрузки</td></tr><tr><td>Сталь + резиновые диски</td><td>Обратная ветвь, липкий груз</td><td>Рабочая ветвь</td></tr><tr><td>HDPE</td><td>Влага, соль, удобрения, химия; лёгкий монтаж</td><td>Ударная нагрузка, горячий груз</td></tr><tr><td>UHMWPE</td><td>Абразив и налипание, мороз, обратная ветвь</td><td>Зона загрузки с ударами</td></tr><tr><td>Полиуретан</td><td>Липкий и абразивный груз, спиральные ролики</td><td>Горячий груз</td></tr></tbody></table></div></details><details class="more"><summary>Роликоопоры и шаг установки <small>углы 0–45°</small></summary><div class="tw"><table><thead><tr><th>Тип</th><th>Угол желоба</th><th>Где ставят</th><th>Шаг</th></tr></thead><tbody><tr><td>Желобчатая 3-роликовая</td><td>20°, 30°, 35°, 45°</td><td>Рабочая ветвь</td><td>1,0–1,5 м</td></tr><tr><td>Амортизирующая</td><td>30°–45°</td><td>Зона загрузки</td><td>0,3–0,6 м</td></tr><tr><td>Переходная</td><td>10°–20°</td><td>У головного и хвостового барабанов</td><td>по расчёту</td></tr><tr><td>Прямая однороликовая</td><td>0°</td><td>Обратная ветвь</td><td>2,4–3,0 м</td></tr><tr><td>V-образная 2-роликовая</td><td>10°</td><td>Обратная ветвь широких лент</td><td>2,4–3,0 м</td></tr></tbody></table></div><p class="tnote">Шаг типовой; для тяжёлого груза его уменьшают по расчёту прогиба ленты.</p></details><details class="more"><summary>Концы оси <small>лыски, проточка, резьба</small></summary><div class="tw"><table><thead><tr><th>Исполнение</th><th>Размер</th><th>Где встречается</th></tr></thead><tbody><tr><td>Лыски с двух сторон</td><td>14, 17, 22, 30 мм под ключ</td><td>Большинство роликоопор по ГОСТ и DIN</td></tr><tr><td>Круглый конец с проточкой</td><td>под стопорное кольцо</td><td>Рамы с отверстием вместо паза</td></tr><tr><td>Резьба</td><td>M12…M24</td><td>Подвесные и гирляндные опоры</td></tr></tbody></table></div></details></div>
+<div class="blk2" id="pulleys"><div class="shd"><p class="eyebrow">Барабаны</p><h2>Приводные, натяжные и обводные барабаны</h2><p>По чертежу конвейера или по натяжению и типу ленты.</p></div><div class="types">
+        <article class="card"><div class="ph"><img src="img/cat/49.jpg" alt="Приводной барабан" loading="lazy"></div><div class="t">
+          <b>Приводные барабаны</b><p>Передают тяговое усилие от привода к ленте.</p>
+          <ul class="spec"><li><span>Диаметр</span><b>400 … 1600 мм</b></li><li><span>Футеровка</span><b>резина, ромб, резинокерамика</b></li><li><span>Опоры</span><b>разъёмные корпуса, сферические подшипники</b></li></ul>
+          <a class="ask" href="index.html?sec=c4&item=%D0%9F%D1%80%D0%B8%D0%B2%D0%BE%D0%B4%D0%BD%D0%BE%D0%B9%20%D0%B1%D0%B0%D1%80%D0%B0%D0%B1%D0%B0%D0%BD#request">Запросить расчёт →</a></div></article>
+        <article class="card"><div class="ph"><img src="img/cat/50.jpg" alt="Натяжной барабан" loading="lazy"></div><div class="t">
+          <b>Натяжные и обводные</b><p>Натяжение ленты и изменение её траектории.</p>
+          <ul class="spec"><li><span>Диаметр</span><b>250 … 1250 мм</b></li><li><span>Обечайка</span><b>гладкая или футерованная</b></li><li><span>Длина</span><b>ширина ленты + 100…200 мм</b></li></ul>
+          <a class="ask" href="index.html?sec=c4&item=%D0%9D%D0%B0%D1%82%D1%8F%D0%B6%D0%BD%D0%BE%D0%B9%20/%20%D0%BE%D0%B1%D0%B2%D0%BE%D0%B4%D0%BD%D0%BE%D0%B9%20%D0%B1%D0%B0%D1%80%D0%B0%D0%B1%D0%B0%D0%BD#request">Запросить расчёт →</a></div></article>
+      </div><div class="tech" style="margin-top:14px"><details class="more"><summary>Барабаны: диаметр по ширине ленты <small>250–1600 мм</small></summary><div class="tw"><table><thead><tr><th>Диаметр, мм</th><th>Ширина ленты, мм</th><th>Назначение</th></tr></thead><tbody><tr><td>250–320</td><td>400–650</td><td>Обводные и хвостовые лёгких конвейеров</td></tr><tr><td>400–500</td><td>500–1000</td><td>Приводные лёгких конвейеров, натяжные</td></tr><tr><td>630–800</td><td>800–1400</td><td>Приводные конвейеров общего назначения</td></tr><tr><td>1000–1250</td><td>1200–2000</td><td>Приводные карьерных и магистральных конвейеров</td></tr><tr><td>1400–1600</td><td>1600–2400</td><td>Резинотросовые ленты, высокое натяжение</td></tr></tbody></table></div><p class="tnote">Длина обечайки — ширина ленты + 100…200 мм. Минимальный диаметр сверяем с паспортом ленты.</p></details><details class="more"><summary>Футеровка барабана <small>резина, ромб, резинокерамика</small></summary><div class="tw"><table><thead><tr><th>Покрытие</th><th>Толщина</th><th>Когда выбирают</th></tr></thead><tbody><tr><td>Гладкая резина</td><td>8–12 мм</td><td>Натяжные и обводные барабаны, сухой груз</td></tr><tr><td>Ромбовидная резина</td><td>10–15 мм</td><td>Приводные барабаны, влага и грязь</td></tr><tr><td>Резинокерамика</td><td>12–15 мм</td><td>Высокое тяговое усилие, мокрые и абразивные условия</td></tr><tr><td>Быстросъёмная</td><td>по системе</td><td>Замена без снятия барабана</td></tr></tbody></table></div></details></div></div>
+<div class="blk2" id="motor"><div class="shd"><p class="eyebrow">Мотор-барабаны</p><h2>Мотор-барабаны</h2><p>Двигатель и редуктор внутри обечайки — когда нет места под внешний привод.</p></div><div class="two">
+        <div class="box" style="padding:0;overflow:hidden"><img src="img/cat/51.jpg" alt="Мотор-барабан" loading="lazy" style="background:#fff;width:100%;aspect-ratio:16/9;object-fit:contain;padding:14px"></div>
+        <div class="box"><h3>Что указать для подбора</h3><ul>
+          <li>Ширина и скорость ленты, производительность</li>
+          <li>Тяговое усилие или мощность существующего привода</li>
+          <li>Напряжение сети, режим пуска, реверс</li>
+          <li>Температура среды, пыль и влага на месте</li>
+          <li>Опции: тормоз, стопор обратного хода, датчик скорости</li>
+        </ul><a class="btn" href="index.html?sec=c4&item=%D0%9C%D0%BE%D1%82%D0%BE%D1%80-%D0%B1%D0%B0%D1%80%D0%B0%D0%B1%D0%B0%D0%BD#request" style="justify-self:start">Запросить расчёт</a></div>
+      </div></div>
+<div class="blk2 tech" id="faq"><div class="shd"><p class="eyebrow">Вопросы</p><h2>Частые вопросы</h2></div><details class="more faq"><summary>Какой ролик нужен для ленты 1200 мм?</summary><p class="ans">Для желобчатой роликоопоры на ленте 1200 мм обычно берут ролики диаметром 133 или 159 мм длиной 465 мм (по DIN 15207). Для обратной ветви — прямой ролик 1400 мм или V-образную опору из двух роликов по 700 мм.</p></details><details class="more faq"><summary>Можно подобрать ролики под нашу существующую раму?</summary><p class="ans">Да. Пришлите длину обечайки, общую длину оси, размер лысок и диаметр, или фото ролика с рулеткой. Подберём совместимые ролики по ГОСТ, DIN или по вашему чертежу.</p></details><details class="more faq"><summary>Когда полимерные ролики лучше стальных?</summary><p class="ans">Во влажной, солёной и химически агрессивной среде, на обратной ветви с налипанием и там, где важна масса при замене. При ударной нагрузке и крупном куске надёжнее стальные.</p></details><details class="more faq"><summary>Чем отличаются ролики по ГОСТ и DIN?</summary><p class="ans">Присоединительными размерами: длиной обечайки, длиной оси и размером лысок. Перед заменой сверяем размеры с рамой, чтобы ролик встал без доработки.</p></details><details class="more faq"><summary>Когда нужен мотор-барабан вместо внешнего привода?</summary><p class="ans">Когда на головке конвейера мало места, нужна закрытая конструкция без открытых муфт и редуктора или конвейер работает в пыли и влаге. Мощность и скорость подбираем по расчёту конвейера.</p></details></div>
+<div class="blk2" id="supply"><div class="shd"><p class="eyebrow">Поставка</p><h2>Поставка</h2></div><div class="two sup">
+        <div class="box"><h3>Что входит</h3><ul>
+          <li>Поставка в Казахстан, Узбекистан и Кыргызстан</li>
+          <li>Условия поставки DDP, DAP и другие</li>
+          <li>Собственный склад запчастей, ответственное хранение</li>
+          <li>Консигнационные склады для конвейерного парка</li>
+          <li>Шеф-монтаж при каждой поставке</li>
+        </ul></div>
+        <figure class="supph"><img src="img/postavka.jpg" alt="Склад запчастей" loading="lazy"><figcaption>Склад запчастей и ответственное хранение</figcaption></figure>
+      </div></div>
+<div class="pick"><div><b>Для расчёта пришлите</b><p>Ролики: ширина ленты, угол желоба, диаметр и длина, концы оси, количество. Барабаны: назначение, диаметр и длина обечайки, вал и посадки, покрытие, чертёж. Фото узла ускорит подбор.</p></div><a class="btn" href="index.html?sec=c4#request">Запросить расчёт</a></div>
+</section>
     <div class="pn"><a href="konveyer-uplotneniya.html"><small>← Раздел 03</small><b>Уплотнения в зоне течки</b></a><a class="nx" href="konveyer-shod.html"><small>Раздел 05 →</small><b>Сход ленты</b></a></div>
   </div>
   <section class="blk">
@@ -591,6 +751,29 @@ section.blk{padding-block:72px 8px}
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!V.hidden)close();});}
 
 })();
+</script>
+<script>
+(function(){var W=[500,650,800,1000,1200,1400,1600,1800,2000];
+var LEN={500:[200,600,0],650:[250,750,380],800:[315,950,465],1000:[380,1150,600],1200:[465,1400,700],1400:[530,1600,800],1600:[600,1800,900],1800:[670,2000,1000],2000:[750,2200,1100]};
+var P=[["work","Рабочая ветвь"],["load","Зона загрузки"],["ret","Обратная ветвь"],["retv","Обратная, V-образная"]],V=[["1","до 2,5 м/с"],["2","2,5–4 м/с"],["3","свыше 4 м/с"]],L=[["1","лёгкий"],["2","средний"],["3","тяжёлый, крупный кусок"]];
+var D=[89,108,127,133,159,194],B={89:"6204",108:"6204 / 6205",127:"6205 / 6305",133:"6305 / 6306",159:"6306 / 6308",194:"6308 / 6310"},st={w:"1200",p:"work",v:"2",l:"2"};
+function chips(id,n,o,k){var c=document.getElementById(id);if(!c)return;o.forEach(function(x){var v=Array.isArray(x)?x[0]:String(x),t=Array.isArray(x)?x[1]:String(x),lb=document.createElement('label');
+lb.innerHTML='<input type="radio" name="'+n+'" id="'+n+'-'+v+'" value="'+v+'"><span>'+t+'</span>';var i=lb.querySelector('input');i.checked=st[k]===v;i.addEventListener('change',function(){st[k]=v;calc()});c.appendChild(lb)})}
+chips('cW','rw',W,'w');chips('cP','rp',P,'p');chips('cV','rv',V,'v');chips('cL','rl',L,'l');
+function calc(){var w=+st.w,i=W.indexOf(w),base=i<=1?0:i<=3?1:i<=5?3:4,bump=(st.v==="3"?1:0)+(st.l==="3"?1:0)-(st.v==="1"&&st.l==="1"&&base>0?1:0);if(st.p==="ret"||st.p==="retv")bump-=1;
+var d=D[Math.max(0,Math.min(5,base+bump))],len=LEN[w],l,fr,an,sp;
+if(st.p==="work"){l=len[0];fr="Желобчатая, 3 ролика";an="30° или 35°";sp="1,0–1,5 м"}else if(st.p==="load"){l=len[0];fr="Амортизирующая, ролики с резиновыми кольцами";an="30°–45°";sp="0,3–0,6 м"}else if(st.p==="ret"){l=len[1];fr="Прямая, 1 ролик";an="0°";sp="2,4–3,0 м"}else{l=len[2];fr="V-образная, 2 ролика";an="10°";sp="2,4–3,0 м"}
+var m=st.p==="load"?"Сталь + резиновые кольца":(st.p==="ret"||st.p==="retv")?"Сталь; при налипании — дисковые или UHMWPE":st.l==="3"?"Сталь, стенка 4–6 мм":"Сталь; во влажной и солёной среде — HDPE";
+var rows=[["Роликоопора",fr+"<small>угол "+an+"</small>"],["Диаметр ролика",d+" мм"],["Длина ролика",l?l+" мм<small>по DIN 15207</small>":"для ленты 500 мм V-опору не применяют"],["Подшипник",B[d]],["Обечайка",m],["Шаг опор",sp]];
+document.getElementById('rOut').innerHTML=rows.map(function(r){return '<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>'}).join('');
+var item="Ролики "+d+(l?"×"+l:"")+" мм, лента "+w+" мм, "+fr.toLowerCase();document.getElementById('rGo').href="index.html?sec=c4&item="+encodeURIComponent(item)+"#request"}
+calc()})();
+</script>
+<script>
+(function(){var a=document.getElementById('ddPh');if(!a)return;var I=document.getElementById('ddPhI'),T=document.getElementById('ddPhT');
+var M={'konveyer.html':['img/menu-konveyer.jpg','Конвейерные решения'],'droblenie.html':['img/menu-droblenie.jpg','Дробление и сортировка'],'nasosy.html':['img/menu-nasosy.jpg','Насосы']};
+document.querySelectorAll('.dd-m .dd-col').forEach(function(c){var h=c.querySelector('.dd-h');if(!h)return;var k=h.getAttribute('href'),v=M[k];if(!v)return;
+function sw(){if(I.getAttribute('src')!==v[0])I.src=v[0];T.textContent=v[1];a.href=k}c.addEventListener('mouseenter',sw);c.addEventListener('focusin',sw)});})();
 </script>
 </body>
 </html>
