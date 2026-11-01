@@ -413,6 +413,36 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 }
 @media (max-width:900px){.dd-ph{display:none}}
 @media (prefers-reduced-motion:reduce){.dd-ph img{transition:none}}
+/* animated conveyor with clickable nodes (02.11) */
+.anim{position:relative;border-radius:16px;overflow:hidden;background:#d8dadc;border:1px solid var(--line);aspect-ratio:1100/618}
+.anim video,.anim img.ap{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.hs{position:absolute;transform:translate(-11px,-11px);display:flex;align-items:center;gap:8px;text-decoration:none;color:#1a1206;z-index:1}
+.hs i{position:relative;flex:none;width:22px;height:22px;border-radius:50%;background:#f2a33a;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);display:grid;place-items:center;font:600 11px/1 var(--mono);font-style:normal}
+.hs i::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid #f2a33a;animation:hsp 2s ease-out infinite}
+@keyframes hsp{from{transform:scale(.6);opacity:1}to{transform:scale(1.6);opacity:0}}
+.hs b{font-size:13.5px;font-weight:600;white-space:nowrap;background:rgba(255,255,255,.94);padding:5px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:background .2s,color .2s}
+.hs:hover b,.hs:focus-visible b{background:#f2a33a;color:#1a1206}
+.hs.l{flex-direction:row-reverse;transform:translate(calc(-100% + 11px),-11px)}
+.hs:focus-visible{outline:none}.hs:focus-visible i{outline:2px solid #fff;outline-offset:3px}
+.alist{display:none;list-style:none;margin:14px 0 0;padding:0;gap:8px;flex-wrap:wrap}
+.alist a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--fg);font-size:14px;padding:7px 12px 7px 8px;border:1px solid var(--line);border-radius:999px}
+.alist a i{width:20px;height:20px;border-radius:50%;background:#f2a33a;color:#1a1206;display:grid;place-items:center;font:600 11px/1 var(--mono);font-style:normal}
+@media (max-width:760px){.hs b{display:none}.hs.l{transform:translate(-11px,-11px)}.alist{display:flex}}
+@media (prefers-reduced-motion:reduce){.hs i::before{animation:none}}
+/* hero fits one phone screen; secondary facts and industries quieter (02.11) */
+.facts{font-size:12px;color:#b3bdc6;gap:4px 14px;margin-top:22px}.facts li::before{width:5px;height:5px}
+.hero .fields span{font-size:11.5px;padding:3px 10px;color:#b3bdc6;border-color:rgba(255,255,255,.16)}
+@media (max-width:760px){
+  .hero{min-height:calc(100svh - var(--hdr,64px));display:flex;flex-direction:column;justify-content:center}
+  .hero .in{padding-block:24px 26px}
+  .hero h1{font-size:clamp(28px,8.4vw,34px);margin-top:10px}
+  .hero .lede{font-size:15px;line-height:1.5;margin-top:12px}
+  .hero .cta{margin-top:18px;gap:14px}
+  .hero .cta .btn{padding:12px 20px;font-size:15px}
+  .facts{margin-top:16px;font-size:11px;gap:2px 12px}
+  .hero .fields{margin-top:10px;gap:5px}
+  .hero .fields span{font-size:10.5px;padding:2px 8px}
+}
 </style>
 </head>
 <body>
@@ -459,6 +489,20 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       </div>
       <ul class="facts"><li>Центральная Азия</li><li>DDP · DAP</li><li>Свой склад ЗИП</li><li>Шеф-монтаж</li></ul>
       <div class="fields"><span>Горная промышленность</span><span>Переработка сырья</span><span>Нефтегазовый сектор</span><span>Производство и ремонт</span></div>
+    </div>
+  </section>
+
+  <section class="blk" id="konveyer-3d">
+    <div class="in">
+      <div class="head">
+        <div><p class="eyebrow">Конвейер целиком</p><h2>Решения для каждого узла</h2></div>
+        <p>Нажмите на узел — откроется раздел с оборудованием и интерактивной 3D-моделью.</p>
+      </div>
+      <div class="anim">
+        <video autoplay muted loop playsinline preload="metadata" poster="img/konveyer-anim-poster.jpg" aria-label="Анимация ленточного конвейера с очистителями ленты"><source src="video/konveyer-anim.webm" type="video/webm"><source src="video/konveyer-anim.mp4" type="video/mp4"></video>
+        <a class="hs l" href="konveyer-ochistka.html" style="left:79.5%;top:68.8%"><i>1</i><b>Очистка ленты</b></a><a class="hs" href="konveyer-udar.html" style="left:18.6%;top:35.9%"><i>2</i><b>Зона загрузки</b></a><a class="hs" href="konveyer-roliki.html" style="left:9.1%;top:42.4%"><i>3</i><b>Ролики и барабаны</b></a><a class="hs" href="konveyer-shod.html" style="left:51.5%;top:48.5%"><i>4</i><b>Сход ленты</b></a><a class="hs l" href="konveyer-lenty.html" style="left:42.7%;top:41.3%"><i>5</i><b>Ленты и защита</b></a>
+      </div>
+      <ul class="alist"><li><a href="konveyer-ochistka.html"><i>1</i>Очистка ленты</a></li><li><a href="konveyer-udar.html"><i>2</i>Зона загрузки</a></li><li><a href="konveyer-roliki.html"><i>3</i>Ролики и барабаны</a></li><li><a href="konveyer-shod.html"><i>4</i>Сход ленты</a></li><li><a href="konveyer-lenty.html"><i>5</i>Ленты и защита</a></li></ul>
     </div>
   </section>
 
@@ -714,5 +758,6 @@ var M={'konveyer.html':['img/menu-konveyer.jpg','Конвейерные реше
 document.querySelectorAll('.dd-m .dd-col').forEach(function(c){var h=c.querySelector('.dd-h');if(!h)return;var k=h.getAttribute('href'),v=M[k];if(!v)return;
 function sw(){if(I.getAttribute('src')!==v[0])I.src=v[0];T.textContent=v[1];a.href=k}c.addEventListener('mouseenter',sw);c.addEventListener('focusin',sw)});})();
 </script>
+<script>(function(){function f(){var h=document.querySelector('header');if(h)document.documentElement.style.setProperty('--hdr',h.offsetHeight+'px');}f();addEventListener('resize',f);})();</script>
 </body>
 </html>
