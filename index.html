@@ -426,7 +426,13 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       function go(){var p=v.play();if(p&&p.catch)p.catch(function(){});}
       go();v.addEventListener('canplay',go,{once:true});
       ['touchstart','click','scroll','keydown'].forEach(function(e){addEventListener(e,function h(){if(v.paused)go();removeEventListener(e,h);},{passive:true});});
-      document.addEventListener('visibilitychange',function(){if(!document.hidden&&v.paused)go();});
+      var vis=true;function inView(){var r=v.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight;}
+      function check(){vis=inView();if(!document.hidden&&vis&&v.paused)go();}
+      if('IntersectionObserver' in window){new IntersectionObserver(function(es){vis=es[0].isIntersecting;if(vis){if(v.paused)go();}else if(!v.paused){v.pause();}},{threshold:0}).observe(v);}
+      var t;addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(check,120);},{passive:true});
+      v.addEventListener('pause',function(){setTimeout(function(){if(!document.hidden&&inView()&&v.paused)go();},300);});
+      addEventListener('pageshow',check);addEventListener('focus',check);
+      document.addEventListener('visibilitychange',check);
     })();</script>
     <div class="in">
       <p class="eyebrow"><b>ТОО «Легаси Казахстан»</b> · Астана</p>
