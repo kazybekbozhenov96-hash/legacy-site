@@ -418,7 +418,15 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 
 <main id="top">
   <section class="hero">
-    <video autoplay muted loop playsinline preload="auto" poster="img/hero-poster.jpg" aria-label="Карьеры, конвейерные линии и перегрузка горной массы"><source src="video/hero.webm" type="video/webm"><source src="video/hero.mp4" type="video/mp4"></video>
+    <video id="heroVid" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" poster="img/hero-poster.jpg" aria-label="Карьеры, конвейерные линии и перегрузка горной массы"><source src="video/hero.mp4" type="video/mp4"><source src="video/hero.webm" type="video/webm"></video>
+    <script>(function(){var v=document.getElementById('heroVid');if(!v)return;
+      v.muted=true;v.defaultMuted=true;
+      if(Math.min(screen.width,innerWidth)<=820){v.src='video/hero-m.mp4';v.load();}
+      function go(){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+      go();v.addEventListener('canplay',go,{once:true});
+      ['touchstart','click','scroll','keydown'].forEach(function(e){addEventListener(e,function h(){if(v.paused)go();removeEventListener(e,h);},{passive:true});});
+      document.addEventListener('visibilitychange',function(){if(!document.hidden&&v.paused)go();});
+    })();</script>
     <div class="in">
       <p class="eyebrow"><b>ТОО «Легаси Казахстан»</b> · Астана</p>
       <h1>Оборудование для <em>конвейеров</em>, дробления и насосных линий</h1>
