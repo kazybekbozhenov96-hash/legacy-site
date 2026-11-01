@@ -80,7 +80,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 /* hero */
 .hero{position:relative;color:#fff;background:#1b1f22;overflow:hidden}
-.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.hero>img,.hero>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,15,18,.88) 0%,rgba(12,15,18,.62) 45%,rgba(12,15,18,.12) 100%)}
 .hero .in{position:relative;z-index:1;padding-block:clamp(72px,12vw,150px) clamp(56px,8vw,96px)}
 .hero .eyebrow{color:#c9d1d8}
@@ -418,7 +418,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 
 <main id="top">
   <section class="hero">
-    <img src="img/hero.jpg" alt="Конвейерные линии и отвалы на горно-обогатительном комплексе">
+    <video autoplay muted loop playsinline preload="auto" poster="img/hero-poster.jpg" aria-label="Карьеры, конвейерные линии и перегрузка горной массы"><source src="video/hero.webm" type="video/webm"><source src="video/hero.mp4" type="video/mp4"></video>
     <div class="in">
       <p class="eyebrow"><b>ТОО «Легаси Казахстан»</b> · Астана</p>
       <h1>Оборудование для <em>конвейеров</em>, дробления и насосных линий</h1>
