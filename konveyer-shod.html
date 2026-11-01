@@ -489,7 +489,44 @@ section.blk{padding-block:72px 8px}
 .pn b{font-weight:600}
 .pn .nx{text-align:right;grid-column:2}
 @media (max-width:560px){.pn{grid-template-columns:minmax(0,1fr)}.pn .nx{grid-column:1}}
-.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}</style>
+.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}
+/* tech data + FAQ (added 2026-11) */
+.tech{margin-top:40px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.tech>*{min-width:0}
+.tech>h3{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px);margin-top:6px}
+.tech>h3+p{color:var(--muted);font-size:14.5px;margin-top:-4px}
+details.more{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+details.more>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:15px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:18px;line-height:1;color:var(--pu)}
+details.more[open]>summary::after{content:"\2212"}
+details.more>summary small{font-weight:400;color:var(--muted);font-size:13px}
+details.more>summary:focus-visible{outline:2px solid var(--pu);outline-offset:-2px;border-radius:6px}
+details.more .tw{margin:0 12px 12px;border-radius:4px}
+details.more .tnote{color:var(--muted);font-size:13.5px;padding:0 16px 14px}
+details.more td{font-variant-numeric:tabular-nums}
+details.faq>summary{font-weight:500}
+details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width:80ch}
+.rsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);background:#0f1419;color:#e6e9ec;border-radius:8px;overflow:hidden}
+.rsel .f{padding:20px 22px;display:grid;gap:14px;align-content:start}
+.rsel .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.rsel h4{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px)}
+.rsel .fld{display:grid;gap:6px}.rsel .fld>span{font-size:13px;color:#a8b3bd}
+.rsel .chips{display:flex;flex-wrap:wrap;gap:6px}
+.rsel .chips label{position:relative}
+.rsel .chips input{position:absolute;opacity:0;pointer-events:none}
+.rsel .chips label span{display:inline-block;cursor:pointer;font-size:13.5px;padding:7px 11px;border:1px solid #3d4a57;border-radius:4px;color:#d3dae0;font-variant-numeric:tabular-nums}
+.rsel .chips input:checked+span{background:#f2a33a;border-color:#f2a33a;color:#1a1206;font-weight:600}
+.rsel .chips input:focus-visible+span{outline:2px solid #f2a33a;outline-offset:2px}
+.rsel .res{background:#151c23;padding:20px 22px;display:grid;gap:12px;align-content:start;border-left:1px solid #28333e}
+.rsel dl{margin:0;display:grid}
+.rsel dl div{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:12px;padding:9px 0;border-bottom:1px solid #28333e}
+.rsel dt{color:#a8b3bd;font-size:13.5px}.rsel dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.rsel dd small{display:block;font-weight:400;color:#a8b3bd;font-size:12.5px}
+.rsel .res p{font-size:13px;color:#a8b3bd}
+.rsel .btn{background:#f2a33a;color:#1a1206;justify-self:start}
+@media (max-width:820px){.rsel{grid-template-columns:minmax(0,1fr)}.rsel .res{border-left:0;border-top:1px solid #28333e}}
+</style>
 </head>
 <body>
 
@@ -528,6 +565,16 @@ section.blk{padding-block:72px 8px}
 <div class="grp"><h3>Центрирование рабочей ветви</h3><p>Боковое смещение устраняют с учётом загрузки, геометрии конвейера и состояния ленты.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/52.jpg" alt="Механические самоцентрирующие роликоопоры" loading="lazy"></div><div class="t"><b>Механические самоцентрирующие роликоопоры</b><p>Поворотная опора с профилированными роликами корректирует положение загруженной ленты. Покрытие роликов, угол желоба и размеры рамы выбирают по условиям эксплуатации.</p><p class="adv">Корректируют положение загруженной ленты без внешнего электропривода.</p><a class="ask" href="index.html?sec=c5&item=Механические самоцентрирующие роликоопоры#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/53.jpg" alt="Гидравлическое центрирование" loading="lazy"></div><div class="t"><b>Гидравлическое центрирование</b><p>При отклонении ленты следящий ролик приводит гидравлический механизм коррекции. Система не требует внешнего электрического питания.</p><p class="adv">Использует движение ленты для коррекции и не требует отдельного электрического питания.</p><a class="ask" href="index.html?sec=c5&item=Гидравлическое центрирование#request">Запросить →</a></div></article></div></div>
 <div class="grp"><h3>Нижние самоцентрирующие устройства</h3><p>Коррекция положения холостой ветви перед возвратом ленты к загрузочному и хвостовому узлам.</p><div class="cards"><article class="card"><div class="ph"><img src="img/cat/55.jpg" alt="Нижняя V-образная роликоопора" loading="lazy"></div><div class="t"><b>Нижняя V-образная роликоопора</b><p>Двухроликовое исполнение для обратной ветви, в том числе при ограниченной монтажной высоте. Автоматическая механическая коррекция и раздельная замена роликов.</p><p class="adv">Корректирует холостую ветвь при небольшой монтажной высоте; ролики заменяются отдельно.</p><a class="ask" href="index.html?sec=c5&item=Нижняя V-образная роликоопора#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/56.jpg" alt="Усиленная нижняя роликоопора" loading="lazy"></div><div class="t"><b>Усиленная нижняя роликоопора</b><p>Жёсткая рама и поворотный механизм для тяжёлых условий. Модульные элементы упрощают обслуживание. Возможность реверса проверяют для выбранной комплектации.</p><p class="adv">Жёсткая рама поддерживает геометрию узла, а модульная конструкция упрощает замену элементов.</p><a class="ask" href="index.html?sec=c5&item=Усиленная нижняя роликоопора#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/57.jpg" alt="Центрирующий возвратный ролик" loading="lazy"></div><div class="t"><b>Центрирующий возвратный ролик</b><p>Ролик с поворотным узлом реагирует на боковое смещение ленты. Предусмотрены исполнения для реверсивного движения.</p><p class="adv">Реагирует на смещение обратной ветви и помогает стабилизировать её движение к барабану.</p><a class="ask" href="index.html?sec=c5&item=Центрирующий возвратный ролик#request">Запросить →</a></div></article></div></div>
 <div class="feat"><div class="pics"><img src="img/cat/54.jpg" alt="Конусная самоцентрирующая система" loading="lazy"></div><div class="t"><span class="tag">Решение крупно</span><h3>Конусная самоцентрирующая система</h3><p>Автоматическая коррекция бокового смещения рабочей ветви. Конусообразные ролики и поворотная опора помогают возвращать ленту к оси конвейера.</p><ol><li><b>Автоматическое центрирование</b><span>При боковом смещении ленты коническая форма роликов создаёт корректирующее воздействие. Система работает механически. Помогает ограничить боковой уход ленты и её контакт с конструкциями става.</span></li><li><b>Регулируемая усиленная конструкция</b><span>Три регулирующих элемента позволяют адаптировать опору к ширине и высоте става. Усиленные ролики с защитой подшипниковых узлов — для работы при пыли и влаге.</span></li></ol></div></div>
+<div class="tech">
+<h3>Технические данные</h3><p>Типоразмеры, материалы и исполнения. Нажмите, чтобы раскрыть.</p>
+<details class="more"><summary>Системы центрирования <small>рабочая и обратная ветви</small></summary><div class="tw"><table><thead><tr><th>Решение</th><th>Ветвь</th><th>Принцип</th><th>Питание</th></tr></thead><tbody><tr><td>Механическая самоцентрирующая роликоопора</td><td>Рабочая</td><td>Поворотная опора с профилированными роликами</td><td>Не нужно</td></tr><tr><td>Конусная самоцентрирующая система</td><td>Рабочая</td><td>Конусные ролики создают корректирующее усилие</td><td>Не нужно</td></tr><tr><td>Гидравлическое центрирование</td><td>Рабочая и обратная</td><td>Следящий ролик управляет гидравлическим механизмом</td><td>Не нужно, работает от движения ленты</td></tr><tr><td>Нижняя V-образная роликоопора</td><td>Обратная</td><td>Два ролика, малая монтажная высота</td><td>Не нужно</td></tr><tr><td>Усиленная нижняя роликоопора</td><td>Обратная</td><td>Жёсткая рама и поворотный механизм</td><td>Не нужно</td></tr><tr><td>Центрирующий возвратный ролик</td><td>Обратная</td><td>Поворотный узел, есть реверсивные исполнения</td><td>Не нужно</td></tr></tbody></table></div></details>
+<details class="more"><summary>Причины схода и что проверить <small>до установки центрирования</small></summary><div class="tw"><table><thead><tr><th>Причина</th><th>Признак</th><th>Что сделать</th></tr></thead><tbody><tr><td>Нецентральная загрузка</td><td>Сход в зоне загрузки и сразу за ней</td><td>Отрегулировать течку, направить поток в центр</td></tr><tr><td>Перекос роликоопор или барабанов</td><td>Сход всегда в одну сторону на одном участке</td><td>Выставить роликоопоры и барабаны по оси</td></tr><tr><td>Налипание на ролики и барабаны</td><td>Сход меняется по мере загрязнения</td><td>Очистка ленты, плужки перед барабанами</td></tr><tr><td>Неровный стык ленты</td><td>Лента «гуляет» при проходе стыка</td><td>Перестыковать ленту под прямым углом</td></tr></tbody></table></div><p class="tnote">Центрирующие устройства удерживают ленту, но причину схода нужно устранить отдельно.</p></details>
+<h3>Частые вопросы</h3>
+<details class="more faq"><summary>Где ставить самоцентрирующие роликоопоры?</summary><p class="ans">На участке схода, перед головным и хвостовым барабанами и, как правило, через каждые 15–30 м рабочей ветви. На обратной ветви — перед хвостовым барабаном.</p></details>
+<details class="more faq"><summary>Работают ли центрирующие устройства при реверсе?</summary><p class="ans">Не все. Для реверсивных конвейеров есть отдельные исполнения центрирующих роликов и нижних опор. Направление движения указывайте в запросе.</p></details>
+<details class="more faq"><summary>Нужно ли электричество?</summary><p class="ans">Нет. Механические, конусные и гидравлические системы работают от движения самой ленты.</p></details>
+<details class="more faq"><summary>Что прислать для подбора?</summary><p class="ans">Место и характер схода, ширину и скорость ленты, угол желоба, есть ли реверс, расстояние между роликоопорами, схему рамы и фото участка.</p></details>
+</div>
 <div class="pick"><div><b>Для подбора пришлите</b><p>Место и характер схода • ширина и скорость ленты • реверс • угол желоба • загрузка • межроликовое расстояние • свободная высота под холостой ветвью • схема рамы • фото места схода</p></div><a class="btn" href="index.html?sec=c5#request">Отправить запрос</a></div></section>
     <div class="pn"><a href="konveyer-roliki.html"><small>← Раздел 04</small><b>Качественные комплектующие</b></a><a class="nx" href="konveyer-lenty.html"><small>Раздел 06 →</small><b>Ленты и защита конвейера</b></a></div>
   </div>

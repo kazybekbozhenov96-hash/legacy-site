@@ -505,7 +505,44 @@ section.blk{padding-block:72px 8px}
 .lbx .nav.p{left:10px}.lbx .nav.n{right:10px}
 .lbx .x{all:unset;cursor:pointer;color:#fff;font-size:15px;padding:6px 12px;border:1px solid rgba(255,255,255,.4);border-radius:4px}
 .lbx button:focus-visible{outline:2px solid #f2a33a;outline-offset:2px}
-.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}</style>
+.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}
+/* tech data + FAQ (added 2026-11) */
+.tech{margin-top:40px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.tech>*{min-width:0}
+.tech>h3{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px);margin-top:6px}
+.tech>h3+p{color:var(--muted);font-size:14.5px;margin-top:-4px}
+details.more{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+details.more>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:15px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:18px;line-height:1;color:var(--pu)}
+details.more[open]>summary::after{content:"\2212"}
+details.more>summary small{font-weight:400;color:var(--muted);font-size:13px}
+details.more>summary:focus-visible{outline:2px solid var(--pu);outline-offset:-2px;border-radius:6px}
+details.more .tw{margin:0 12px 12px;border-radius:4px}
+details.more .tnote{color:var(--muted);font-size:13.5px;padding:0 16px 14px}
+details.more td{font-variant-numeric:tabular-nums}
+details.faq>summary{font-weight:500}
+details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width:80ch}
+.rsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);background:#0f1419;color:#e6e9ec;border-radius:8px;overflow:hidden}
+.rsel .f{padding:20px 22px;display:grid;gap:14px;align-content:start}
+.rsel .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.rsel h4{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px)}
+.rsel .fld{display:grid;gap:6px}.rsel .fld>span{font-size:13px;color:#a8b3bd}
+.rsel .chips{display:flex;flex-wrap:wrap;gap:6px}
+.rsel .chips label{position:relative}
+.rsel .chips input{position:absolute;opacity:0;pointer-events:none}
+.rsel .chips label span{display:inline-block;cursor:pointer;font-size:13.5px;padding:7px 11px;border:1px solid #3d4a57;border-radius:4px;color:#d3dae0;font-variant-numeric:tabular-nums}
+.rsel .chips input:checked+span{background:#f2a33a;border-color:#f2a33a;color:#1a1206;font-weight:600}
+.rsel .chips input:focus-visible+span{outline:2px solid #f2a33a;outline-offset:2px}
+.rsel .res{background:#151c23;padding:20px 22px;display:grid;gap:12px;align-content:start;border-left:1px solid #28333e}
+.rsel dl{margin:0;display:grid}
+.rsel dl div{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:12px;padding:9px 0;border-bottom:1px solid #28333e}
+.rsel dt{color:#a8b3bd;font-size:13.5px}.rsel dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.rsel dd small{display:block;font-weight:400;color:#a8b3bd;font-size:12.5px}
+.rsel .res p{font-size:13px;color:#a8b3bd}
+.rsel .btn{background:#f2a33a;color:#1a1206;justify-self:start}
+@media (max-width:820px){.rsel{grid-template-columns:minmax(0,1fr)}.rsel .res{border-left:0;border-top:1px solid #28333e}}
+</style>
 </head>
 <body>
 
@@ -547,6 +584,17 @@ section.blk{padding-block:72px 8px}
 <div class="gal"><h3>Первичные уплотнения в работе</h3><div class="g"><img src="img/cat/35.jpg" alt="Первичные уплотнения в работе" loading="lazy"><img src="img/cat/36.jpg" alt="Первичные уплотнения в работе" loading="lazy"><img src="img/cat/37.jpg" alt="Первичные уплотнения в работе" loading="lazy"></div><p>Внутренние планки расположены со стороны потока, наружный профиль — с внешней стороны стенки течки. Секционное исполнение позволяет заменять изношенный участок.</p></div>
 <div class="feat"><div class="pics"><img src="img/cat/41.jpg" alt="Пылезащитное уплотнение K-Snap-Loc" loading="lazy" data-gal="img/cat/41.jpg|img/snap-site.jpg|img/snap-pin.jpg"><img src="img/cat/42.jpg" alt="Пылезащитное уплотнение K-Snap-Loc" loading="lazy" data-gal="img/cat/42.jpg|img/snap-site.jpg|img/snap-pin.jpg"></div><div class="t"><span class="tag">Решение крупно</span><h3>Пылезащитное уплотнение K-Snap-Loc</h3><p>Гибкий полиуретановый профиль закрывает зазор между стенкой течки и лентой. Уплотнение защёлкивается в монтажную рейку и удерживается фиксирующими элементами.</p><ol><li><b>Замена на монтажной рейке</b><span>Защёлкивающееся крепление упрощает замену изношенного профиля без разборки стенки течки.</span></li><li><b>Эластичная рабочая кромка</b><span>Упругость полиуретана помогает сохранять прилегание к ленте и ограничивать выход пыли через зазор.</span></li><li><b>Исполнение под условия работы</b><span>Высоту и состав полиуретана выбирают по геометрии узла, скорости ленты, температуре и свойствам материала.</span></li></ol></div></div>
 <div class="tbl"><h3>K-Snap-Loc: варианты и параметры</h3><div class="tw"><table><thead><tr><th>Параметр</th><th>Варианты</th></tr></thead><tbody><tr><td>Высота профиля</td><td>127 / 150 / 230 / 355 мм</td></tr><tr><td>Монтажная рейка</td><td>Длина 2000 мм; крепление согласуется со стенкой течки</td></tr><tr><td>Стандартный состав R69</td><td>от −30 до +80 °C</td></tr><tr><td>Высокотемпературный состав B93</td><td>от −25 до +120 °C</td></tr><tr><td>Дополнительное исполнение</td><td>Профиль с полостью для повышения гибкости</td></tr></tbody></table></div></div>
+<div class="tech">
+<h3>Технические данные</h3><p>Типоразмеры, материалы и исполнения. Нажмите, чтобы раскрыть.</p>
+<details class="more"><summary>Внутренние уплотнения: размеры <small>1219 и 1524 мм</small></summary><div class="tw"><table><thead><tr><th>Исполнение</th><th>Типоразмер, мм</th><th>Состав</th></tr></thead><tbody><tr><td>Полиуретан на стальном основании</td><td>1219 / 1524 × 178 × 25</td><td>ПУ 19 мм + сталь 6 мм, продолговатые отверстия для регулировки</td></tr><tr><td>Полиуретан с керамикой</td><td>1219 / 1524 × 178 × 25</td><td>Керамика 13 мм (Al₂O₃ 92 %) + ПУ 6 мм + сталь 6 мм</td></tr></tbody></table></div></details>
+<details class="more"><summary>Что выбрать под условия <small>груз, пыль, температура</small></summary><div class="tw"><table><thead><tr><th>Условия</th><th>Решение</th></tr></thead><tbody><tr><td>Мелкий сухой груз, пыль</td><td>Наружное уплотнение K-Snap-Loc или двухконтурное + фильтрующее укрытие</td></tr><tr><td>Крупный абразивный кусок</td><td>Внутреннее уплотнение с керамикой + наружный профиль</td></tr><tr><td>Груз до +80 °C</td><td>Профиль из состава R69 (−30…+80 °C)</td></tr><tr><td>Груз до +120 °C</td><td>Профиль из состава B93 (−25…+120 °C)</td></tr><tr><td>Самые тяжёлые условия, просыпь у задней стенки</td><td>Уплотнения Super Block</td></tr><tr><td>Нужен минимум трения о ленту</td><td>Бесконтактные уплотнения с настроенным зазором</td></tr></tbody></table></div></details>
+<h3>Частые вопросы</h3>
+<details class="more faq"><summary>Зачем внутреннее уплотнение, если есть наружное?</summary><p class="ans">Внутренние планки принимают основной поток внутри течки. Без них материал давит на наружный профиль, и тот быстро изнашивается. Наружное уплотнение закрывает только мелочь и пыль у кромки ленты.</p></details>
+<details class="more faq"><summary>Почему уплотнения не держат без опоры под лентой?</summary><p class="ans">Между роликоопорами лента провисает, и под бортом открывается зазор. Через него идёт просыпь при любом уплотнении. Поэтому уплотнения подбираем вместе с демпферным столом или амортизирующими балками.</p></details>
+<details class="more faq"><summary>Какую высоту профиля K-Snap-Loc выбрать?</summary><p class="ans">Есть профили 127, 150, 230 и 355 мм. Высоту выбирают по расстоянию от стенки течки до ленты и углу желоба, рейка длиной 2000 мм.</p></details>
+<details class="more faq"><summary>Можно ли менять уплотнение без разборки течки?</summary><p class="ans">Да. K-Snap-Loc и профили на монтажной рейке защёлкиваются в рейку, изношенный участок меняют без снятия стенки. Внутренние планки секционные, меняют только изношенную секцию.</p></details>
+<details class="more faq"><summary>Что прислать для подбора?</summary><p class="ans">Толщину стенки течки, зазор до ленты, свободный край ленты, длину зоны уплотнения, температуру груза, угол желоба и фото узла.</p></details>
+</div>
 <div class="pick"><div><b>Для подбора пришлите</b><p>Толщина стенки течки • зазор до ленты • свободный край ленты • угол желобчатости • длина уплотнения • скорость и температура • крупность и абразивность материала • опора под лентой</p></div><a class="btn" href="index.html?sec=c3#request">Отправить запрос</a></div></section>
     <div class="pn"><a href="konveyer-udar.html"><small>← Раздел 02</small><b>Ударные нагрузки в зоне пересыпа</b></a><a class="nx" href="konveyer-roliki.html"><small>Раздел 04 →</small><b>Качественные комплектующие</b></a></div>
   </div>

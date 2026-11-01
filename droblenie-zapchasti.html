@@ -489,7 +489,44 @@ section.blk{padding-block:72px 8px}
 .pn b{font-weight:600}
 .pn .nx{text-align:right;grid-column:2}
 @media (max-width:560px){.pn{grid-template-columns:minmax(0,1fr)}.pn .nx{grid-column:1}}
-.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}</style>
+.addr a.map2gis{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.addr a.map2gis:hover{color:var(--pu,#e8b21a)}
+/* tech data + FAQ (added 2026-11) */
+.tech{margin-top:40px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.tech>*{min-width:0}
+.tech>h3{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px);margin-top:6px}
+.tech>h3+p{color:var(--muted);font-size:14.5px;margin-top:-4px}
+details.more{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+details.more>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:600;font-size:15px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:18px;line-height:1;color:var(--pu)}
+details.more[open]>summary::after{content:"\2212"}
+details.more>summary small{font-weight:400;color:var(--muted);font-size:13px}
+details.more>summary:focus-visible{outline:2px solid var(--pu);outline-offset:-2px;border-radius:6px}
+details.more .tw{margin:0 12px 12px;border-radius:4px}
+details.more .tnote{color:var(--muted);font-size:13.5px;padding:0 16px 14px}
+details.more td{font-variant-numeric:tabular-nums}
+details.faq>summary{font-weight:500}
+details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width:80ch}
+.rsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);background:#0f1419;color:#e6e9ec;border-radius:8px;overflow:hidden}
+.rsel .f{padding:20px 22px;display:grid;gap:14px;align-content:start}
+.rsel .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#f2a33a}
+.rsel h4{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,21px)}
+.rsel .fld{display:grid;gap:6px}.rsel .fld>span{font-size:13px;color:#a8b3bd}
+.rsel .chips{display:flex;flex-wrap:wrap;gap:6px}
+.rsel .chips label{position:relative}
+.rsel .chips input{position:absolute;opacity:0;pointer-events:none}
+.rsel .chips label span{display:inline-block;cursor:pointer;font-size:13.5px;padding:7px 11px;border:1px solid #3d4a57;border-radius:4px;color:#d3dae0;font-variant-numeric:tabular-nums}
+.rsel .chips input:checked+span{background:#f2a33a;border-color:#f2a33a;color:#1a1206;font-weight:600}
+.rsel .chips input:focus-visible+span{outline:2px solid #f2a33a;outline-offset:2px}
+.rsel .res{background:#151c23;padding:20px 22px;display:grid;gap:12px;align-content:start;border-left:1px solid #28333e}
+.rsel dl{margin:0;display:grid}
+.rsel dl div{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:12px;padding:9px 0;border-bottom:1px solid #28333e}
+.rsel dt{color:#a8b3bd;font-size:13.5px}.rsel dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.rsel dd small{display:block;font-weight:400;color:#a8b3bd;font-size:12.5px}
+.rsel .res p{font-size:13px;color:#a8b3bd}
+.rsel .btn{background:#f2a33a;color:#1a1206;justify-self:start}
+@media (max-width:820px){.rsel{grid-template-columns:minmax(0,1fr)}.rsel .res{border-left:0;border-top:1px solid #28333e}}
+</style>
 </head>
 <body>
 
@@ -526,6 +563,14 @@ section.blk{padding-block:72px 8px}
     <div style="height:28px"></div>
 <section class="dsec" id="c7f">
 <div class="grp"><div class="cards"><article class="card"><div class="ph"><img src="img/cat/82.jpg" alt="Дробящие элементы" loading="lazy"></div><div class="t"><b>Дробящие элементы</b><p>Конусы, брони, щёки, била и другие сменные рабочие детали. Материал и геометрия согласуются под конкретную машину.</p><a class="ask" href="index.html?sec=c7&item=Дробящие элементы#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/96.jpg" alt="Механические узлы" loading="lazy"></div><div class="t"><b>Механические узлы</b><p>Втулки, эксцентриковые и корпусные элементы, валы и детали приводов. Подбор по каталожному номеру и посадочным размерам.</p><a class="ask" href="index.html?sec=c7&item=Механические узлы#request">Запросить →</a></div></article><article class="card"><div class="ph"><img src="img/cat/97.jpg" alt="Роторы и футеровки" loading="lazy"></div><div class="t"><b>Роторы и футеровки</b><p>Элементы ударных и центробежных дробилок; защитные плиты и крепёж. Комплектование по требуемому объёму ремонта.</p><a class="ask" href="index.html?sec=c7&item=Роторы и футеровки#request">Запросить →</a></div></article></div></div>
+<div class="tech">
+<h3>Технические данные</h3><p>Типоразмеры, материалы и исполнения. Нажмите, чтобы раскрыть.</p>
+<details class="more"><summary>Износостойкие материалы <small>для дробящих элементов</small></summary><div class="tw"><table><thead><tr><th>Материал</th><th>Детали</th><th>Когда выбирают</th></tr></thead><tbody><tr><td>Марганцовистая сталь (110Г13Л и аналоги, 13–22 % Mn)</td><td>Щёки, брони и конусы конусных дробилок</td><td>Ударная нагрузка; поверхность упрочняется в работе</td></tr><tr><td>Высокохромистый чугун</td><td>Била роторных дробилок, отбойные плиты</td><td>Абразивный износ при умеренном ударе</td></tr><tr><td>Сталь с керамическими вставками</td><td>Била, футеровка</td><td>Высокая абразивность и удар</td></tr><tr><td>Износостойкая сталь</td><td>Футеровки, бункеры, течки</td><td>Защита корпуса от абразива</td></tr></tbody></table></div></details>
+<h3>Частые вопросы</h3>
+<details class="more faq"><summary>Можно ли заказать запчасть без чертежа?</summary><p class="ans">Да. Достаточно модели дробилки, серийного номера и номера детали из каталога. Если их нет — фото детали с размерами.</p></details>
+<details class="more faq"><summary>Подберёте ли деталь для дробилки другого производителя?</summary><p class="ans">Да, по модели и посадочным размерам. Материал и профиль подбираем под вашу породу и износ.</p></details>
+<details class="more faq"><summary>Что прислать для подбора?</summary><p class="ans">Модель оборудования, серийный номер, номер детали, чертёж или фото с размерами, количество и описание износа.</p></details>
+</div>
 <div class="pick"><div><b>Для подбора пришлите</b><p>Модель оборудования • серийный номер • номер детали • чертёж или фото с размерами • количество • условия износа</p></div><a class="btn" href="index.html?sec=c7#request">Отправить запрос</a></div></section>
     <div class="pn"><a href="droblenie-sita.html"><small>← Раздел 07.5</small><b>Сита и просеивающие поверхности</b></a><a class="nx" href="droblenie.html"><small>Все разделы →</small><b>Дробление и сортировка</b></a></div>
   </div>
