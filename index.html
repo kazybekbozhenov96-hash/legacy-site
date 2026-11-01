@@ -458,6 +458,18 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
   .hero .cta{margin-top:20px}
   .facts{margin-top:12px}
 }
+/* hero: three services under the buttons, each opens its dialog (02.11) */
+.hsvc{display:flex;flex-wrap:wrap;align-items:center;margin-top:22px;font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase}
+.hsvc button{all:unset;cursor:pointer;color:#dfe5ea;padding:4px 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.hsvc button:hover,.hsvc button:focus-visible{color:#f2a33a;border-color:#f2a33a}
+.hsvc button+button::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:#f2a33a;margin:0 14px;vertical-align:middle;transform:translateY(-1px)}
+@media (max-width:760px){
+  .hero .in{padding-block:clamp(10px,2svh,20px) clamp(56px,13svh,120px)}
+  .hsvc{margin-top:18px;font-size:11.5px}
+  .hsvc button+button::before{margin:0 11px}
+}
+@media (max-width:760px) and (max-height:700px){.hero .in{padding-block:10px 30px}}
+@media (max-width:760px){.hero .eyebrow .ey-s{display:none}.hero .eyebrow .ey2{display:block;margin-top:6px}}
 </style>
 </head>
 <body>
@@ -495,15 +507,14 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
       document.addEventListener('visibilitychange',check);
     })();</script>
     <div class="in">
-      <p class="eyebrow"><b>ТОО «Легаси Казахстан»</b> · Астана</p>
+      <p class="eyebrow"><b>ТОО «Легаси Казахстан»</b><span class="ey-s"> · </span><span class="ey2">Опыт работы по всей Центральной Азии</span></p>
       <h1>Оборудование для <em>конвейеров</em>, дробления и насосных линий</h1>
       <p class="lede">Подбираем комплектацию по техническому заданию, модели оборудования или параметрам процесса. Для горнодобывающих и перерабатывающих предприятий Центральной Азии.</p>
       <div class="cta">
         <a class="btn" href="#request">Отправить запрос</a>
         <a class="link3" href="#catalog">Открыть каталог <span aria-hidden="true">→</span></a>
       </div>
-      <ul class="facts"><li>Центральная Азия</li><li>Все виды поставок</li><li>Свой склад ЗИП</li><li>Сервис и инжиниринг</li></ul>
-      <div class="fields"><span>Горная промышленность</span><span>Переработка сырья</span><span>Нефтегазовый сектор</span><span>Производство и ремонт</span></div>
+      <p class="hsvc"><button type="button" data-hsvc="postavka">Поставка</button><button type="button" data-hsvc="servis">Сервис</button><button type="button" data-hsvc="inzhiniring">Инжиниринг</button></p>
     </div>
   </section>
 
@@ -761,6 +772,7 @@ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',(
 (function(){
   function openD(k){var d=document.getElementById('dlg-'+k);if(!d)return;if(d.showModal)d.showModal();else d.setAttribute('open','');}
   document.querySelectorAll('.svc .more[data-svc]').forEach(function(b){b.addEventListener('click',function(){openD(b.dataset.svc)})});
+  document.querySelectorAll('[data-hsvc]').forEach(function(b){b.addEventListener('click',function(){openD(b.dataset.hsvc)})});
   document.querySelectorAll('.sdlg').forEach(function(d){
     d.querySelector('.x').addEventListener('click',function(){d.close?d.close():d.removeAttribute('open')});
     d.addEventListener('click',function(e){if(e.target===d)d.close()});
