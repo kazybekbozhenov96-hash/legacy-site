@@ -623,6 +623,8 @@ details.faq .ans{padding:0 16px 14px;color:var(--muted);font-size:15px;max-width
 @media (min-width:1120px){.cfill{grid-column:span 3}}
 @media (prefers-reduced-motion:reduce){.cfill img,.cfill .cf-go svg,.cfill .badge i{animation:none;transition:none}}
 
+/* whole-conveyor studio render: keep both ends in frame, gentle zoom only */
+.shero .show3d .bg{animation-name:t3dpanW}@keyframes t3dpanW{0%{transform:scale(1)}100%{transform:scale(1.04)}}
 </style>
 </head>
 <body>
