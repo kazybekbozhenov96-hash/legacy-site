@@ -383,6 +383,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 <script src="realism.js"></script>
 <script src="dynamax.js"></script>
 <script src="impactbeds.js"></script>
+<script src="seals.js"></script>
 <script>
 (function(){
 "use strict";
@@ -682,6 +683,17 @@ for(const[g,sg]of[[sealL,-1],[sealR,1]]){
   for(let x=LZ0+0.1;x<LZ1-0.05;x+=0.2){box(0.195,0.15,0.05,VM.red,x,1.245,sg*(SK_Z+0.032),blk);box(0.12,0.08,0.012,VM.grey,x,1.255,sg*(SK_Z+0.063),blk);
     for(const dx of[-0.025,0.025]){const b=cylX(0.01,0.02,VM.grey,x+dx,1.255,sg*(SK_Z+0.072),blk,8);b.rotation.set(Math.PI/2,0,0);}}
   dual.visible=rail.visible=blk.visible=false;}
+/* inner liners and outer seals rebuilt from seals.js (Kinder K-Snap-Loc / K-Super Block, Flexco Dual Seal data) */
+const linerPu=[];
+if(window.LegacySeals){
+  clipMats.push(VM.cer);
+  const SO=k=>LegacySeals.build(THREE,k,{L:LZ1-LZ0-0.02,x0:(LZ0+LZ1)/2,zw:SK_Z,wt:0.012,wallBot:SK_BOT,beltY:z=>BELT_Y+0.006+prof(sFromZ(z,1),1)[1],mat:{pu:M.pu,galv:M.rail,steel:M.steel,cer:VM.cer}});
+  [[linerL,-1],[linerR,1]].forEach(([g,sg],i)=>{while(g.children.length)g.remove(g.children[0]);
+    const a=SO('pus'),b=SO('puc');a.scale.z=b.scale.z=sg;g.add(a,b);linerPu.push(a);linerCer[i]=b;b.visible=false;});
+  for(const k in outerSets)outerSets[k].forEach((g,i)=>{const sg=i?1:-1;while(g.children.length)g.remove(g.children[0]);
+    const r=SO(k.slice(2));r.scale.z=sg;g.add(r);
+    if(k==='z_block'&&i===0)g.add(LegacySeals.build(THREE,'rear',{xr:LZ0-0.006,zh:SK_Z-0.006,wallBot:SK_BOT,beltY:z=>BELT_Y+0.006+prof(sFromZ(z,1),1)[1],mat:{pu:M.pu,galv:M.rail,steel:M.steel}}));});
+}
 /* dust: non-contact seals with lit strips instead of the fabric cover */
 const covFab=new THREE.Group(),covNC=new THREE.Group();while(cover.children.length)covFab.add(cover.children[0]);cover.add(covFab,covNC);covNC.visible=false;
 {const WEAR=new THREE.MeshStandardMaterial({color:0x2a2d30,roughness:.7,metalness:.3});
@@ -699,7 +711,7 @@ const covFab=new THREE.Group(),covNC=new THREE.Group();while(cover.children.leng
  /* tail end: same profile under the back wall */
  box(0.012,0.1,SK_Z*2-0.06,VM.grey,LZ0+0.03,1.07,0,covNC);
  for(let z=-SK_Z+0.08;z<SK_Z-0.05;z+=0.1){const s0=sFromZ(z,1),p0=prof(s0,1);const b=box(0.08,0.01,0.1,WEAR,LZ0+0.07,BELT_Y+0.006+p0[1]+0.012,p0[0],covNC);if(Math.abs(z)>0.2)b.rotation.x=-(z<0?-1:1)*TROUGH;}}
-function applySeal(){linerCer.forEach(g=>g.visible=innerVar==='z_puc');for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar);}
+function applySeal(){linerCer.forEach(g=>g.visible=innerVar==='z_puc');linerPu.forEach(g=>g.visible=innerVar!=='z_puc');for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar);}
 function applyDust(){covFab.visible=dustOn.z_cover;covNC.visible=dustOn.z_nc;}
 const VARS={z_station:'bed',z_torsion:'bed',z_bar:'bed',z_combo:'bed',z_pus:'inner',z_puc:'inner',z_dual:'outer',z_rail:'outer',z_snap:'outer',z_block:'outer',z_nc:'dust',z_cover:'dust'};
 function setVar(id){const k=VARS[id];if(!k)return;
