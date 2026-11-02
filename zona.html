@@ -382,6 +382,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="realism.js"></script>
 <script src="dynamax.js"></script>
+<script src="impactbeds.js"></script>
 <script>
 (function(){
 "use strict";
@@ -556,6 +557,10 @@ part(bed,null,'bed');
 const DYN=[];
 if(window.LegacyDynamax){const UL=(LZ1-LZ0)/3;for(let k=0;k<3;k++){const D=LegacyDynamax.build(THREE,{L:UL-0.01});D.cx=LZ0+UL*(k+0.5);D.root.position.set(D.cx,BELT_Y-0.01,0);bed.add(D.root);DYN.push(D);}}
 const torsionOnly=DYN.map(D=>D.root);
+/* Hanpeng-type stations: HP-HCZ (z_station) and HP-HCK (z_combo), 3 units each, built by impactbeds.js */
+const BEDS={z_station:[],z_combo:[]};
+if(window.LegacyBeds){const UL=(LZ1-LZ0)/3;for(const[id,fn]of[['z_station','hcz'],['z_combo','hck']])for(let k=0;k<3;k++){const D=LegacyBeds[fn](THREE,{L:UL-0.01});D.cx=LZ0+UL*(k+0.5);D.root.position.set(D.cx,BELT_Y-0.005,0);D.root.visible=false;bed.add(D.root);BEDS[id].push(D);}}
+const ALLB=[...DYN,...BEDS.z_station,...BEDS.z_combo];
 const lzPart=part(lzIdlers,null,'lz');
 
 /* chute */
@@ -640,7 +645,7 @@ const supStation=cradles(VM.orange,true),supBar=cradles(VM.galv,false),supCombo=
    for(let k=0;k<7;k++){const d=cylX(0.055,0.03,M.rubber||BEDM.black,0,0,-0.18+k*0.06,r,20);d.rotation.y=Math.PI/2;}
    const ax=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.5,10),VM.grey);ax.rotation.x=Math.PI/2;r.add(ax);}}
 let bedVar='z_torsion',innerVar='z_pus',outerVar='z_snap',dustVar='z_cover';const dustOn={z_cover:true,z_nc:false};
-function applyBed(){const tq=bedVar==='z_torsion'&&DYN.length>0;torsionOnly.forEach(o=>o.visible=tq);modules.forEach(m=>m.g.visible=!tq);sideL.visible=sideR.visible=!tq;supStation.visible=bedVar==='z_station';supBar.visible=bedVar==='z_bar';supCombo.visible=bedVar==='z_combo';}
+function applyBed(){const tq=bedVar==='z_torsion'&&DYN.length>0,own=tq||(BEDS[bedVar]&&BEDS[bedVar].length>0);torsionOnly.forEach(o=>o.visible=tq);for(const k in BEDS)BEDS[k].forEach(D=>D.root.visible=k===bedVar);modules.forEach(m=>m.g.visible=!own);sideL.visible=sideR.visible=!own;supStation.visible=bedVar==='z_station'&&!BEDS.z_station.length;supBar.visible=bedVar==='z_bar';supCombo.visible=bedVar==='z_combo'&&!BEDS.z_combo.length;}
 applyBed();
 /* inner liner: polyurethane with ceramic inserts */
 const linerCer=[];
@@ -879,6 +884,7 @@ function updateParts(dt){
   if(typeof outerSets!=='undefined'){const ncOn=dustOn.z_nc&&pres.cover>0.5;for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar&&!ncOn);}
   for(const m of modules){m.g.position.y=m.y;}
   for(const D of DYN){D.setTravel(-bedD(D.cx));D.trough.position.y+=0.22*e;D.bars.position.y=0.3*e;D.wingL.position.set(0,0.12*e,-0.7*e);D.wingR.position.set(0,0.12*e,0.7*e);}
+  for(const k in BEDS)for(const D of BEDS[k]){if(!D.root.visible)continue;D.setTravel(-bedD(D.cx));D.trough.position.y+=0.2*e;D.bars.position.y=0.3*e;}
 }
 
 /* ---------- labels ---------- */
