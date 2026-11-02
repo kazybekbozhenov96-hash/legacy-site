@@ -85,18 +85,13 @@ function buildCombo(){const g=new T.Group(),L=1.4,y=0.5,a=0.55;
    list:['Опорные брусья по профилю желоба','Усиленная сварная рама с рёбрами','Регулируемые и выдвижные исполнения; возможна комбинация с роликоопорами'],
    desc:'Ролики и опорные брусья поддерживают ленту в зоне пересыпа. Доступны регулируемые и выдвижные конструкции для обслуживания.',adv:'Сочетают поддержку ленты у бортов с качением на роликах; выдвижные секции облегчают доступ.',
    sel:['Ширина ленты','Угол желоба','Шаг опор','Доступ для обслуживания']};}
-function buildTorsion(){const g=new T.Group(),L=1.5,y=0.48,a=0.22;const mid=new T.Group();g.add(mid);
-  for(let i=0;i<3;i++)ibar(mid,0,y,-0.22+i*0.22,L,0,0.2);
-  for(const sg of[-1,1])for(let k=0;k<2;k++){const d=0.11+k*0.21;ibar(g,0,y+0.03+d*Math.sin(a),sg*(0.33+d*Math.cos(a)),L,-sg*a,0.2);}
-  for(const x of[-0.55,0,0.55]){box(0.1,0.05,0.7,GRY,mid,x,y-0.08,0);
-    for(const sg of[-1,1]){const t=new T.Group();t.position.set(x,y-0.17,sg*0.38);g.add(t);box(0.12,0.12,0.12,GRY,t,0,0,0);const c=mesh(new T.BoxGeometry(0.08,0.08,0.13),BLUE,t);c.rotation.z=Math.PI/4;
-      box(0.03,0.12,0.03,GRY,t,0,0.07,-sg*0.06);}
-    box(0.12,0.06,1.6,GRY,g,x,y-0.26,0);for(const sg of[-1,1])box(0.1,0.18,0.08,GRY,g,x,y-0.1,sg*0.7);}
-  for(const sg of[-1,1]){box(L+0.2,0.08,0.1,GRY,g,0,y-0.3,sg*0.8);for(const x of[-L/2-0.05,L/2+0.05])box(0.14,0.012,0.18,GRY,g,x,y-0.34,sg*0.8);}
-  return{root:g,mid,parts:[{t:'Центральная секция на торсионах',p:[0.3,y+0.02,0]},{t:'Торсионная опора',p:[-0.55,y-0.17,0.44]},{t:'Боковые неподвижные секции',p:[0.4,y+0.12,0.6]},{t:'Оцинкованная рама',p:[0,y-0.3,0.8]}],
-   list:['Центральная секция подвешена на каучуковых торсионных демпферах','Боковые секции закреплены неподвижно под бортовыми уплотнениями','Направляющие из UHMWPE — поверхность скольжения без вращающихся узлов','Оцинкованная рама на опорах става'],
-   desc:'Для зоны приёма материала с высокими ударными нагрузками. При падении материала упругие каучуковые элементы деформируются в торсионных опорах, центральная секция получает упругий ход и гасит колебания.',adv:'По данным каталога увеличивает срок службы ленты на 30 % и снижает риск аварийного простоя.',
-   sel:['Высота падения','Масса и максимальный размер куска','Производительность','Ширина и скорость ленты','Угол желоба','Монтажная высота']};}
+function buildTorsion(){const g=new T.Group(),D=window.LegacyDynamax.build(T,{L:1.4}),Y=0.29;D.root.position.y=Y;g.add(D.root);
+  /* stringers of the conveyor the table is bolted to */
+  for(const sg of[-1,1]){box(1.9,0.16,0.07,M.paint,g,0,Y-0.21,sg*0.74);box(1.9,0.012,0.1,M.paint,g,0,Y-0.136,sg*0.755);}
+  return{root:g,dyn:D,parts:[{t:'Подвижное корыто на торсионах',p:[0.35,Y+0.01,0.05]},{t:'Торсионная опора',p:[-0.57,Y-0.02,0.5]},{t:'Неподвижное крыло',p:[-0.3,Y+0.27,-0.55]},{t:'Поперечина с лапами',p:[0.57,Y-0.22,0.7]}],
+   list:['Подвижное корыто из гнутого листа: центр и нижняя часть наклона, полки лежат на торсионных опорах','Торсионные опоры: резиновый элемент в стальной обойме, красные рычаги — ход вниз и чуть вперёд по ходу ленты','Неподвижные крылья на стойках: наклонная плита с отогнутой кромкой держит края ленты под бортами течки','Брусья UHMWPE 30 мм на Т-болтах, заходная фаска на концах; замена при износе до 18 мм','Тяжёлые поперечины с лапами — ставятся на став вместо ударных роликоопор'],
+   desc:'Для зоны приёма материала с высокими ударными нагрузками. Центральная часть стола подвешена на торсионных опорах: при ударе резиновые элементы закручиваются, корыто получает упругий ход и гасит колебания. Крылья закреплены неподвижно, поэтому под бортовыми уплотнениями лента не провисает.',adv:'По данным каталога увеличивает срок службы ленты на 30 % и снижает риск аварийного простоя. Нет вращающихся узлов.',
+   sel:['Высота падения','Масса и максимальный размер куска','Производительность','Ширина и скорость ленты','Угол желоба','Монтажная высота','Шаг отверстий в ставе']};}
 /* skirt plates: standalone like on the catalogue picture */
 function slotPlate(L,H,t,slots){const s=new T.Shape();s.moveTo(-L/2,0);s.lineTo(L/2,0);s.lineTo(L/2,H);s.lineTo(-L/2,H);s.closePath();
   for(let i=0;i<slots;i++){const x=-L/2+L*(i+0.5)/slots,h=new T.Path();h.moveTo(x-0.012,H-0.025);h.lineTo(x+0.012,H-0.025);h.lineTo(x+0.012,H-0.085);h.lineTo(x-0.012,H-0.085);h.closePath();s.holes.push(h);}
@@ -244,7 +239,7 @@ addEventListener('resize',resize);if(window.ResizeObserver)new ResizeObserver(re
 function place(el,v,w,h){v.project(cam);if(v.z>1||Math.abs(v.x)>1.05||Math.abs(v.y)>1.05){el.hidden=true;return;}el.hidden=false;el.style.left=((v.x+1)/2*w).toFixed(1)+'px';el.style.top=((1-v.y)/2*h).toFixed(1)+'px';}
 const clk=new T.Clock();
 function tick(){requestAnimationFrame(tick);const dt=Math.min(.033,clk.getDelta());if(!vis||!cur)return;t0+=dt;
-  if(cur.mid)cur.mid.position.y=-0.012*Math.max(0,Math.sin(t0*3))**6;
+  {const k=Math.max(0,Math.sin(t0*3))**6;if(cur.dyn)cur.dyn.setTravel(-0.018*k);else if(cur.mid)cur.mid.position.y=-0.012*k;}
   ctl.update();pr.render(sc,cam);const w=pview.clientWidth,h=pview.clientHeight;
   for(const L of cur.lbls){if(!lblOn){L.el.hidden=true;continue;}tv.set(...L.p);cur.root.localToWorld(tv);place(L.el,tv,w,h);}}
 window.LEGACY_CAT={page:'konveyer-udar.html',map:Object.fromEntries(PRODUCTS.map(p=>[p.id,[p.img,p.page]]))};

@@ -57,7 +57,7 @@
   function rubber(T,m){if(!m)return;m.map=tex(T,'rubber_c.jpg',true,[3,3]);m.needsUpdate=true;}
 
   window.LegacyRealism={
-    tex:tex,setLag:setLag,
+    tex:tex,setLag:setLag,galv:galv,triplanar:triplanar,
     /* pages built on the shared kit (MAT/TX) */
     applyKit:function(T,o){
       var M=o.MAT;

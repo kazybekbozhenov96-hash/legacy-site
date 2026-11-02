@@ -316,7 +316,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
     </article>
     <article>
       <h2>Демпферный стол с торсионными опорами</h2>
-      <p>Центральная секция подвешена на каучуковых торсионных демпферах. При ударе упругие элементы закручиваются, секция получает упругий ход и гасит колебания. В модели это видно по оранжевым меткам на торсионах; ход показан увеличенным.</p>
+      <p>Подвижное корыто с центральными брусьями лежит на торсионных опорах: резиновый элемент в стальной обойме и красные рычаги. При ударе резина закручивается, корыто получает упругий ход и гасит колебания. Крылья стоят на отдельных стойках и не двигаются, поэтому под бортами течки лента не провисает. Ход в модели показан увеличенным.</p>
       <p>Боковые секции закреплены неподвижно и держат края ленты у бортовых уплотнений. Поверхность скольжения — направляющие из UHMWPE, без вращающихся узлов. По данным каталога стол увеличивает срок службы ленты на 30 %.</p>
     </article>
     <article class="wide">
@@ -381,6 +381,7 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:now
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="realism.js"></script>
+<script src="dynamax.js"></script>
 <script>
 (function(){
 "use strict";
@@ -533,8 +534,6 @@ const bedCenter=new THREE.Group(),sideL=new THREE.Group(),sideR=new THREE.Group(
 bed.add(bedCenter,sideL,sideR);
 [bedCenter,sideL,sideR].forEach((g,i)=>{g.userData.ex=[new THREE.Vector3(0,-0.75,0),new THREE.Vector3(0,-0.25,-0.75),new THREE.Vector3(0,-0.25,0.75)][i];});
 const NM=5,ML=(LZ1-LZ0)/NM,modules=[];
-const torsionOnly=[];
-for(const z of[-0.62,0.62]){torsionOnly.push(box(LZ1-LZ0+0.1,0.1,0.08,BEDM.galv,(LZ0+LZ1)/2,BELT_Y-0.31,z,bedCenter));}
 for(let m=0;m<NM;m++){
   const cx=LZ0+ML*(m+0.5);
   const g=new THREE.Group();bedCenter.add(g);
@@ -542,16 +541,6 @@ for(let m=0;m<NM;m++){
   box(0.09,0.06,0.5,BEDM.galv,cx-ML*0.25,BELT_Y-0.085,0,g);box(0.09,0.06,0.5,BEDM.galv,cx+ML*0.25,BELT_Y-0.085,0,g);
   box(ML-0.06,0.05,0.08,BEDM.galv,cx,BELT_Y-0.135,0,g);
   const arms=[];
-  for(const sg of[-1,1]){
-    const piv=new THREE.Group();piv.position.set(cx,BELT_Y-0.31,sg*0.62);bedCenter.add(piv);torsionOnly.push(piv);
-    const ez=sg*0.25-sg*0.62,ey=(BELT_Y-0.11)-(BELT_Y-0.31);
-    const len=Math.hypot(ez,ey);
-    const arm=box(0.06,0.04,len,BEDM.galv,0,ey/2,ez/2,piv);arm.rotation.x=-Math.atan2(ey,ez)+(ez<0?Math.PI:0);
-    const tors=cylX(0.075,0.22,BEDM.blue,0,0,0,piv,24);
-    const mark=box(0.23,0.02,0.04,M.pu,0,0.07,0,piv);
-    cylX(0.1,0.04,BEDM.galv,0.13,0,0,bedCenter===piv.parent?piv:piv,16);
-    arms.push({piv,ez,base:0});
-  }
   modules.push({g,cx,y:0,v:0,arms});
 }
 for(const [grp,sg] of[[sideL,-1],[sideR,1]]){
@@ -563,6 +552,10 @@ for(const [grp,sg] of[[sideL,-1],[sideR,1]]){
   for(let m=0;m<=NM;m++){const x=LZ0+ML*m;box(0.06,0.3,0.06,BEDM.galv,x,BELT_Y-0.06,sg*0.56,grp);}
 }
 part(bed,null,'bed');
+/* demper table with torsion springs (Kinder Dynamax type): 3 units along the loading zone, built by dynamax.js */
+const DYN=[];
+if(window.LegacyDynamax){const UL=(LZ1-LZ0)/3;for(let k=0;k<3;k++){const D=LegacyDynamax.build(THREE,{L:UL-0.01});D.cx=LZ0+UL*(k+0.5);D.root.position.set(D.cx,BELT_Y-0.01,0);bed.add(D.root);DYN.push(D);}}
+const torsionOnly=DYN.map(D=>D.root);
 const lzPart=part(lzIdlers,null,'lz');
 
 /* chute */
@@ -647,7 +640,8 @@ const supStation=cradles(VM.orange,true),supBar=cradles(VM.galv,false),supCombo=
    for(let k=0;k<7;k++){const d=cylX(0.055,0.03,M.rubber||BEDM.black,0,0,-0.18+k*0.06,r,20);d.rotation.y=Math.PI/2;}
    const ax=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.5,10),VM.grey);ax.rotation.x=Math.PI/2;r.add(ax);}}
 let bedVar='z_torsion',innerVar='z_pus',outerVar='z_snap',dustVar='z_cover';const dustOn={z_cover:true,z_nc:false};
-function applyBed(){torsionOnly.forEach(o=>o.visible=bedVar==='z_torsion');supStation.visible=bedVar==='z_station';supBar.visible=bedVar==='z_bar';supCombo.visible=bedVar==='z_combo';}
+function applyBed(){const tq=bedVar==='z_torsion'&&DYN.length>0;torsionOnly.forEach(o=>o.visible=tq);modules.forEach(m=>m.g.visible=!tq);sideL.visible=sideR.visible=!tq;supStation.visible=bedVar==='z_station';supBar.visible=bedVar==='z_bar';supCombo.visible=bedVar==='z_combo';}
+applyBed();
 /* inner liner: polyurethane with ceramic inserts */
 const linerCer=[];
 for(const[g,sg]of[[linerL,-1],[linerR,1]]){const cg=new THREE.Group();g.add(cg);cg.visible=false;linerCer.push(cg);
@@ -883,13 +877,14 @@ function updateParts(dt){
   }
   for(const g of[bedCenter,sideL,sideR]){g.position.copy(g.userData.ex).multiplyScalar(e);}
   if(typeof outerSets!=='undefined'){const ncOn=dustOn.z_nc&&pres.cover>0.5;for(const k in outerSets)outerSets[k].forEach(g=>g.visible=k===outerVar&&!ncOn);}
-  for(const m of modules){m.g.position.y=m.y;for(const a of m.arms){a.piv.rotation.x=(-m.y)/a.ez;}}
+  for(const m of modules){m.g.position.y=m.y;}
+  for(const D of DYN){D.setTravel(-bedD(D.cx));D.trough.position.y+=0.22*e;D.bars.position.y=0.3*e;D.wingL.position.set(0,0.12*e,-0.7*e);D.wingR.position.set(0,0.12*e,0.7*e);}
 }
 
 /* ---------- labels ---------- */
 const labelDefs=[
   {t:'Центральная секция на торсионах',tt:()=>({z_torsion:'Демпферный стол с торсионными опорами',z_station:'Демпферная станция',z_bar:'Амортизирующие балки на опорах',z_combo:'Комбинированные опоры: ролики и брусья'})[bedVar],o:()=>modules[2].g,p:[modules[2].cx,BELT_Y+0.02,0],pu:false,need:'bed'},
-  {t:'Торсионная опора',o:()=>modules[0].arms[1].piv,p:[0,0.09,0],local:true,pu:true,need:'bed',when:()=>bedVar==='z_torsion'},
+  {t:'Торсионная опора',o:()=>DYN[0].springs[1].g,p:[0.05,0,0.08],local:true,pu:true,need:'bed',when:()=>bedVar==='z_torsion'},
   {t:'Боковая секция',o:()=>sideR,p:[-1.6,BELT_Y+0.18,0.5],need:'bed'},
   {t:'Балки UHMWPE',o:()=>modules[4].g,p:[modules[4].cx,BELT_Y,0.13],need:'bed'},
   {t:'Бортовая стенка течки',o:()=>skirtR,p:[-1.4,SK_TOP+0.02,SK_Z]},
@@ -925,7 +920,7 @@ function goCam(name){const c=CAMS[name];tween={t:0,p0:camera.position.clone(),t0
 /* ---------- UI ---------- */
 const INFO={
  1:{t:'Без защиты',r:'Исходное состояние узла',p:'Лента лежит на обычных роликоопорах. Между роликами она провисает, и каждый крупный кусок продавливает её. Под бортами течки открывается щель: мелочь уходит под конвейер, пыль выходит наружу.',l:['Удар принимают ролики и подшипники','Лента прогибается между опорами','Зазор под бортами меняется на каждом ударе']},
- 2:{t:'Демпферный стол',r:'Каталог · раздел 02',p:'Вместо роликов под зоной падения стоит сплошная опора. Центральная секция подвешена на каучуковых торсионных демпферах: при ударе они закручиваются и гасят его. Боковые секции неподвижны и держат края ленты ровно. По данным каталога стол увеличивает срок службы ленты на 30 %.',l:['Скольжение по балкам UHMWPE, без вращающихся узлов','Пыль и часть мелочи пока выходят наружу','Посмотрите режим «Под лентой» — видно ход торсионов']},
+ 2:{t:'Демпферный стол',r:'Каталог · раздел 02',p:'Вместо роликов под зоной падения стоит сплошная опора. Подвижное корыто с центральными брусьями подвешено на торсионных опорах: при ударе резина закручивается и гасит его. Крылья стоят на отдельных стойках и держат края ленты ровно под бортами течки. По данным каталога стол увеличивает срок службы ленты на 30 %.',l:['Скольжение по брусьям UHMWPE 30 мм, без вращающихся узлов','Пыль и часть мелочи пока выходят наружу','Посмотрите режим «Под лентой» — видно ход торсионов']},
  3:{t:'+ Уплотнения течки',r:'Каталог · раздел 03',p:'Внутри течки полиуретановые планки удерживают основной поток. Снаружи гибкий профиль K-Snap-Loc закрывает зазор у кромки ленты. Это работает, потому что стол уже держит ленту ровно и зазор не меняется при ударах.',l:['Внутренние планки 1219 × 178 × 25 мм','Наружный профиль защёлкивается в монтажную рейку','Изношенный участок меняется без разборки стенки']},
  4:{t:'+ Пылезащита',r:'Каталог · раздел 03',p:'Фильтрующее укрытие над лентой выпускает воздух через полотно и удерживает часть пыли внутри перегрузочного узла. На выходе стоит шторка. Укрытие ставят вместе с бортовыми уплотнениями и системой аспирации.',l:['Длину укрытия подбирают по пылеобразованию','Учитывают влажность и температуру груза','Нужны фото зоны пересыпа']}
 };
