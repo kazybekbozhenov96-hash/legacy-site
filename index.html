@@ -604,7 +604,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
     <div class="in">
       <div class="head">
         <div><p class="eyebrow">Как направить запрос</p><h2>Соберите запрос за минуту</h2></div>
-        <p>Заполните, что знаете, и нажмите «Отправить в WhatsApp» или «Отправить на почту». Текст запроса подставится сам, останется приложить фото узла.</p>
+        <p>Заполните данные и нажмите «Отправить заявку» — запрос поступит менеджеру. Фото узла можно отправить дополнительно в WhatsApp или по почте.</p>
       </div>
       <div class="req">
         <div class="steps">
@@ -690,10 +690,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('viewer').hidden
 /* ---------- request builder ---------- */
 $('fSec').innerHTML=CAT.map((c,i)=>`<option value="${c.id}">0${i+1} · ${esc(c.t)}</option>`).join('')+'<option value="other">Другое оборудование</option>';
 const WA='77776872785',MAIL='manager@legacyrk.kz';
-const F=['fCo','fWho','fSec','fW','fV','fM','fQ','fT'];
+const F=['fCo','fWho','fPhone','fEmail','fSec','fW','fV','fM','fQ','fT'];
 function build(){const v=k=>$(k).value.trim();const sec=$('fSec').selectedOptions[0].textContent;
   const lines=['Запрос в Legacy Kazakhstan',
-   'Предприятие: '+(v('fCo')||'—'),'Контакт: '+(v('fWho')||'—'),'Направление: '+sec,
+   'Предприятие: '+(v('fCo')||'—'),'Контакт: '+(v('fWho')||'—'),'Телефон: '+(v('fPhone')||'—'),'Email: '+(v('fEmail')||'—'),'Направление: '+sec,
    'Ширина ленты: '+(v('fW')?v('fW')+' мм':'—'),'Скорость ленты: '+(v('fV')?v('fV')+' м/с':'—'),
    'Груз: '+(v('fM')||'—'),'Количество узлов: '+(v('fQ')||'—'),'Проблема: '+(v('fT')||'—'),'','Фото узла отправлю следующим сообщением.'];
   const text=lines.join('\n');$('fOut').textContent=text;
