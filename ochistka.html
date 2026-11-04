@@ -200,7 +200,10 @@ document.addEventListener('DOMContentLoaded',function(){
   b.addEventListener('click',function(){var m=!h.classList.contains('min');set(m);try{localStorage.setItem('legacy-hud-min',m?'1':'0');}catch(e){}});
 });
 </script>
-<script>try{if(window.top!==window)document.documentElement.classList.add("framed")}catch(e){}</script><style>.framed .backlink{display:none}</style>
+<script>try{if(window.top!==window)document.documentElement.classList.add("framed")}catch(e){}</script><style>.framed .backlink{display:none}
+.line a.li{font-size:12px;font-weight:600;padding:4px 8px;border-radius:3px;background:#0a66c2;color:#fff;flex:none;text-decoration:none}
+.line a.li:hover{filter:brightness(1.1)}
+</style>
 <script src="/legacy-measurement.js" defer></script>
 </head>
 <body>
@@ -361,6 +364,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="lines">
       <div class="line"><span id="cMail">manager@legacyrk.kz</span><button data-copy="cMail">Копировать</button></div>
       <div class="line"><span id="cTel">+7 777 687-27-85</span><button data-copy="cTel">Копировать</button></div>
+      <div class="line"><span>LinkedIn</span><a class="li" href="https://www.linkedin.com/company/legacy-kazakhstan/" target="_blank" rel="noopener">Открыть</a></div>
     </div>
   </section>
   <p class="foot">Условная модель. Состав оборудования и места установки определяются конструкцией конвейера. Точная комплектация согласуется в коммерческом предложении.</p>
