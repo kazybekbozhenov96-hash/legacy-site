@@ -1,0 +1,28 @@
+name: Notify IndexNow (Bing and participating search engines)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - '**/*.html'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - '0759d26fb5c8b24b7c51e1d8f3cb4986.txt'
+      - 'scripts/notify_indexnow.py'
+      - '.github/workflows/notify-indexnow.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout published source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Give GitHub Pages time to publish updated files
+        run: sleep 90
+      - name: Send updated URLs to IndexNow
+        run: python3 scripts/notify_indexnow.py
