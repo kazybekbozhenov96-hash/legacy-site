@@ -486,7 +486,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 @media (max-width:420px){.lang{font-size:11px;margin-right:6px}.lang a{padding:6px 3px}}
 </style>
 <script src="/legacy-measurement.js" defer></script>
-</head>
+<style>.request-consent{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:12px;line-height:1.5;font-size:13px!important;margin:16px 0!important}.request-consent input{width:18px!important;height:18px!important;min-width:18px;margin-top:2px;accent-color:var(--pu,#d27a0f)}.request-submit{width:100%;justify-content:center;padding:16px!important;font-size:16px!important}.request-submit:disabled{opacity:.65;cursor:wait}.request-status{min-height:1.5em;font-size:14px;line-height:1.55;color:var(--ink,#17222c)}.request-status.error{color:#c65536}.request-intro{font-size:14px;line-height:1.6}.request-alternative{font-size:12px;color:var(--muted,#71808a);margin-top:20px}.request-hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}</style></head>
 <body>
 
 
@@ -613,16 +613,15 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
           <div><span class="n">03</span><b>Обозначьте требования</b><p>Доступные размеры, существующие опоры, доступ для замены и срок поставки. Для роликов и барабанов — чертёж или размеры; для другого оборудования — модель и шильдик.</p></div>
         </div>
         <form id="f" novalidate>
-          <label>Предприятие<input id="fCo" placeholder="ТОО «…», рудник / фабрика"></label>
-          <label>Контакт<input id="fWho" placeholder="Имя, телефон"></label>
+          <label>Предприятие<input required maxlength="200" autocomplete="organization" id="fCo" placeholder="ТОО «…», рудник / фабрика"></label>
+          <label>Контактное лицо<input id="fWho" autocomplete="name" maxlength="160" placeholder="Как к вам обращаться"></label><label>Телефон<input id="fPhone" type="tel" autocomplete="tel" maxlength="80" placeholder="+7 ___ ___ __ __"></label><label>Email<input id="fEmail" type="email" autocomplete="email" maxlength="160" placeholder="name@company.kz"></label>
           <label class="full">Направление<select id="fSec"></select></label>
           <label>Ширина ленты, мм<input id="fW" inputmode="numeric" placeholder="1200"></label>
           <label>Скорость ленты, м/с<input id="fV" inputmode="decimal" placeholder="2,5"></label>
           <label>Груз<input id="fM" placeholder="руда, 0–150 мм, влажная"></label>
           <label>Количество узлов<input id="fQ" inputmode="numeric" placeholder="2"></label>
           <label class="full">Описание проблемы<textarea id="fT" placeholder="Что происходит, где, как давно"></textarea></label>
-          <div class="out">
-            <pre id="fOut" hidden></pre>
+          <div class="out"><p class="request-intro">Опишите задачу — передадим запрос менеджеру Legacy Kazakhstan. Укажите телефон или email для ответа.</p><label class="request-consent"><input id="fConsent" type="checkbox" required><span>Согласен передать указанные контакты и описание задачи ТОО «Легаси Казахстан» для обработки заявки и обратной связи.</span></label><div class="request-hp" aria-hidden="true"><label>Ваш сайт<input id="fWebsite" tabindex="-1" autocomplete="off"></label></div><button class="btn request-submit" id="fSubmit" type="submit">Отправить заявку</button><p id="fStatus" class="request-status" role="status" aria-live="polite"></p><p class="request-alternative">Или отправьте запрос удобным способом:</p><pre id="fOut" hidden></pre>
             <div class="row"><a class="btn wa" id="fWa" href="https://wa.me/77776872785" target="_blank" rel="noopener">Отправить в WhatsApp</a><a class="btn ghost" id="fMail" href="mailto:manager@legacyrk.kz">Отправить на почту</a><button type="button" class="btn ghost" id="fCopy">Скопировать</button></div>
             <small>WhatsApp +7 777 687-27-85 · почта manager@legacyrk.kz</small>
           </div>
@@ -802,5 +801,5 @@ document.querySelectorAll('.dd-m .dd-col').forEach(function(c){var h=c.querySele
 function sw(){if(I.getAttribute('src')!==v[0])I.src=v[0];T.textContent=v[1];a.href=k}c.addEventListener('mouseenter',sw);c.addEventListener('focusin',sw)});})();
 </script>
 <script>(function(){function f(){var h=document.querySelector('header');if(h)document.documentElement.style.setProperty('--hdr',h.offsetHeight+'px');}f();addEventListener('resize',f);})();</script>
-</body>
+<script src="legacy-request.js" defer></script></body>
 </html>
