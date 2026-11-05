@@ -67,6 +67,18 @@
     if (started) window.gtag('consent', 'update', consent(enabled));
   }
   function ui() {
+    // Make the existing public contact text usable as phone/email links.
+    document.querySelectorAll('[data-copy]').forEach(function (button) {
+      var value = button.getAttribute('data-copy') || '';
+      var label = button.previousElementSibling;
+      if (!label || label.tagName !== 'SPAN') return;
+      var target = value.indexOf('@') > 0 ? 'mailto:' + value : /^\+?[\d\s()-]{7,}$/.test(value) ? 'tel:' + value.replace(/[^+\d]/g, '') : '';
+      if (!target) return;
+      var anchor = document.createElement('a');
+      anchor.href = target; anchor.textContent = label.textContent;
+      anchor.style.color = 'inherit';
+      label.replaceWith(anchor);
+    });
     var style = document.createElement('style');
     style.textContent = '.legacy-measurement{position:fixed;left:16px;bottom:62px;z-index:10000;max-width:520px;width:calc(100% - 32px);box-sizing:border-box;padding:18px;background:#fff;color:#141a20;border:1px solid #c7cdd2;border-radius:12px;box-shadow:0 8px 35px #0003;font:14px/1.5 Arial,sans-serif}.legacy-measurement[hidden]{display:none}.legacy-measurement p{margin:0 0 12px}.legacy-measurement button{font:inherit;border:1px solid #8c969e;border-radius:6px;background:#fff;color:#141a20;padding:9px 13px;margin:4px 8px 0 0;cursor:pointer}.legacy-measurement .accept{background:#141a20;color:#fff}.legacy-measurement a{color:#17558c}.legacy-measurement-settings{position:fixed;left:12px;bottom:12px;z-index:9998;background:#fff;color:#38434c;border:1px solid #c7cdd2;border-radius:6px;padding:6px 10px;font:12px Arial,sans-serif;cursor:pointer}.legacy-measurement button:focus-visible,.legacy-measurement-settings:focus-visible{outline:3px solid #d27a0f;outline-offset:3px}';
     document.head.appendChild(style);
