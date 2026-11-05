@@ -3,6 +3,12 @@
   'use strict';
   if (window.__legacyMeasurementLoaded) return;
   window.__legacyMeasurementLoaded = true;
+  // Keep the page from panning sideways on phones (elements injected by third-party tags included).
+  (function () {
+    var guard = document.createElement('style');
+    guard.textContent = 'html,body{max-width:100%;overflow-x:clip}body>iframe:not([id]){position:absolute!important;width:0!important;height:0!important;border:0!important;left:0!important;top:0!important}';
+    (document.head || document.documentElement).appendChild(guard);
+  })();
   var storageKey = 'legacy-measurement-v1';
   var maxAge = 180 * 24 * 60 * 60 * 1000;
   var tagId = 'AW-18554666014';
