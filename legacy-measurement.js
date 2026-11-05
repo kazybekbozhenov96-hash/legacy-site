@@ -12,14 +12,14 @@
   var lang = document.documentElement.lang;
   var en = lang === 'en', kk = lang === 'kk' || lang === 'kz';
   var copy = en ? {
-    text: 'Allow Google Ads to measure visits and contact clicks? This uses cookies and online identifiers. Form contents are not sent.',
-    yes: 'Allow measurement', no: 'Without measurement', settings: 'Measurement settings', title: 'Optional measurement'
+    text: 'Google receives limited visit measurements without cookies before your choice. Allow Google Ads to measure visits and contact clicks? This uses cookies and online identifiers. Form contents are not sent.',
+    yes: 'Allow measurement', no: 'Without cookies', settings: 'Measurement settings', title: 'Optional measurement'
   } : kk ? {
-    text: 'Google Ads арқылы кірулер мен байланыс түймелерінің басуларын өлшеуге рұқсат бересіз бе? Cookie файлдары мен онлайн идентификаторлар қолданылады. Өтінім мәтіні жіберілмейді.',
-    yes: 'Рұқсат беру', no: 'Өлшеусіз', settings: 'Өлшеу параметрлері', title: 'Қосымша өлшеу'
+    text: 'Таңдауға дейін Google cookie файлдарынсыз шектеулі кіру сигналдарын алады. Google Ads арқылы кірулер мен байланыс түймелерінің басуларын өлшеуге рұқсат бересіз бе? Cookie файлдары мен онлайн идентификаторлар қолданылады. Өтінім мәтіні жіберілмейді.',
+    yes: 'Рұқсат беру', no: 'Cookie файлдарынсыз', settings: 'Өлшеу параметрлері', title: 'Қосымша өлшеу'
   } : {
-    text: 'Разрешить Google Ads измерять посещения и клики по WhatsApp, телефону и почте? Используются cookie и онлайн-идентификаторы. Содержимое формы не передаётся.',
-    yes: 'Разрешить измерение', no: 'Без измерения', settings: 'Настройки измерения', title: 'Необязательное измерение'
+    text: 'До вашего выбора Google получает ограниченные сигналы посещения без cookie. Разрешить Google Ads измерять посещения и клики по WhatsApp, телефону и почте? Используются cookie и онлайн-идентификаторы. Содержимое формы не передаётся.',
+    yes: 'Разрешить измерение', no: 'Без cookie', settings: 'Настройки измерения', title: 'Необязательное измерение'
   };
   function readChoice() {
     try {
@@ -39,7 +39,8 @@
     started = true;
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
-    window.gtag('consent', 'default', consent(true));
+    window.gtag('consent', 'default', consent(false));
+    window.gtag('set', 'ads_data_redaction', true);
     window.gtag('js', new Date());
     var address = new URL(window.location.href);
     var location = address.origin + address.pathname;
@@ -63,7 +64,7 @@
   }
   function apply(choice) {
     enabled = choice === 'yes';
-    if (enabled) start();
+    start();
     if (started) window.gtag('consent', 'update', consent(enabled));
   }
   function ui() {
@@ -124,6 +125,8 @@
     // Never send the address, phone number, message text, or form contents.
     window.gtag('event', 'conversion', {send_to: destination, value: 0, currency: 'USD'});
   });
+  // Initialize denied consent before loading any Google measurement code.
+  apply(readChoice());
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ui, {once: true});
   else ui();
 })();
