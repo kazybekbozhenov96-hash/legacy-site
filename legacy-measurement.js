@@ -1,4 +1,4 @@
-/* Legacy: optional Google Ads measurement; WhatsApp clicks are secondary, not leads. */
+/* Legacy: optional Google Ads measurement; Contact clicks are secondary, not leads. */
 (function () {
   'use strict';
   if (window.__legacyMeasurementLoaded) return;
@@ -12,13 +12,13 @@
   var lang = document.documentElement.lang;
   var en = lang === 'en', kk = lang === 'kk' || lang === 'kz';
   var copy = en ? {
-    text: 'Allow Google Ads to measure visits and WhatsApp clicks? This uses cookies and online identifiers. Form contents are not sent.',
+    text: 'Allow Google Ads to measure visits and contact clicks? This uses cookies and online identifiers. Form contents are not sent.',
     yes: 'Allow measurement', no: 'Without measurement', settings: 'Measurement settings', title: 'Optional measurement'
   } : kk ? {
-    text: 'Google Ads арқылы кірулер мен WhatsApp басуларын өлшеуге рұқсат бересіз бе? Cookie файлдары мен онлайн идентификаторлар қолданылады. Өтінім мәтіні жіберілмейді.',
+    text: 'Google Ads арқылы кірулер мен байланыс түймелерінің басуларын өлшеуге рұқсат бересіз бе? Cookie файлдары мен онлайн идентификаторлар қолданылады. Өтінім мәтіні жіберілмейді.',
     yes: 'Рұқсат беру', no: 'Өлшеусіз', settings: 'Өлшеу параметрлері', title: 'Қосымша өлшеу'
   } : {
-    text: 'Разрешить Google Ads измерять посещения и клики по WhatsApp? Используются cookie и онлайн-идентификаторы. Содержимое формы не передаётся.',
+    text: 'Разрешить Google Ads измерять посещения и клики по WhatsApp, телефону и почте? Используются cookie и онлайн-идентификаторы. Содержимое формы не передаётся.',
     yes: 'Разрешить измерение', no: 'Без измерения', settings: 'Настройки измерения', title: 'Необязательное измерение'
   };
   function readChoice() {
@@ -97,12 +97,20 @@
     if (!link) return;
     var url;
     try { url = new URL(link.href, window.location.href); } catch (_) { return; }
-    if (url.protocol !== 'https:' || (url.hostname !== 'wa.me' && url.hostname !== 'api.whatsapp.com')) return;
-    var last = 0;
-    try { last = Number(sessionStorage.getItem('legacy-whatsapp-last')) || 0; } catch (_) {}
+    var kind = '', destination = '';
+    if (url.protocol === 'https:' && (url.hostname === 'wa.me' || url.hostname === 'api.whatsapp.com')) {
+      kind = 'whatsapp'; destination = eventId;
+    } else if (url.protocol === 'tel:') {
+      kind = 'phone'; destination = tagId + '/gUpdCNasybIdEJ74xo9F';
+    } else if (url.protocol === 'mailto:') {
+      kind = 'email'; destination = tagId + '/MTcVCNmsybIdEJ74xo9F';
+    } else return;
+    var key = 'legacy-' + kind + '-last', last = 0;
+    try { last = Number(sessionStorage.getItem(key)) || 0; } catch (_) {}
     if (Date.now() - last < 30 * 60 * 1000) return;
-    try { sessionStorage.setItem('legacy-whatsapp-last', String(Date.now())); } catch (_) {}
-    window.gtag('event', 'conversion', {send_to: eventId, value: 0, currency: 'USD'});
+    try { sessionStorage.setItem(key, String(Date.now())); } catch (_) {}
+    // Never send the address, phone number, message text, or form contents.
+    window.gtag('event', 'conversion', {send_to: destination, value: 0, currency: 'USD'});
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ui, {once: true});
   else ui();
